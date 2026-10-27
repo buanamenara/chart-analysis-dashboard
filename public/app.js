@@ -258,8 +258,11 @@ async function loadCalendar() {
           .join("")
       : `<div class="muted">Tidak ada berita ekonomi.</div>`;
   } catch (err) {
-    calBody.innerHTML = `<div class="muted">Error: ${err.message}</div>`;
-    econBody.innerHTML = `<div class="muted">Error: ${err.message}</div>`;
+    const friendly = err.message?.includes("429")
+      ? "Kalender ekonomi sedang sibuk (dibatasi sumber data) — coba lagi dalam beberapa menit. Sinyal teknikal & chart tetap jalan normal."
+      : `Error: ${err.message}`;
+    calBody.innerHTML = `<div class="muted">${friendly}</div>`;
+    econBody.innerHTML = `<div class="muted">${friendly}</div>`;
   }
 }
 
