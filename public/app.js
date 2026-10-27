@@ -81,8 +81,7 @@ function renderTvChart() {
   const interval = TV_INTERVAL_MAP[intervalSelect.value] || "60";
   el("tv_chart_container").innerHTML = "";
   tvWidget = new TradingView.widget({
-    width: "100%",
-    height: 520,
+    autosize: true,
     symbol: tv,
     interval,
     timezone: "Asia/Jakarta",
@@ -94,7 +93,6 @@ function renderTvChart() {
     allow_symbol_change: false,
     container_id: "tv_chart_container"
   });
-  window.tvWidget = tvWidget; // expose untuk debugging
 }
 
 function fmt(n, digits = 4) {
@@ -187,19 +185,42 @@ async function loadNews() {
 
 async function loadCalendar() {
   const { symbol } = currentInstrument();
-  const body = el("calendarBody");
-  body.innerHTML = `<div class="muted">Memuat kalender...</div>`;
+  const calBody = el("calendarBody");
+  const econBody = el("econNewsBody");
+  calBody.innerHTML = `<div class="muted">Memuat kalender...</div>`;
+  econBody.innerHTML = `<div class="muted">Memuat berita ekonomi...</div>`;
   try {
     const res = await fetch(`/api/economic-calendar?symbol=${encodeURIComponent(symbol)}`);
     const data = await res.json();
     if (!res.ok) throw new Error(data.error || "Gagal memuat kalender");
-    if (!data.events?.length) { body.innerHTML = `<div class="muted">Tidak ada event relevan minggu ini.</div>`; return; }
-    body.innerHTML = data.events
-      .map(e => `<div class="cal-item"><div class="cal-time">${new Date(e.date).toLocaleString("id-ID", { weekday: "short", hour: "2-digit", minute: "2-digit" })} · ${e.country}<span class="cal-impact ${e.impact}">${e.impact}</span></div><div>${e.title}${e.forecast ? ` (forecast: ${e.forecast}, prev: ${e.previous})` : ""}</div></div>`)
-      .join("");
+
+    calBody.innerHTML = data.events?.length
+      ? data.events
+          .map(e => `<div class="cal-item"><div class="cal-time">${new Date(e.date).toLocaleString("id-ID", { weekday: "short", hour: "2-digit", minute: "2-digit" })} · ${e.country}<span class="cal-impact ${e.impact}">${e.impact}</span></div><div>${e.title}${e.forecast ? ` (forecast: ${e.forecast}, prev: ${e.previous})` : ""}</div></div>`)
+          .join("")
+      : `<div class="muted">Tidak ada event relevan minggu ini.</div>`;
+
+    econBody.innerHTML = data.news?.length
+      ? data.news
+          .map(n => `<div class="news-item"><a href="${n.link}" target="_blank" rel="noopener">${n.title}</a><div class="news-source">${n.source || "Investing.com Ekonomi"}${n.pubDate ? " · " + new Date(n.pubDate).toLocaleString("id-ID") : ""}</div></div>`)
+          .join("")
+      : `<div class="muted">Tidak ada berita ekonomi.</div>`;
   } catch (err) {
-    body.innerHTML = `<div class="muted">Error: ${err.message}</div>`;
+    calBody.innerHTML = `<div class="muted">Error: ${err.message}</div>`;
+    econBody.innerHTML = `<div class="muted">Error: ${err.message}</div>`;
   }
+}
+
+function initTabs() {
+  const buttons = document.querySelectorAll(".tab-btn");
+  buttons.forEach(btn => {
+    btn.addEventListener("click", () => {
+      buttons.forEach(b => b.classList.remove("active"));
+      btn.classList.add("active");
+      document.querySelectorAll(".tab-panel").forEach(p => { p.hidden = true; });
+      el(`tab-${btn.dataset.tab}`).hidden = false;
+    });
+  });
 }
 
 async function loadSentiment() {
@@ -380,6 +401,7 @@ el("analyzeSnrBtn").addEventListener("click", loadSnrAnalysis);
 el("clearSnrBtn").addEventListener("click", clearSnrChart);
 autoRefreshBox.addEventListener("change", resetAutoRefresh);
 
+initTabs();
 populateAssetTypes();
 populateSymbols();
 renderTvChart();

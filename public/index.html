@@ -96,14 +96,19 @@
       <div id="snrBody"></div>
     </section>
 
-    <section class="layout bottom-layout">
-      <div class="card calendar-card">
-        <h3>Kalender Ekonomi</h3>
+    <section class="card news-tabs-card">
+      <div class="tabs" role="tablist">
+        <button class="tab-btn active" data-tab="calendar" role="tab">Kalender Ekonomi</button>
+        <button class="tab-btn" data-tab="econ-news" role="tab">Berita Ekonomi</button>
+        <button class="tab-btn" data-tab="market-news" role="tab">Berita Pasar</button>
+      </div>
+      <div class="tab-panel" id="tab-calendar">
         <div id="calendarBody" class="scroll-list"></div>
       </div>
-
-      <div class="card news-card">
-        <h3>Berita Pasar</h3>
+      <div class="tab-panel" id="tab-econ-news" hidden>
+        <div id="econNewsBody" class="scroll-list"></div>
+      </div>
+      <div class="tab-panel" id="tab-market-news" hidden>
         <div id="newsBody" class="scroll-list"></div>
       </div>
     </section>
