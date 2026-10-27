@@ -14,9 +14,9 @@
   </header>
 
   <nav class="quicknav">
-    <a href="#section-chart" class="quicknav-btn">Chart &amp; Sinyal</a>
-    <a href="#section-snr" class="quicknav-btn">Analisa SNR</a>
-    <a href="#section-news" class="quicknav-btn">Kalender &amp; Berita</a>
+    <button class="quicknav-btn active" data-view="chart">Chart &amp; Sinyal</button>
+    <button class="quicknav-btn" data-view="snr">Analisa SNR</button>
+    <button class="quicknav-btn" data-view="news">Kalender &amp; Berita</button>
   </nav>
 
   <main>
@@ -52,7 +52,8 @@
       </label>
     </section>
 
-    <section class="chart-panel" id="section-chart">
+    <div class="view" id="view-chart">
+    <section class="chart-panel">
       <div id="tv_chart_container"></div>
     </section>
 
@@ -100,8 +101,10 @@
         <div id="sentimentBody"></div>
       </div>
     </section>
+    </div>
 
-    <section class="card snr-card" id="section-snr">
+    <div class="view" id="view-snr" hidden>
+    <section class="card snr-card">
       <h3>Analisa SNR &amp; Area Buy/Sell <span class="badge-free">GRATIS</span></h3>
       <p class="muted">Berlaku di timeframe manapun yang sedang dipilih di atas (scalping maupun swing).</p>
       <div class="snr-actions">
@@ -114,8 +117,10 @@
       </div>
       <div id="snrBody"></div>
     </section>
+    </div>
 
-    <section class="card news-tabs-card" id="section-news">
+    <div class="view" id="view-news" hidden>
+    <section class="card news-tabs-card">
       <div class="tabs" role="tablist">
         <button class="tab-btn active" data-tab="calendar" role="tab">Kalender Ekonomi</button>
         <button class="tab-btn" data-tab="econ-news" role="tab">Berita Ekonomi</button>
@@ -131,6 +136,7 @@
         <div id="newsBody" class="scroll-list"></div>
       </div>
     </section>
+    </div>
   </main>
 
   <script src="https://s3.tradingview.com/tv.js"></script>

@@ -54,6 +54,7 @@ header h1 { margin: 0 0 4px; font-size: 19px; font-weight: 700; letter-spacing: 
 
 .quicknav-btn {
   flex-shrink: 0;
+  cursor: pointer;
   color: var(--muted);
   text-decoration: none;
   font-size: 13px;
@@ -62,13 +63,14 @@ header h1 { margin: 0 0 4px; font-size: 19px; font-weight: 700; letter-spacing: 
   border-radius: 20px;
   border: 1px solid var(--border-strong);
   background: var(--panel-raised);
-  scroll-margin-top: 54px;
+  transition: none;
 }
-.quicknav-btn:hover { color: var(--text); border-color: var(--accent); }
-.quicknav-btn:active { background: var(--accent-bg); color: var(--accent); }
+.quicknav-btn:hover { color: var(--text); border-color: var(--accent); filter: none; }
+.quicknav-btn.active { background: var(--accent-bg); color: var(--accent); border-color: var(--accent); }
+
+.view { animation: fadein 0.15s ease; }
 
 main { padding: 18px 20px; }
-#section-chart, #section-snr, #section-news { scroll-margin-top: 54px; }
 
 .controls {
   display: flex;

@@ -235,6 +235,19 @@ function initTabs() {
   });
 }
 
+function initViews() {
+  const navButtons = document.querySelectorAll(".quicknav-btn");
+  navButtons.forEach(btn => {
+    btn.addEventListener("click", () => {
+      navButtons.forEach(b => b.classList.remove("active"));
+      btn.classList.add("active");
+      document.querySelectorAll(".view").forEach(v => { v.hidden = true; });
+      el(`view-${btn.dataset.view}`).hidden = false;
+      window.scrollTo({ top: 0, behavior: "auto" });
+    });
+  });
+}
+
 async function loadSentiment() {
   const { type } = currentInstrument();
   const card = el("sentimentCard");
@@ -414,6 +427,7 @@ el("clearSnrBtn").addEventListener("click", clearSnrChart);
 autoRefreshBox.addEventListener("change", resetAutoRefresh);
 
 initTabs();
+initViews();
 populateAssetTypes();
 populateSymbols();
 renderTvChart();
