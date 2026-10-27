@@ -1,0 +1,6 @@
+node_modules/
+.env
+
+# Tool MCP lokal untuk sesi Claude Code - bukan bagian dari dashboard web ini
+tradingview-mcp/
+.mcp.json

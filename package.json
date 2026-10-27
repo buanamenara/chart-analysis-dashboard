@@ -1,0 +1,15 @@
+{
+  "name": "market-analysis-dashboard",
+  "version": "1.0.0",
+  "description": "Dashboard lokal untuk data pasar real-time (forex, crypto, saham) dengan chart TradingView, sinyal teknikal rule-based, dan zona Support/Resistance otomatis",
+  "main": "server.js",
+  "type": "module",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "dotenv": "^16.4.5",
+    "express": "^4.21.1",
+    "technicalindicators": "^3.1.0"
+  }
+}

@@ -1,0 +1,116 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Dashboard Analisis Pasar</title>
+<link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <header>
+    <h1>Dashboard Analisis Pasar</h1>
+    <p class="subtitle">Data real-time + chart TradingView + sinyal teknikal otomatis (100% gratis, tanpa AI berbayar).</p>
+  </header>
+
+  <main>
+    <section class="controls">
+      <label>
+        Kategori
+        <select id="assetType"></select>
+      </label>
+      <label>
+        Instrumen
+        <select id="symbolSelect"></select>
+      </label>
+      <label>
+        Timeframe
+        <select id="interval">
+          <optgroup label="Scalping">
+            <option value="1m">1 menit</option>
+            <option value="3m">3 menit</option>
+            <option value="15m">15 menit</option>
+          </optgroup>
+          <optgroup label="Swing">
+            <option value="1h" selected>1 jam</option>
+            <option value="4h">4 jam</option>
+            <option value="1d">1 hari</option>
+            <option value="1wk">1 minggu</option>
+          </optgroup>
+        </select>
+      </label>
+      <button id="refreshBtn">Refresh Data</button>
+      <label class="auto-refresh">
+        <input type="checkbox" id="autoRefresh" checked />
+        Auto-refresh 30s
+      </label>
+    </section>
+
+    <section class="layout">
+      <div class="chart-panel">
+        <div id="tv_chart_container"></div>
+      </div>
+
+      <div class="side-panel">
+        <div class="card quote-card">
+          <h2 id="quoteSymbol">-</h2>
+          <div class="price" id="quotePrice">-</div>
+          <div class="change" id="quoteChange">-</div>
+          <div class="hl" id="quoteHL">-</div>
+          <div class="updated" id="lastUpdated">-</div>
+        </div>
+
+        <div class="card signal-card">
+          <h3>Sinyal Teknikal <span class="badge-free">GRATIS</span></h3>
+          <div id="signalBadge" class="signal-badge signal-netral">-</div>
+          <ul id="signalReasons" class="signal-reasons"></ul>
+          <p class="muted" id="signalDisclaimer"></p>
+        </div>
+
+        <div class="card indicator-card">
+          <h3>Indikator Teknikal</h3>
+          <table id="indicatorTable">
+            <tbody></tbody>
+          </table>
+          <p class="trend-summary" id="trendSummary"></p>
+        </div>
+
+        <div class="card sentiment-card" id="sentimentCard" style="display:none">
+          <h3>Sentimen Crypto</h3>
+          <div id="sentimentBody"></div>
+        </div>
+
+      </div>
+    </section>
+
+    <section class="card snr-card">
+      <h3>Analisa SNR &amp; Area Buy/Sell <span class="badge-free">GRATIS</span></h3>
+      <p class="muted">Berlaku di timeframe manapun yang sedang dipilih di atas (scalping maupun swing).</p>
+      <div class="snr-actions">
+        <button id="analyzeSnrBtn">Analisa</button>
+        <button id="clearSnrBtn" class="btn-ghost">Bersihkan Gambar</button>
+      </div>
+      <div id="snrStatus" class="muted"></div>
+      <div id="snrChartContainer">
+        <div class="snr-placeholder">Klik <b>"Analisa"</b> untuk menampilkan chart, zona Support/Resistance, serta area Buy/Sell (Entry, SL, TP) di timeframe yang sedang dipilih.</div>
+      </div>
+      <div id="snrBody"></div>
+    </section>
+
+    <section class="layout bottom-layout">
+      <div class="card calendar-card">
+        <h3>Kalender Ekonomi</h3>
+        <div id="calendarBody" class="scroll-list"></div>
+      </div>
+
+      <div class="card news-card">
+        <h3>Berita Pasar</h3>
+        <div id="newsBody" class="scroll-list"></div>
+      </div>
+    </section>
+  </main>
+
+  <script src="https://s3.tradingview.com/tv.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/lightweight-charts@4.1.3/dist/lightweight-charts.standalone.production.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
