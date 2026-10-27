@@ -45,40 +45,37 @@
       </label>
     </section>
 
-    <section class="layout">
-      <div class="chart-panel">
-        <div id="tv_chart_container"></div>
+    <section class="chart-panel">
+      <div id="tv_chart_container"></div>
+    </section>
+
+    <section class="info-grid">
+      <div class="card quote-card">
+        <h2 id="quoteSymbol">-</h2>
+        <div class="price" id="quotePrice">-</div>
+        <div class="change" id="quoteChange">-</div>
+        <div class="hl" id="quoteHL">-</div>
+        <div class="updated" id="lastUpdated">-</div>
       </div>
 
-      <div class="side-panel">
-        <div class="card quote-card">
-          <h2 id="quoteSymbol">-</h2>
-          <div class="price" id="quotePrice">-</div>
-          <div class="change" id="quoteChange">-</div>
-          <div class="hl" id="quoteHL">-</div>
-          <div class="updated" id="lastUpdated">-</div>
-        </div>
+      <div class="card signal-card">
+        <h3>Sinyal Teknikal <span class="badge-free">GRATIS</span></h3>
+        <div id="signalBadge" class="signal-badge signal-netral">-</div>
+        <ul id="signalReasons" class="signal-reasons"></ul>
+        <p class="muted" id="signalDisclaimer"></p>
+      </div>
 
-        <div class="card signal-card">
-          <h3>Sinyal Teknikal <span class="badge-free">GRATIS</span></h3>
-          <div id="signalBadge" class="signal-badge signal-netral">-</div>
-          <ul id="signalReasons" class="signal-reasons"></ul>
-          <p class="muted" id="signalDisclaimer"></p>
-        </div>
+      <div class="card indicator-card">
+        <h3>Indikator Teknikal</h3>
+        <table id="indicatorTable">
+          <tbody></tbody>
+        </table>
+        <p class="trend-summary" id="trendSummary"></p>
+      </div>
 
-        <div class="card indicator-card">
-          <h3>Indikator Teknikal</h3>
-          <table id="indicatorTable">
-            <tbody></tbody>
-          </table>
-          <p class="trend-summary" id="trendSummary"></p>
-        </div>
-
-        <div class="card sentiment-card" id="sentimentCard" style="display:none">
-          <h3>Sentimen Crypto</h3>
-          <div id="sentimentBody"></div>
-        </div>
-
+      <div class="card sentiment-card" id="sentimentCard" style="display:none">
+        <h3>Sentimen Crypto</h3>
+        <div id="sentimentBody"></div>
       </div>
     </section>
 
