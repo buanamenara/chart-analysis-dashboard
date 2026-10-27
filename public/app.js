@@ -116,8 +116,20 @@ async function loadData() {
     const changeTxt = `${q.change >= 0 ? "+" : ""}${fmt(q.change, 4)} (${fmt(q.changePercent, 2)}%)`;
     changeEl.textContent = changeTxt;
     changeEl.className = `change ${q.change >= 0 ? "positive" : "negative"}`;
-    el("quoteHL").textContent = `H: ${fmt(q.high)} | L: ${fmt(q.low)}`;
     el("lastUpdated").textContent = `Update: ${new Date().toLocaleTimeString("id-ID")}`;
+
+    el("quoteLow").textContent = `L ${fmt(q.low)}`;
+    el("quoteHigh").textContent = `H ${fmt(q.high)}`;
+    if (q.high > q.low) {
+      const pct = Math.min(100, Math.max(0, ((q.price - q.low) / (q.high - q.low)) * 100));
+      el("rangePct").textContent = `${fmt(pct, 0)}%`;
+      el("rangeFill").style.width = `${pct}%`;
+      el("rangeDot").style.left = `${pct}%`;
+    } else {
+      el("rangePct").textContent = "-";
+      el("rangeFill").style.width = "0%";
+      el("rangeDot").style.left = "0%";
+    }
 
     const ind = data.indicators;
     const rows = ind.insufficientData
