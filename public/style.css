@@ -1,21 +1,22 @@
 :root {
   color-scheme: dark;
-  --bg: #0b0d12;
-  --panel: #151922;
-  --panel-raised: #1a1f2a;
-  --border: #272e3a;
-  --border-strong: #38414f;
-  --text: #e8ecf1;
-  --muted: #8b95a5;
-  --muted-2: #626c7a;
+  --bg: #0a0906;
+  --panel: #15130c;
+  --panel-raised: #1d1a10;
+  --border: #2d2718;
+  --border-strong: #4a3f22;
+  --text: #f3ead2;
+  --muted: #a99b74;
+  --muted-2: #726648;
   --green: #3fb950;
-  --green-bg: rgba(63, 185, 80, 0.12);
+  --green-bg: rgba(63, 185, 80, 0.14);
   --red: #f85149;
-  --red-bg: rgba(248, 81, 73, 0.12);
+  --red-bg: rgba(248, 81, 73, 0.14);
   --amber: #e3a008;
-  --amber-bg: rgba(227, 160, 8, 0.12);
-  --accent: #5b9dff;
-  --accent-bg: rgba(91, 157, 255, 0.12);
+  --amber-bg: rgba(227, 160, 8, 0.14);
+  --accent: #d4af37;
+  --accent-text: #1a1203;
+  --accent-bg: rgba(212, 175, 55, 0.16);
   --radius: 10px;
 }
 
@@ -114,7 +115,7 @@ button {
   cursor: pointer;
   background: var(--accent);
   border-color: var(--accent);
-  color: #06111f;
+  color: var(--accent-text);
   font-weight: 600;
   transition: filter 0.15s ease, transform 0.05s ease;
 }

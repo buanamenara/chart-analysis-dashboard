@@ -88,7 +88,7 @@ function renderTvChart() {
     theme: "dark",
     style: "1",
     locale: "id",
-    toolbar_bg: "#161b22",
+    toolbar_bg: "#15130c",
     enable_publishing: false,
     allow_symbol_change: false,
     container_id: "tv_chart_container"
@@ -287,10 +287,10 @@ function renderSnrChart(data) {
   const container = el("snrChartContainer");
   container.innerHTML = "";
   snrChart = LightweightCharts.createChart(container, {
-    layout: { background: { color: "transparent" }, textColor: "#e6edf3" },
-    grid: { vertLines: { color: "#2a313c" }, horzLines: { color: "#2a313c" } },
+    layout: { background: { color: "transparent" }, textColor: "#f3ead2" },
+    grid: { vertLines: { color: "#2d2718" }, horzLines: { color: "#2d2718" } },
     timeScale: { timeVisible: true, secondsVisible: false },
-    rightPriceScale: { borderColor: "#2a313c" },
+    rightPriceScale: { borderColor: "#2d2718" },
     autoSize: true
   });
   snrSeries = snrChart.addCandlestickSeries({
@@ -320,7 +320,7 @@ function renderSnrChart(data) {
 
   if (data.potential) {
     const p = data.potential;
-    snrSeries.createPriceLine({ price: p.entry, color: "#4f8cff", lineWidth: 2, lineStyle: LightweightCharts.LineStyle.Solid, axisLabelVisible: true, title: "Entry" });
+    snrSeries.createPriceLine({ price: p.entry, color: "#d4af37", lineWidth: 2, lineStyle: LightweightCharts.LineStyle.Solid, axisLabelVisible: true, title: "Entry" });
     snrSeries.createPriceLine({ price: p.stopLoss, color: "#f85149", lineWidth: 2, lineStyle: LightweightCharts.LineStyle.Solid, axisLabelVisible: true, title: "SL" });
     (p.takeProfit || []).forEach((tp, i) => {
       snrSeries.createPriceLine({ price: tp, color: "#3fb950", lineWidth: 2, lineStyle: LightweightCharts.LineStyle.Solid, axisLabelVisible: true, title: `TP${i + 1}` });
