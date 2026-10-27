@@ -314,10 +314,10 @@ function renderSnrChart(data) {
   const container = el("snrChartContainer");
   container.innerHTML = "";
   snrChart = LightweightCharts.createChart(container, {
-    layout: { background: { color: "transparent" }, textColor: "#f3ead2" },
-    grid: { vertLines: { color: "#2d2718" }, horzLines: { color: "#2d2718" } },
+    layout: { background: { color: "#131722" }, textColor: "#d1d4dc" },
+    grid: { vertLines: { color: "#242832" }, horzLines: { color: "#242832" } },
     timeScale: { timeVisible: true, secondsVisible: false },
-    rightPriceScale: { borderColor: "#2d2718" },
+    rightPriceScale: { borderColor: "#242832" },
     autoSize: true
   });
   snrSeries = snrChart.addCandlestickSeries({

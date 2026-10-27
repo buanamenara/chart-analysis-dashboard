@@ -322,7 +322,7 @@ button:disabled { opacity: 0.5; cursor: not-allowed; }
   border-radius: var(--radius);
   margin-bottom: 14px;
   overflow: hidden;
-  background: var(--panel-raised);
+  background: #131722;
 }
 
 .snr-placeholder {
