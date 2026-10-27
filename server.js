@@ -9,7 +9,7 @@ import { generateRuleBasedSignal } from "./lib/ruleSignal.js";
 import { computeSnrZones } from "./lib/snr.js";
 import { fetchRss, fetchRssMulti } from "./lib/rss.js";
 import { NEWS_SOURCES, ECONOMIC_NEWS_SOURCE } from "./lib/newsSources.js";
-import { getEconomicCalendar, filterCalendarBySymbol } from "./lib/calendar.js";
+import { getEconomicCalendar, filterCalendarBySymbol, pairBiasFromCurrencyBias } from "./lib/calendar.js";
 import { annotateHighImpactEvents } from "./lib/newsAnalysis.js";
 import { getFearGreedIndex, getCryptoGlobalStats } from "./lib/sentiment.js";
 
@@ -122,7 +122,7 @@ app.get("/api/economic-calendar", async (req, res) => {
     const { symbol } = req.query;
     const events = await getEconomicCalendar();
     const filtered = symbol ? filterCalendarBySymbol(events, symbol) : events;
-    const annotated = annotateHighImpactEvents(filtered.slice(0, 20));
+    const annotated = annotateHighImpactEvents(filtered.slice(0, 20), symbol, pairBiasFromCurrencyBias);
     const [economicNews] = await Promise.allSettled([fetchRss(ECONOMIC_NEWS_SOURCE.url, 5)]);
     res.json({
       events: annotated,

@@ -198,7 +198,7 @@ async function loadNews() {
   }
 }
 
-function renderEventBias(e, assetType) {
+function renderEventBias(e, assetType, symbol) {
   const info = e.biasInfo;
   if (!info || info.bias === "unknown") return "";
 
@@ -211,17 +211,26 @@ function renderEventBias(e, assetType) {
   const biasLabel = isBullish ? "Cenderung BULLISH" : "Cenderung BEARISH";
   let html = `<div class="event-bias ${biasCls}">${biasLabel} untuk ${e.country} <span class="muted">(forecast ${e.forecast} vs prev ${e.previous})</span></div>`;
 
-  if (assetType === "forex" && lastSignal) {
-    const biasDir = isBullish ? "BUY" : "SELL";
-    let combo;
-    if (lastSignal === "NETRAL") {
-      combo = `Sinyal teknikal saat ini masih NETRAL, belum ada konfirmasi kuat dari chart.`;
-    } else if (lastSignal === biasDir) {
-      combo = `<b>Selaras</b> dengan sinyal teknikal saat ini (${lastSignal}) — kombinasi berita + chart kompak.`;
-    } else {
-      combo = `<b>Berlawanan</b> dengan sinyal teknikal saat ini (${lastSignal}) — waspada potensi reversal/konflik sinyal.`;
+  // pairBias: arah untuk instrumen yang sedang dilihat (sudah dibalik kalau mata
+  // uang event ada di posisi quote, mis. USD di XAUUSD/EURUSD -> arah terbalik).
+  const pairBias = info.pairBias;
+  if (pairBias) {
+    const pairCls = pairBias === "bullish" ? "bullish" : "bearish";
+    const pairLabel = pairBias === "bullish" ? "BULLISH" : "BEARISH";
+    html += `<div class="event-bias ${pairCls}">-&gt; Untuk ${symbol}: cenderung ${pairLabel}</div>`;
+
+    if (lastSignal) {
+      const biasDir = pairBias === "bullish" ? "BUY" : "SELL";
+      let combo;
+      if (lastSignal === "NETRAL") {
+        combo = `Sinyal teknikal saat ini masih NETRAL, belum ada konfirmasi kuat dari chart.`;
+      } else if (lastSignal === biasDir) {
+        combo = `<b>Selaras</b> dengan sinyal teknikal saat ini (${lastSignal}) — kombinasi berita + chart kompak.`;
+      } else {
+        combo = `<b>Berlawanan</b> dengan sinyal teknikal saat ini (${lastSignal}) — waspada potensi reversal/konflik sinyal.`;
+      }
+      html += `<div class="event-combo">${combo}</div>`;
     }
-    html += `<div class="event-combo">${combo}</div>`;
   }
   return html;
 }
@@ -239,7 +248,7 @@ async function loadCalendar() {
 
     calBody.innerHTML = data.events?.length
       ? data.events
-          .map(e => `<div class="cal-item"><div class="cal-time">${new Date(e.date).toLocaleString("id-ID", { weekday: "short", hour: "2-digit", minute: "2-digit" })} · ${e.country}<span class="cal-impact ${e.impact}">${e.impact}</span></div><div>${e.title}${e.forecast ? ` (forecast: ${e.forecast}, prev: ${e.previous})` : ""}</div>${renderEventBias(e, type)}</div>`)
+          .map(e => `<div class="cal-item"><div class="cal-time">${new Date(e.date).toLocaleString("id-ID", { weekday: "short", hour: "2-digit", minute: "2-digit" })} · ${e.country}<span class="cal-impact ${e.impact}">${e.impact}</span></div><div>${e.title}${e.forecast ? ` (forecast: ${e.forecast}, prev: ${e.previous})` : ""}</div>${renderEventBias(e, type, symbol)}</div>`)
           .join("")
       : `<div class="muted">Tidak ada event relevan minggu ini.</div>`;
 
