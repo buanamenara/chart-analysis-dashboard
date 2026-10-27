@@ -3,8 +3,7 @@ import express from "express";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 
-import { getBinanceQuote, getBinanceOhlcv } from "./lib/binance.js";
-import { getYahooQuote, getYahooOhlcv, normalizeForexSymbol, normalizeCryptoSymbolForYahoo } from "./lib/yahoo.js";
+import { fetchQuote, fetchOhlcv, fetchDailyBars } from "./lib/marketData.js";
 import { computeIndicators, summarizeTrend } from "./lib/indicators.js";
 import { generateRuleBasedSignal } from "./lib/ruleSignal.js";
 import { computeSnrZones } from "./lib/snr.js";
@@ -17,45 +16,6 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const app = express();
 app.use(express.json());
 app.use(express.static(path.join(__dirname, "public")));
-
-function resolveYahooSymbol(assetType, symbol) {
-  if (assetType === "forex") return normalizeForexSymbol(symbol);
-  return symbol; // stock / index: pakai apa adanya (contoh: AAPL, ^JKSE, BBCA.JK)
-}
-
-async function fetchQuote(assetType, symbol) {
-  if (assetType === "crypto") {
-    try {
-      return await getBinanceQuote(symbol);
-    } catch {
-      // Binance diblokir di beberapa jaringan (mis. ISP Indonesia) -> fallback ke Yahoo Finance
-      return getYahooQuote(normalizeCryptoSymbolForYahoo(symbol));
-    }
-  }
-  return getYahooQuote(resolveYahooSymbol(assetType, symbol));
-}
-
-async function fetchOhlcv(assetType, symbol, interval) {
-  if (assetType === "crypto") {
-    try {
-      return await getBinanceOhlcv(symbol, interval, 250);
-    } catch {
-      return getYahooOhlcv(normalizeCryptoSymbolForYahoo(symbol), interval);
-    }
-  }
-  return getYahooOhlcv(resolveYahooSymbol(assetType, symbol), interval);
-}
-
-async function fetchDailyBars(assetType, symbol) {
-  if (assetType === "crypto") {
-    try {
-      return await getBinanceOhlcv(symbol, "1d", 60);
-    } catch {
-      return getYahooOhlcv(normalizeCryptoSymbolForYahoo(symbol), "1d");
-    }
-  }
-  return getYahooOhlcv(resolveYahooSymbol(assetType, symbol), "1d");
-}
 
 app.get("/api/quote", async (req, res) => {
   try {
