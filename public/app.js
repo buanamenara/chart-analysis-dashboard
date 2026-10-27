@@ -202,6 +202,10 @@ function renderEventBias(e, assetType) {
   const info = e.biasInfo;
   if (!info || info.bias === "unknown") return "";
 
+  if (info.bias === "qualitative") {
+    return `<div class="event-bias qualitative">Event kualitatif (pidato/pernyataan/notulen) — tidak ada angka forecast untuk dibandingkan. Dampak ke harga tergantung isi &amp; nada bicara saat rilis, bukan beat/miss angka. Pantau langsung saat jam rilis.</div>`;
+  }
+
   const isBullish = info.bias === "bullish";
   const biasCls = isBullish ? "bullish" : "bearish";
   const biasLabel = isBullish ? "Cenderung BULLISH" : "Cenderung BEARISH";
