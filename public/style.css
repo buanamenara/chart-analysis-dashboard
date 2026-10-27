@@ -286,6 +286,24 @@ button:disabled { opacity: 0.5; cursor: not-allowed; }
 .cal-impact.Medium { background: var(--amber-bg); color: var(--amber); }
 .cal-impact.Low, .cal-impact.Holiday { background: rgba(139, 148, 158, 0.12); color: var(--muted); }
 
+.event-bias {
+  margin-top: 6px;
+  font-size: 12px;
+  font-weight: 700;
+  padding: 5px 9px;
+  border-radius: 6px;
+  display: inline-block;
+}
+.event-bias.bullish { background: var(--green-bg); color: var(--green); }
+.event-bias.bearish { background: var(--red-bg); color: var(--red); }
+.event-combo {
+  margin-top: 5px;
+  font-size: 12px;
+  color: var(--muted);
+  line-height: 1.5;
+}
+.event-combo b { color: var(--accent); }
+
 .news-item a { color: var(--text); text-decoration: none; font-size: 13.5px; line-height: 1.4; display: block; }
 .news-item a:hover { color: var(--accent); }
 .news-source { color: var(--muted-2); font-size: 11px; margin-top: 3px; }

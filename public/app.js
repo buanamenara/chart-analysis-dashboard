@@ -55,6 +55,7 @@ const autoRefreshBox = el("autoRefresh");
 
 let tvWidget = null;
 let autoRefreshTimer = null;
+let lastSignal = null; // hasil /api/signal terakhir, dipakai untuk kombinasi dengan analisa berita
 
 function populateAssetTypes() {
   assetTypeSelect.innerHTML = Object.entries(ASSET_TYPE_LABELS)
@@ -167,6 +168,8 @@ async function loadSignal() {
     const data = await res.json();
     if (!res.ok) throw new Error(data.error || "Gagal memuat sinyal");
 
+    lastSignal = data.signal;
+
     const badge = el("signalBadge");
     badge.textContent = data.signal === "BUY" ? "BUY (bias naik)" : data.signal === "SELL" ? "SELL (bias turun)" : "NETRAL";
     badge.className = `signal-badge signal-${data.signal.toLowerCase()}`;
@@ -195,8 +198,32 @@ async function loadNews() {
   }
 }
 
+function renderEventBias(e, assetType) {
+  const info = e.biasInfo;
+  if (!info || info.bias === "unknown") return "";
+
+  const isBullish = info.bias === "bullish";
+  const biasCls = isBullish ? "bullish" : "bearish";
+  const biasLabel = isBullish ? "Cenderung BULLISH" : "Cenderung BEARISH";
+  let html = `<div class="event-bias ${biasCls}">${biasLabel} untuk ${e.country} <span class="muted">(forecast ${e.forecast} vs prev ${e.previous})</span></div>`;
+
+  if (assetType === "forex" && lastSignal) {
+    const biasDir = isBullish ? "BUY" : "SELL";
+    let combo;
+    if (lastSignal === "NETRAL") {
+      combo = `Sinyal teknikal saat ini masih NETRAL, belum ada konfirmasi kuat dari chart.`;
+    } else if (lastSignal === biasDir) {
+      combo = `<b>Selaras</b> dengan sinyal teknikal saat ini (${lastSignal}) — kombinasi berita + chart kompak.`;
+    } else {
+      combo = `<b>Berlawanan</b> dengan sinyal teknikal saat ini (${lastSignal}) — waspada potensi reversal/konflik sinyal.`;
+    }
+    html += `<div class="event-combo">${combo}</div>`;
+  }
+  return html;
+}
+
 async function loadCalendar() {
-  const { symbol } = currentInstrument();
+  const { symbol, type } = currentInstrument();
   const calBody = el("calendarBody");
   const econBody = el("econNewsBody");
   calBody.innerHTML = `<div class="muted">Memuat kalender...</div>`;
@@ -208,7 +235,7 @@ async function loadCalendar() {
 
     calBody.innerHTML = data.events?.length
       ? data.events
-          .map(e => `<div class="cal-item"><div class="cal-time">${new Date(e.date).toLocaleString("id-ID", { weekday: "short", hour: "2-digit", minute: "2-digit" })} · ${e.country}<span class="cal-impact ${e.impact}">${e.impact}</span></div><div>${e.title}${e.forecast ? ` (forecast: ${e.forecast}, prev: ${e.previous})` : ""}</div></div>`)
+          .map(e => `<div class="cal-item"><div class="cal-time">${new Date(e.date).toLocaleString("id-ID", { weekday: "short", hour: "2-digit", minute: "2-digit" })} · ${e.country}<span class="cal-impact ${e.impact}">${e.impact}</span></div><div>${e.title}${e.forecast ? ` (forecast: ${e.forecast}, prev: ${e.previous})` : ""}</div>${renderEventBias(e, type)}</div>`)
           .join("")
       : `<div class="muted">Tidak ada event relevan minggu ini.</div>`;
 
@@ -395,7 +422,10 @@ async function refreshFast() {
 }
 
 async function refreshAll() {
-  await Promise.all([loadData(), loadSignal(), loadNews(), loadCalendar(), loadSentiment()]);
+  // loadSignal() ditunggu duluan supaya loadCalendar() bisa kombinasikan
+  // bias berita dengan sinyal teknikal yang sudah siap (hindari race condition).
+  await loadSignal();
+  await Promise.all([loadData(), loadNews(), loadCalendar(), loadSentiment()]);
 }
 
 function resetAutoRefresh() {
