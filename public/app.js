@@ -45,7 +45,7 @@ const INSTRUMENTS = {
 };
 
 const ASSET_TYPE_LABELS = { forex: "Forex", crypto: "Crypto", stock: "Saham / Indeks" };
-const TV_INTERVAL_MAP = { "1m": "1", "3m": "3", "15m": "15", "1h": "60", "4h": "240", "1d": "D", "1wk": "W" };
+const TV_INTERVAL_MAP = { "1m": "1", "3m": "3", "5m": "5", "15m": "15", "1h": "60", "4h": "240", "1d": "D", "1wk": "W" };
 
 const el = id => document.getElementById(id);
 const assetTypeSelect = el("assetType");
