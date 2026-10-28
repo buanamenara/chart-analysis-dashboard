@@ -36,13 +36,13 @@ Angka (harga, indikator, sinyal) dihitung dari **Yahoo Finance / Binance**, seda
 
 | Instrumen | Data (Yahoo/Binance) | Chart TradingView |
 |-----------|----------------------|-------------------|
-| Gold (XAUUSD) | `GC=F` (COMEX gold futures) | `COMEX:GC1!` |
+| Gold (XAUUSD) | `PAXG-USD` (PAX Gold, proksi spot) | `OANDA:XAUUSD` |
 | Silver (XAGUSD) | `SI=F` (COMEX silver futures) | `COMEX:SI1!` |
 | Forex | `EURUSD=X` dst. | `OANDA:EURUSD` dst. |
 | Crypto | `BTCUSDT` (Binance) / `BTC-USD` (fallback) | `BINANCE:BTCUSDT` |
 | Saham/Indeks | `BBCA.JK`, `^JKSE` dst. | `IDX:BBCA`, `IDX:COMPOSITE` dst. |
 
-Catatan: untuk Gold/Silver, Yahoo tidak menyediakan harga *spot* (XAUUSD=X 404), jadi dipakai kontrak **futures COMEX** — chart TradingView juga diarahkan ke futures yang sama supaya angkanya konsisten. Perbedaan kecil yang tersisa biasanya hanya jeda pembaruan data (Yahoo bisa tertunda beberapa menit, dan data saham IDX di Yahoo tertunda ~15 menit).
+Catatan: untuk Gold, Yahoo tidak menyediakan harga *spot* (XAUUSD=X 404), jadi dipakai `PAXG-USD` (PAX Gold) sebagai **proksi spot** — selisihnya ke harga spot hanya ~0.02% (jauh lebih dekat daripada futures). Silver tidak punya proksi spot gratis yang setara, jadi tetap memakai futures COMEX. Perbedaan kecil yang tersisa biasanya hanya jeda pembaruan data (Yahoo bisa tertunda beberapa menit, dan data saham IDX di Yahoo tertunda ~15 menit).
 
 Catatan: endpoint Yahoo Finance & RSS di atas tidak resmi dan sewaktu-waktu bisa berubah/dibatasi oleh penyedianya.
 

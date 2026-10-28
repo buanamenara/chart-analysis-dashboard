@@ -1,6 +1,6 @@
 const INSTRUMENTS = {
   forex: [
-    { symbol: "XAUUSD", label: "Gold / USD (XAUUSD)", tv: "COMEX:GC1!" },
+    { symbol: "XAUUSD", label: "Gold / USD (XAUUSD)", tv: "OANDA:XAUUSD" },
     { symbol: "XAGUSD", label: "Silver / USD (XAGUSD)", tv: "COMEX:SI1!" },
     { symbol: "EURUSD", label: "EUR/USD", tv: "OANDA:EURUSD" },
     { symbol: "GBPUSD", label: "GBP/USD", tv: "OANDA:GBPUSD" },
