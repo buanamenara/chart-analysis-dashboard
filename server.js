@@ -123,23 +123,26 @@ app.get("/api/news", async (req, res) => {
 });
 
 app.get("/api/economic-calendar", async (req, res) => {
+  const { symbol } = req.query;
+  let events = [];
+  let calendarError = null;
   try {
-    const { symbol } = req.query;
-    const events = await getEconomicCalendar();
-    const filtered = symbol ? filterCalendarBySymbol(events, symbol) : events;
+    const all = await getEconomicCalendar();
+    const filtered = symbol ? filterCalendarBySymbol(all, symbol) : all;
     // Prioritaskan event High Impact di atas (paling penting untuk trading),
     // lalu Medium/Low, masing-masing tetap urut waktu.
     const IMPACT_ORDER = { High: 0, Medium: 1, Low: 2, Holiday: 3 };
     filtered.sort((a, b) => (IMPACT_ORDER[a.impact] ?? 9) - (IMPACT_ORDER[b.impact] ?? 9) || (a.timestamp - b.timestamp));
-    const annotated = annotateHighImpactEvents(filtered.slice(0, 20), symbol, pairBiasFromCurrencyBias);
-    const [economicNews] = await Promise.allSettled([fetchRss(ECONOMIC_NEWS_SOURCE.url, 5)]);
-    res.json({
-      events: annotated,
-      news: economicNews.status === "fulfilled" ? economicNews.value : []
-    });
+    events = annotateHighImpactEvents(filtered.slice(0, 20), symbol, pairBiasFromCurrencyBias);
   } catch (err) {
-    res.status(502).json({ error: err.message });
+    calendarError = err.message;
   }
+  const [economicNews] = await Promise.allSettled([fetchRss(ECONOMIC_NEWS_SOURCE.url, 5)]);
+  res.json({
+    events,
+    news: economicNews.status === "fulfilled" ? economicNews.value : [],
+    calendarError
+  });
 });
 
 app.get("/api/sentiment", async (req, res) => {

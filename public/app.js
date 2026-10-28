@@ -271,14 +271,18 @@ async function loadCalendar() {
     const data = await res.json();
     if (!res.ok) throw new Error(data.error || "Gagal memuat kalender");
 
-    calBody.innerHTML = data.events?.length
-      ? data.events
-          .map(e => {
-            const impactCls = ["High", "Medium", "Low", "Holiday"].includes(e.impact) ? e.impact : "Low";
-            return `<div class="cal-item"><div class="cal-time">${new Date(e.date).toLocaleString("id-ID", { weekday: "short", hour: "2-digit", minute: "2-digit" })} · ${esc(e.country)}<span class="cal-impact ${impactCls}">${esc(e.impact)}</span></div><div>${esc(e.title)}${e.forecast ? ` (forecast: ${esc(e.forecast)}, prev: ${esc(e.previous)})` : ""}</div>${renderEventBias(e, type, symbol)}</div>`;
-          })
-          .join("")
-      : `<div class="muted">Tidak ada event relevan minggu ini.</div>`;
+    calBody.innerHTML = data.calendarError
+      ? (data.calendarError.includes("429")
+          ? `<div class="muted">Kalender ekonomi sedang dibatasi (rate-limit ForexFactory) — coba lagi beberapa menit lagi. Sinyal teknikal &amp; chart tetap jalan normal.</div>`
+          : `<div class="muted">Kalender ekonomi gagal dimuat (${esc(data.calendarError)}).</div>`)
+      : (data.events?.length
+          ? data.events
+              .map(e => {
+                const impactCls = ["High", "Medium", "Low", "Holiday"].includes(e.impact) ? e.impact : "Low";
+                return `<div class="cal-item"><div class="cal-time">${new Date(e.date).toLocaleString("id-ID", { weekday: "short", hour: "2-digit", minute: "2-digit" })} · ${esc(e.country)}<span class="cal-impact ${impactCls}">${esc(e.impact)}</span></div><div>${esc(e.title)}${e.forecast ? ` (forecast: ${esc(e.forecast)}, prev: ${esc(e.previous)})` : ""}</div>${renderEventBias(e, type, symbol)}</div>`;
+              })
+              .join("")
+          : `<div class="muted">Tidak ada event relevan minggu ini.</div>`);
 
     econBody.innerHTML = data.news?.length
       ? data.news
