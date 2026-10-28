@@ -226,9 +226,9 @@ function renderEventBias(e, assetType, symbol) {
   if (info.bias === "rate") {
     const isMetal = symbol === "XAUUSD" || symbol === "XAGUSD";
     if (isMetal) {
-      return `<div class="event-bias qualitative">Keputusan suku bunga (${esc(e.country)}) — kenaikan suku bunga cenderung menekan ${symbol}, penurunan cenderung mendorongnya naik. Forecast = previous (belum ada perubahan diekspektasikan); pantau juga FOMC Statement &amp; Press Conference untuk nada hawkish/dovish.</div>`;
+      return `<div class="event-bias qualitative">Keputusan suku bunga (${esc(e.country)}) — kenaikan suku bunga cenderung menekan ${symbol}, penurunan cenderung mendorongnya naik. Pantau angka final &amp; nada pernyataan resmi (FOMC Statement / Press Conference, hawkish/dovish) saat rilis.</div>`;
     }
-    return `<div class="event-bias qualitative">Keputusan suku bunga (${esc(e.country)}) — forecast = previous (belum ada perubahan diekspektasikan). Pantau pernyataan resmi untuk arah ke depan.</div>`;
+    return `<div class="event-bias qualitative">Keputusan suku bunga (${esc(e.country)}) — pantau angka final &amp; nada pernyataan resmi untuk arah ke depan.</div>`;
   }
 
   const isBullish = info.bias === "bullish";
