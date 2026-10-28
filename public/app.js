@@ -52,6 +52,7 @@ const assetTypeSelect = el("assetType");
 const symbolSelect = el("symbolSelect");
 const intervalSelect = el("interval");
 const autoRefreshBox = el("autoRefresh");
+const refreshIntervalSelect = el("refreshInterval");
 
 let tvWidget = null;
 let autoRefreshTimer = null;
@@ -214,6 +215,22 @@ function renderEventBias(e, assetType, symbol) {
     return `<div class="event-bias qualitative">Event kualitatif (pidato/pernyataan/notulen) — tidak ada angka forecast untuk dibandingkan. Dampak ke harga tergantung isi &amp; nada bicara saat rilis, bukan beat/miss angka. Pantau langsung saat jam rilis.</div>`;
   }
 
+  if (info.bias === "inflation") {
+    const isMetal = symbol === "XAUUSD" || symbol === "XAGUSD";
+    if (isMetal) {
+      return `<div class="event-bias qualitative">Event inflasi (CPI/PCE) High Impact — inflasi lebih tinggi cenderung mendukung ${symbol} (lindung nilai), namun bisa juga memicu ekspektasi suku bunga naik sehingga menekannya. Arah ${symbol} tergantung efek mana yang dominan; pantau reaksi saat rilis.</div>`;
+    }
+    return `<div class="event-bias qualitative">Event inflasi (CPI/PCE) — dampaknya ke ${esc(e.country)} dua arah (bisa memicu ekspektasi kenaikan suku bunga, atau pelemahan daya beli). Pantau reaksi saat rilis.</div>`;
+  }
+
+  if (info.bias === "rate") {
+    const isMetal = symbol === "XAUUSD" || symbol === "XAGUSD";
+    if (isMetal) {
+      return `<div class="event-bias qualitative">Keputusan suku bunga (${esc(e.country)}) — kenaikan suku bunga cenderung menekan ${symbol}, penurunan cenderung mendorongnya naik. Forecast = previous (belum ada perubahan diekspektasikan); pantau juga FOMC Statement &amp; Press Conference untuk nada hawkish/dovish.</div>`;
+    }
+    return `<div class="event-bias qualitative">Keputusan suku bunga (${esc(e.country)}) — forecast = previous (belum ada perubahan diekspektasikan). Pantau pernyataan resmi untuk arah ke depan.</div>`;
+  }
+
   const isBullish = info.bias === "bullish";
   const biasCls = isBullish ? "bullish" : "bearish";
   const biasLabel = isBullish ? "Cenderung BULLISH" : "Cenderung BEARISH";
@@ -224,8 +241,8 @@ function renderEventBias(e, assetType, symbol) {
   const pairBias = info.pairBias;
   if (pairBias) {
     const pairCls = pairBias === "bullish" ? "bullish" : "bearish";
-    const pairLabel = pairBias === "bullish" ? "BULLISH" : "BEARISH";
-    html += `<div class="event-bias ${pairCls}">-&gt; Untuk ${symbol}: cenderung ${pairLabel}</div>`;
+    const pairLabel = pairBias === "bullish" ? "BULLISH ↑" : "BEARISH ↓";
+    html += `<div class="event-bias ${pairCls}">Arah ${symbol} saat rilis: ${pairLabel}</div>`;
 
     if (lastSignal) {
       const biasDir = pairBias === "bullish" ? "BUY" : "SELL";
@@ -360,15 +377,19 @@ function renderSnrChart(data) {
   const candles = [...seen.values()].sort((a, b) => a.time - b.time);
   snrSeries.setData(candles);
 
-  data.zones.forEach(z => {
-    const isRes = z.type === "resistance";
+  // Garis level kunci: hanya Support & Resistance terdekat (lebih bersih dari
+  // sebelumnya yang menggambar semua zona sekaligus).
+  const keyLevels = [];
+  if (data.nearestSupport) keyLevels.push({ p: data.nearestSupport.mid, color: "#3fb950", title: `Support ${data.nearestSupport.mid.toFixed(2)}` });
+  if (data.nearestResistance) keyLevels.push({ p: data.nearestResistance.mid, color: "#f85149", title: `Resistance ${data.nearestResistance.mid.toFixed(2)}` });
+  keyLevels.forEach(l => {
     snrSeries.createPriceLine({
-      price: z.mid,
-      color: isRes ? "#f85149" : "#3fb950",
+      price: l.p,
+      color: l.color,
       lineWidth: 1,
       lineStyle: LightweightCharts.LineStyle.Dashed,
       axisLabelVisible: true,
-      title: `${isRes ? "R" : "S"} (${z.strength}x)`
+      title: l.title
     });
   });
 
@@ -398,6 +419,26 @@ function renderSnrChart(data) {
 function renderSnrBody(data) {
   const body = el("snrBody");
   let html = "";
+
+  // Kartu analisa teknikal lengkap (bukan hanya SNR).
+  const a = data.analysis;
+  if (a) {
+    const biasCls = a.bias === "bullish" ? "buy" : a.bias === "bearish" ? "sell" : "none";
+    const biasLabel = a.bias === "bullish" ? "BULLISH" : a.bias === "bearish" ? "BEARISH" : "NETRAL";
+    html += `<div class="snr-analysis">
+      <div class="an-head"><span class="an-bias ${biasCls}">Bias Teknikal: ${biasLabel}</span></div>
+      <div class="an-grid">
+        <div class="an-item"><span class="an-k">Tren</span><span class="an-v">${a.trend}</span></div>
+        <div class="an-item"><span class="an-k">Momentum</span><span class="an-v">${a.momentum}</span></div>
+        <div class="an-item"><span class="an-k">Volatilitas</span><span class="an-v">${a.volatility}</span></div>
+        <div class="an-item"><span class="an-k">Pola Candle</span><span class="an-v">${a.candle}</span></div>
+        <div class="an-item"><span class="an-k">Sesi Pasar</span><span class="an-v">${a.sessions}</span></div>
+        ${a.keyLevel ? `<div class="an-item"><span class="an-k">Key Level</span><span class="an-v">${a.keyLevel}</span></div>` : ""}
+        <div class="an-item"><span class="an-k">Support / Resistance</span><span class="an-v">${a.support ? fmt(a.support) : "-"} / ${a.resistance ? fmt(a.resistance) : "-"}</span></div>
+      </div>
+      <div class="an-conclusion">${a.conclusion}</div>
+    </div>`;
+  }
 
   if (data.potential) {
     const p = data.potential;
@@ -458,7 +499,8 @@ async function refreshAll() {
 function resetAutoRefresh() {
   if (autoRefreshTimer) clearInterval(autoRefreshTimer);
   if (autoRefreshBox.checked) {
-    autoRefreshTimer = setInterval(refreshFast, 30000);
+    const secs = parseInt(refreshIntervalSelect.value, 10) || 15;
+    autoRefreshTimer = setInterval(refreshFast, secs * 1000);
   }
 }
 
@@ -482,6 +524,7 @@ el("refreshBtn").addEventListener("click", refreshAll);
 el("analyzeSnrBtn").addEventListener("click", loadSnrAnalysis);
 el("clearSnrBtn").addEventListener("click", clearSnrChart);
 autoRefreshBox.addEventListener("change", resetAutoRefresh);
+refreshIntervalSelect.addEventListener("change", resetAutoRefresh);
 
 initTabs();
 initViews();

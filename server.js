@@ -1,4 +1,4 @@
-﻿import "dotenv/config";
+import "dotenv/config";
 import express from "express";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
@@ -7,6 +7,7 @@ import { fetchQuote, fetchOhlcv, fetchDailyBars } from "./lib/marketData.js";
 import { computeIndicators, summarizeTrend } from "./lib/indicators.js";
 import { generateRuleBasedSignal } from "./lib/ruleSignal.js";
 import { computeSnrZones } from "./lib/snr.js";
+import { buildTechnicalAnalysis } from "./lib/analysis.js";
 import { fetchRss, fetchRssMulti } from "./lib/rss.js";
 import { NEWS_SOURCES, ECONOMIC_NEWS_SOURCE } from "./lib/newsSources.js";
 import { getEconomicCalendar, filterCalendarBySymbol, pairBiasFromCurrencyBias } from "./lib/calendar.js";
@@ -86,8 +87,9 @@ app.get("/api/snr", async (req, res) => {
       fetchDailyBars(assetType, symbol)
     ]);
     const indicators = computeIndicators(bars);
-    const { zones, potential } = computeSnrZones({ indicators, dailyBars, bars });
+    const { zones, potential, nearestSupport, nearestResistance } = computeSnrZones({ indicators, dailyBars, bars });
     const signal = generateRuleBasedSignal({ indicators, dailyBars, bars });
+    const analysis = buildTechnicalAnalysis({ indicators, dailyBars, bars, signal, nearestSupport, nearestResistance });
 
     res.json({
       symbol,
@@ -96,6 +98,9 @@ app.get("/api/snr", async (req, res) => {
       currentPrice: indicators.lastClose,
       zones,
       potential,
+      nearestSupport,
+      nearestResistance,
+      analysis,
       signal: signal.signal,
       signalReasons: signal.reasons,
       disclaimer: signal.disclaimer,
@@ -122,6 +127,10 @@ app.get("/api/economic-calendar", async (req, res) => {
     const { symbol } = req.query;
     const events = await getEconomicCalendar();
     const filtered = symbol ? filterCalendarBySymbol(events, symbol) : events;
+    // Prioritaskan event High Impact di atas (paling penting untuk trading),
+    // lalu Medium/Low, masing-masing tetap urut waktu.
+    const IMPACT_ORDER = { High: 0, Medium: 1, Low: 2, Holiday: 3 };
+    filtered.sort((a, b) => (IMPACT_ORDER[a.impact] ?? 9) - (IMPACT_ORDER[b.impact] ?? 9) || (a.timestamp - b.timestamp));
     const annotated = annotateHighImpactEvents(filtered.slice(0, 20), symbol, pairBiasFromCurrencyBias);
     const [economicNews] = await Promise.allSettled([fetchRss(ECONOMIC_NEWS_SOURCE.url, 5)]);
     res.json({

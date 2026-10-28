@@ -53,7 +53,13 @@
       <button id="refreshBtn">Refresh Data</button>
       <label class="auto-refresh">
         <input type="checkbox" id="autoRefresh" checked />
-        Auto-refresh 30s
+        Auto-refresh
+        <select id="refreshInterval" class="refresh-interval">
+          <option value="10">10s</option>
+          <option value="15" selected>15s</option>
+          <option value="30">30s</option>
+          <option value="60">60s</option>
+        </select>
       </label>
     </section>
 

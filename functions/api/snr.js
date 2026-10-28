@@ -2,6 +2,7 @@ import { fetchOhlcv, fetchDailyBars } from "../../lib/marketData.js";
 import { computeIndicators } from "../../lib/indicators.js";
 import { computeSnrZones } from "../../lib/snr.js";
 import { generateRuleBasedSignal } from "../../lib/ruleSignal.js";
+import { buildTechnicalAnalysis } from "../../lib/analysis.js";
 
 export async function onRequestGet({ request }) {
   const { searchParams } = new URL(request.url);
@@ -18,8 +19,9 @@ export async function onRequestGet({ request }) {
       fetchDailyBars(assetType, symbol)
     ]);
     const indicators = computeIndicators(bars);
-    const { zones, potential } = computeSnrZones({ indicators, dailyBars, bars });
+    const { zones, potential, nearestSupport, nearestResistance } = computeSnrZones({ indicators, dailyBars, bars });
     const signal = generateRuleBasedSignal({ indicators, dailyBars, bars });
+    const analysis = buildTechnicalAnalysis({ indicators, dailyBars, bars, signal, nearestSupport, nearestResistance });
 
     return Response.json({
       symbol,
@@ -28,6 +30,9 @@ export async function onRequestGet({ request }) {
       currentPrice: indicators.lastClose,
       zones,
       potential,
+      nearestSupport,
+      nearestResistance,
+      analysis,
       signal: signal.signal,
       signalReasons: signal.reasons,
       disclaimer: signal.disclaimer,
