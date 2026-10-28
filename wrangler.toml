@@ -1,0 +1,7 @@
+# Konfigurasi Cloudflare Pages.
+# Dipakai oleh `wrangler pages deploy` (deploy langsung dari CLI).
+# Untuk deploy via Git integration (dashboard), build command & output dir
+# diatur di dashboard; file ini tetap berguna sebagai referensi & untuk CLI.
+name = "chart-analysis-dashboard"
+compatibility_date = "2024-11-01"
+pages_build_output_dir = "public"

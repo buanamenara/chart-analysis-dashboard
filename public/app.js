@@ -101,6 +101,14 @@ function fmt(n, digits = 4) {
   return Number(n).toLocaleString("id-ID", { maximumFractionDigits: digits });
 }
 
+// Escape HTML untuk teks dari sumber eksternal (judul berita/event kalender)
+// supaya karakter khusus tidak disalahartikan sebagai markup (cegah XSS).
+function esc(s) {
+  return String(s ?? "").replace(/[&<>"']/g, c => (
+    { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]
+  ));
+}
+
 async function loadData() {
   const { type, symbol } = currentInstrument();
   const interval = intervalSelect.value;
@@ -191,7 +199,7 @@ async function loadNews() {
     if (!res.ok) throw new Error(data.error || "Gagal memuat berita");
     if (!data.items?.length) { body.innerHTML = `<div class="muted">Tidak ada berita.</div>`; return; }
     body.innerHTML = data.items
-      .map(n => `<div class="news-item"><a href="${n.link}" target="_blank" rel="noopener">${n.title}</a><div class="news-source">${n.source}${n.pubDate ? " · " + new Date(n.pubDate).toLocaleString("id-ID") : ""}</div></div>`)
+      .map(n => `<div class="news-item"><a href="${esc(n.link)}" target="_blank" rel="noopener">${esc(n.title)}</a><div class="news-source">${esc(n.source)}${n.pubDate ? " · " + new Date(n.pubDate).toLocaleString("id-ID") : ""}</div></div>`)
       .join("");
   } catch (err) {
     body.innerHTML = `<div class="muted">Error: ${err.message}</div>`;
@@ -209,7 +217,7 @@ function renderEventBias(e, assetType, symbol) {
   const isBullish = info.bias === "bullish";
   const biasCls = isBullish ? "bullish" : "bearish";
   const biasLabel = isBullish ? "Cenderung BULLISH" : "Cenderung BEARISH";
-  let html = `<div class="event-bias ${biasCls}">${biasLabel} untuk ${e.country} <span class="muted">(forecast ${e.forecast} vs prev ${e.previous})</span></div>`;
+  let html = `<div class="event-bias ${biasCls}">${biasLabel} untuk ${esc(e.country)} <span class="muted">(forecast ${esc(e.forecast)} vs prev ${esc(e.previous)})</span></div>`;
 
   // pairBias: arah untuk instrumen yang sedang dilihat (sudah dibalik kalau mata
   // uang event ada di posisi quote, mis. USD di XAUUSD/EURUSD -> arah terbalik).
@@ -248,13 +256,16 @@ async function loadCalendar() {
 
     calBody.innerHTML = data.events?.length
       ? data.events
-          .map(e => `<div class="cal-item"><div class="cal-time">${new Date(e.date).toLocaleString("id-ID", { weekday: "short", hour: "2-digit", minute: "2-digit" })} · ${e.country}<span class="cal-impact ${e.impact}">${e.impact}</span></div><div>${e.title}${e.forecast ? ` (forecast: ${e.forecast}, prev: ${e.previous})` : ""}</div>${renderEventBias(e, type, symbol)}</div>`)
+          .map(e => {
+            const impactCls = ["High", "Medium", "Low", "Holiday"].includes(e.impact) ? e.impact : "Low";
+            return `<div class="cal-item"><div class="cal-time">${new Date(e.date).toLocaleString("id-ID", { weekday: "short", hour: "2-digit", minute: "2-digit" })} · ${esc(e.country)}<span class="cal-impact ${impactCls}">${esc(e.impact)}</span></div><div>${esc(e.title)}${e.forecast ? ` (forecast: ${esc(e.forecast)}, prev: ${esc(e.previous)})` : ""}</div>${renderEventBias(e, type, symbol)}</div>`;
+          })
           .join("")
       : `<div class="muted">Tidak ada event relevan minggu ini.</div>`;
 
     econBody.innerHTML = data.news?.length
       ? data.news
-          .map(n => `<div class="news-item"><a href="${n.link}" target="_blank" rel="noopener">${n.title}</a><div class="news-source">${n.source || "Investing.com Ekonomi"}${n.pubDate ? " · " + new Date(n.pubDate).toLocaleString("id-ID") : ""}</div></div>`)
+          .map(n => `<div class="news-item"><a href="${esc(n.link)}" target="_blank" rel="noopener">${esc(n.title)}</a><div class="news-source">${esc(n.source || "Investing.com Ekonomi")}${n.pubDate ? " · " + new Date(n.pubDate).toLocaleString("id-ID") : ""}</div></div>`)
           .join("")
       : `<div class="muted">Tidak ada berita ekonomi.</div>`;
   } catch (err) {

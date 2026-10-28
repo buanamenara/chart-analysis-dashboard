@@ -4,6 +4,9 @@
   "description": "Dashboard lokal untuk data pasar real-time (forex, crypto, saham) dengan chart TradingView, sinyal teknikal rule-based, dan zona Support/Resistance otomatis",
   "main": "server.js",
   "type": "module",
+  "engines": {
+    "node": ">=18"
+  },
   "scripts": {
     "start": "node server.js"
   },

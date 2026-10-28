@@ -18,7 +18,7 @@ Tidak ada API key yang dibutuhkan — semua sumber data gratis dan tanpa autenti
 
 ## Deploy ke online
 
-Lihat [DEPLOY.md](DEPLOY.md) untuk panduan lengkap deploy ke GitHub + Render (gratis, tanpa kartu kredit) supaya bisa diakses dari HP kapan saja.
+Lihat [DEPLOY.md](DEPLOY.md) untuk panduan lengkap deploy ke GitHub + **Cloudflare Pages** (gratis) supaya bisa diakses dari HP kapan saja.
 
 ## Sumber data (gratis, tanpa perlu API key)
 
@@ -39,18 +39,25 @@ Edit daftar `INSTRUMENTS` di [public/app.js](public/app.js) — tambahkan `symbo
 ## Struktur proyek
 
 ```
-server.js              # Express server + routing API
+server.js               # Express server + routing API (jalankan lokal)
+functions/api/          # Versi serverless (Cloudflare Pages Functions) tiap endpoint
+lib/marketData.js       # Router sumber data: Binance (crypto) vs Yahoo (fallback/forex/saham)
 lib/binance.js          # Fetch quote & OHLCV crypto dari Binance
 lib/yahoo.js            # Fetch quote & OHLCV forex/saham/crypto fallback dari Yahoo Finance
-lib/indicators.js       # Hitung RSI, MACD, EMA, SMA, Bollinger Bands
+lib/http.js             # Fetch dengan timeout (anti-hang) untuk semua sumber eksternal
+lib/indicators.js       # Hitung RSI, MACD, EMA, SMA, Bollinger Bands + ringkasan tren
 lib/levels.js           # PDH/PDL, ADR, swing high/low, key level, pola candle, sesi pasar
 lib/snr.js              # Clustering zona Support/Resistance + area Buy/Sell (Entry/SL/TP)
 lib/ruleSignal.js       # Sinyal BUY/SELL/NETRAL rule-based dari kombinasi indikator
-lib/calendar.js         # Kalender ekonomi (ForexFactory)
-lib/rss.js, newsSources.js  # Berita pasar per kategori
+lib/calendar.js         # Kalender ekonomi (ForexFactory) + mapping pair currency
+lib/newsSources.js      # Daftar sumber berita RSS per kategori aset
+lib/rss.js              # Parser RSS ringan (tanpa dependency XML)
+lib/newsAnalysis.js     # Klasifikasi dampak berita ekonomi High Impact
 lib/sentiment.js        # Fear & Greed Index + data global crypto
 public/                 # Frontend (HTML/CSS/JS statis)
 ```
+
+Catatan: `tradingview-mcp/` dan `.mcp.json` adalah tool MCP lokal (untuk sesi agent/Claude Code) dan sengaja dikecualikan dari git — bukan bagian dari dashboard web ini.
 
 ## Batasan & disclaimer
 
