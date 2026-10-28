@@ -30,6 +30,20 @@ Lihat [DEPLOY.md](DEPLOY.md) untuk panduan lengkap deploy ke GitHub + **Cloudfla
 - **Berita**: Investing.com Indonesia (forex/komoditas/saham), Cointelegraph (crypto), CNBC Indonesia (saham lokal)
 - **Sentimen crypto**: Fear & Greed Index (alternative.me), CoinGecko global stats
 
+### Kenapa angka di tabel bisa beda dari chart TradingView?
+
+Angka (harga, indikator, sinyal) dihitung dari **Yahoo Finance / Binance**, sedangkan chart TradingView memakai feed-nya sendiri — dua sumber yang berbeda bisa beda beberapa poin/pip. Supaya sedekat mungkin, simbol chart TradingView sengaja **disamakan dengan sumber datanya**:
+
+| Instrumen | Data (Yahoo/Binance) | Chart TradingView |
+|-----------|----------------------|-------------------|
+| Gold (XAUUSD) | `GC=F` (COMEX gold futures) | `COMEX:GC1!` |
+| Silver (XAGUSD) | `SI=F` (COMEX silver futures) | `COMEX:SI1!` |
+| Forex | `EURUSD=X` dst. | `OANDA:EURUSD` dst. |
+| Crypto | `BTCUSDT` (Binance) / `BTC-USD` (fallback) | `BINANCE:BTCUSDT` |
+| Saham/Indeks | `BBCA.JK`, `^JKSE` dst. | `IDX:BBCA`, `IDX:COMPOSITE` dst. |
+
+Catatan: untuk Gold/Silver, Yahoo tidak menyediakan harga *spot* (XAUUSD=X 404), jadi dipakai kontrak **futures COMEX** — chart TradingView juga diarahkan ke futures yang sama supaya angkanya konsisten. Perbedaan kecil yang tersisa biasanya hanya jeda pembaruan data (Yahoo bisa tertunda beberapa menit, dan data saham IDX di Yahoo tertunda ~15 menit).
+
 Catatan: endpoint Yahoo Finance & RSS di atas tidak resmi dan sewaktu-waktu bisa berubah/dibatasi oleh penyedianya.
 
 ## Menambah instrumen

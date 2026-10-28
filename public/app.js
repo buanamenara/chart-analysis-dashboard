@@ -1,7 +1,7 @@
 const INSTRUMENTS = {
   forex: [
-    { symbol: "XAUUSD", label: "Gold / USD (XAUUSD)", tv: "OANDA:XAUUSD" },
-    { symbol: "XAGUSD", label: "Silver / USD (XAGUSD)", tv: "OANDA:XAGUSD" },
+    { symbol: "XAUUSD", label: "Gold / USD (XAUUSD)", tv: "COMEX:GC1!" },
+    { symbol: "XAGUSD", label: "Silver / USD (XAGUSD)", tv: "COMEX:SI1!" },
     { symbol: "EURUSD", label: "EUR/USD", tv: "OANDA:EURUSD" },
     { symbol: "GBPUSD", label: "GBP/USD", tv: "OANDA:GBPUSD" },
     { symbol: "USDJPY", label: "USD/JPY", tv: "OANDA:USDJPY" },
@@ -125,7 +125,7 @@ async function loadData() {
     const changeTxt = `${q.change >= 0 ? "+" : ""}${fmt(q.change, 4)} (${fmt(q.changePercent, 2)}%)`;
     changeEl.textContent = changeTxt;
     changeEl.className = `change ${q.change >= 0 ? "positive" : "negative"}`;
-    el("lastUpdated").textContent = `Update: ${new Date().toLocaleTimeString("id-ID")}`;
+    el("lastUpdated").textContent = `Update: ${new Date().toLocaleTimeString("id-ID")} · Sumber: ${q.source === "binance" ? "Binance" : "Yahoo Finance"} (${q.symbol})`;
 
     el("quoteLow").textContent = `L ${fmt(q.low)}`;
     el("quoteHigh").textContent = `H ${fmt(q.high)}`;
