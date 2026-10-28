@@ -19,7 +19,7 @@ export async function onRequestGet({ request }) {
       fetchDailyBars(assetType, symbol)
     ]);
     const indicators = computeIndicators(bars);
-    const { zones, potential, nearestSupport, nearestResistance } = computeSnrZones({ indicators, dailyBars, bars });
+    const { zones, potential, nearestSupport, nearestResistance, pivotLevels } = computeSnrZones({ indicators, dailyBars, bars });
     const signal = generateRuleBasedSignal({ indicators, dailyBars, bars });
     const analysis = buildTechnicalAnalysis({ indicators, dailyBars, bars, signal, nearestSupport, nearestResistance });
 
@@ -32,8 +32,11 @@ export async function onRequestGet({ request }) {
       potential,
       nearestSupport,
       nearestResistance,
+      pivotLevels,
       analysis,
       signal: signal.signal,
+      confidence: signal.confidence,
+      confidenceLabel: signal.confidenceLabel,
       signalReasons: signal.reasons,
       disclaimer: signal.disclaimer,
       bars: bars.slice(-180)
