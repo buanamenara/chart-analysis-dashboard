@@ -56,7 +56,19 @@ const refreshIntervalSelect = el("refreshInterval");
 
 let tvWidget = null;
 let autoRefreshTimer = null;
-let lastSignal = null; // hasil /api/signal terakhir, dipakai untuk kombinasi dengan analisa berita
+let lastSignal = null;
+
+// Helper untuk menampilkan Error + Tombol Coba Lagi
+window.retryLoad = {};
+function renderErrorHtml(err, retryKey) {
+  const msg = err.message || "Gagal mengambil data.";
+  const hint = err.hint ? `<div style="font-size: 13px; color: #d1d4dc; margin-top: 6px;">${err.hint}</div>` : "";
+  return `<div class="error-box" style="padding: 12px; background: rgba(248, 81, 73, 0.1); border-left: 3px solid #f85149; margin: 10px 0; border-radius: 4px; text-align: left;">
+    <div style="color: #f85149; font-weight: 600;">⚠️ ${msg}</div>
+    ${hint}
+    <button onclick="window.retryLoad['${retryKey}']()" style="margin-top: 10px; font-size: 12px; padding: 6px 12px; background: transparent; border: 1px solid #555; color: #fff; border-radius: 4px; cursor: pointer; transition: 0.2s;" onmouseover="this.style.background='#333'" onmouseout="this.style.background='transparent'">Coba Lagi</button>
+  </div>`;
+}
 
 function populateAssetTypes() {
   assetTypeSelect.innerHTML = Object.entries(ASSET_TYPE_LABELS)
@@ -102,8 +114,6 @@ function fmt(n, digits = 4) {
   return Number(n).toLocaleString("id-ID", { maximumFractionDigits: digits });
 }
 
-// Escape HTML untuk teks dari sumber eksternal (judul berita/event kalender)
-// supaya karakter khusus tidak disalahartikan sebagai markup (cegah XSS).
 function esc(s) {
   return String(s ?? "").replace(/[&<>"']/g, c => (
     { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]
@@ -117,8 +127,14 @@ async function loadData() {
 
   try {
     const res = await fetch(`/api/analysis-data?symbol=${encodeURIComponent(symbol)}&assetType=${type}&interval=${interval}`);
-    const data = await res.json();
-    if (!res.ok) throw new Error(data.error || "Gagal mengambil data");
+    let data;
+    try { data = await res.json(); } catch(e) { throw new Error("Server mengembalikan format yang salah (bukan JSON)."); }
+    
+    if (!res.ok) {
+      const error = new Error(data.error || "Gagal mengambil data");
+      error.hint = data.hint;
+      throw error;
+    }
 
     const q = data.quote;
     el("quotePrice").textContent = fmt(q.price, type === "crypto" ? 2 : 5);
@@ -126,7 +142,9 @@ async function loadData() {
     const changeTxt = `${q.change >= 0 ? "+" : ""}${fmt(q.change, 4)} (${fmt(q.changePercent, 2)}%)`;
     changeEl.textContent = changeTxt;
     changeEl.className = `change ${q.change >= 0 ? "positive" : "negative"}`;
-    el("lastUpdated").textContent = `Update: ${new Date().toLocaleTimeString("id-ID")} · Sumber: ${q.source === "binance" ? "Binance" : "Yahoo Finance"} (${q.symbol})`;
+    
+    // PERBAIKAN #5: Timestamp lebih jelas
+    el("lastUpdated").innerHTML = `<span style="color:#3fb950;">●</span> Diperbarui: ${new Date().toLocaleTimeString("id-ID")} · Sumber: ${q.source === "binance" ? "Binance" : "Yahoo Finance"} (${q.symbol})`;
 
     el("quoteLow").textContent = `L ${fmt(q.low)}`;
     el("quoteHigh").textContent = `H ${fmt(q.high)}`;
@@ -149,7 +167,7 @@ async function loadData() {
           ["RSI (14)", ind.rsi14 != null ? fmt(ind.rsi14, 1) : "-"],
           ["EMA 20", fmt(ind.ema20)],
           ["EMA 50", fmt(ind.ema50)],
-          ["SMA 200", fmt(ind.sma200)],
+          ["SMA 200", ind.sma200 != null ? fmt(ind.sma200) : "Belum cukup data"], // Handle SMA 200 null
           ["MACD", ind.macd ? fmt(ind.macd.MACD, 4) : "-"],
           ["BB Upper", ind.bollinger ? fmt(ind.bollinger.upper) : "-"],
           ["BB Lower", ind.bollinger ? fmt(ind.bollinger.lower) : "-"]
@@ -159,9 +177,10 @@ async function loadData() {
       .join("");
     el("trendSummary").textContent = data.trendSummary || "";
   } catch (err) {
-    el("trendSummary").textContent = `Error: ${err.message}`;
+    el("trendSummary").innerHTML = renderErrorHtml(err, 'data');
   }
 }
+window.retryLoad.data = loadData;
 
 function mdBoldToHtml(text) {
   const span = document.createElement("span");
@@ -174,8 +193,13 @@ async function loadSignal() {
   const interval = intervalSelect.value;
   try {
     const res = await fetch(`/api/signal?symbol=${encodeURIComponent(symbol)}&assetType=${type}&interval=${interval}`);
-    const data = await res.json();
-    if (!res.ok) throw new Error(data.error || "Gagal memuat sinyal");
+    let data;
+    try { data = await res.json(); } catch(e) { throw new Error("Format data salah."); }
+    if (!res.ok) {
+      const error = new Error(data.error || "Gagal memuat sinyal");
+      error.hint = data.hint;
+      throw error;
+    }
 
     lastSignal = data.signal;
 
@@ -186,9 +210,12 @@ async function loadSignal() {
     el("signalReasons").innerHTML = (data.reasons || []).map(r => `<li>${mdBoldToHtml(r)}</li>`).join("");
     el("signalDisclaimer").textContent = data.disclaimer || "";
   } catch (err) {
-    el("signalReasons").innerHTML = `<li>Error: ${err.message}</li>`;
+    el("signalBadge").textContent = "ERROR";
+    el("signalBadge").className = "signal-badge signal-netral";
+    el("signalReasons").innerHTML = `<li>${renderErrorHtml(err, 'signal')}</li>`;
   }
 }
+window.retryLoad.signal = loadSignal;
 
 async function loadNews() {
   const { type } = currentInstrument();
@@ -196,16 +223,22 @@ async function loadNews() {
   body.innerHTML = `<div class="muted">Memuat berita...</div>`;
   try {
     const res = await fetch(`/api/news?assetType=${type}`);
-    const data = await res.json();
-    if (!res.ok) throw new Error(data.error || "Gagal memuat berita");
+    let data;
+    try { data = await res.json(); } catch(e) { throw new Error("Format data salah."); }
+    if (!res.ok) {
+      const error = new Error(data.error || "Gagal memuat berita");
+      error.hint = data.hint;
+      throw error;
+    }
     if (!data.items?.length) { body.innerHTML = `<div class="muted">Tidak ada berita.</div>`; return; }
     body.innerHTML = data.items
       .map(n => `<div class="news-item"><a href="${esc(n.link)}" target="_blank" rel="noopener">${esc(n.title)}</a><div class="news-source">${esc(n.source)}${n.pubDate ? " · " + new Date(n.pubDate).toLocaleString("id-ID") : ""}</div></div>`)
       .join("");
   } catch (err) {
-    body.innerHTML = `<div class="muted">Error: ${err.message}</div>`;
+    body.innerHTML = renderErrorHtml(err, 'news');
   }
 }
+window.retryLoad.news = loadNews;
 
 function renderEventBias(e, assetType, symbol) {
   const info = e.biasInfo;
@@ -236,8 +269,6 @@ function renderEventBias(e, assetType, symbol) {
   const biasLabel = isBullish ? "Cenderung BULLISH" : "Cenderung BEARISH";
   let html = `<div class="event-bias ${biasCls}">${biasLabel} untuk ${esc(e.country)} <span class="muted">(forecast ${esc(e.forecast)} vs prev ${esc(e.previous)})</span></div>`;
 
-  // pairBias: arah untuk instrumen yang sedang dilihat (sudah dibalik kalau mata
-  // uang event ada di posisi quote, mis. USD di XAUUSD/EURUSD -> arah terbalik).
   const pairBias = info.pairBias;
   if (pairBias) {
     const pairCls = pairBias === "bullish" ? "bullish" : "bearish";
@@ -268,12 +299,17 @@ async function loadCalendar() {
   econBody.innerHTML = `<div class="muted">Memuat berita ekonomi...</div>`;
   try {
     const res = await fetch(`/api/economic-calendar?symbol=${encodeURIComponent(symbol)}`);
-    const data = await res.json();
-    if (!res.ok) throw new Error(data.error || "Gagal memuat kalender");
+    let data;
+    try { data = await res.json(); } catch(e) { throw new Error("Format data salah."); }
+    if (!res.ok) {
+      const error = new Error(data.error || "Gagal memuat kalender");
+      error.hint = data.hint;
+      throw error;
+    }
 
     calBody.innerHTML = data.calendarError
       ? (data.calendarError.includes("429")
-          ? `<div class="muted">Kalender ekonomi sedang dibatasi (rate-limit ForexFactory) — coba lagi beberapa menit lagi. Sinyal teknikal &amp; chart tetap jalan normal.</div>`
+          ? `<div class="muted">Kalender ekonomi sedang dibatasi (rate-limit) — coba lagi beberapa menit lagi.</div>`
           : `<div class="muted">Kalender ekonomi gagal dimuat (${esc(data.calendarError)}).</div>`)
       : (data.events?.length
           ? data.events
@@ -290,13 +326,12 @@ async function loadCalendar() {
           .join("")
       : `<div class="muted">Tidak ada berita ekonomi.</div>`;
   } catch (err) {
-    const friendly = err.message?.includes("429")
-      ? "Kalender ekonomi sedang sibuk (dibatasi sumber data) — coba lagi dalam beberapa menit. Sinyal teknikal & chart tetap jalan normal."
-      : `Error: ${err.message}`;
-    calBody.innerHTML = `<div class="muted">${friendly}</div>`;
-    econBody.innerHTML = `<div class="muted">${friendly}</div>`;
+    const errHtml = renderErrorHtml(err, 'calendar');
+    calBody.innerHTML = errHtml;
+    econBody.innerHTML = errHtml;
   }
 }
+window.retryLoad.calendar = loadCalendar;
 
 function initTabs() {
   const buttons = document.querySelectorAll(".tab-btn");
@@ -332,8 +367,13 @@ async function loadSentiment() {
   body.innerHTML = `<div class="muted">Memuat sentimen...</div>`;
   try {
     const res = await fetch("/api/sentiment");
-    const data = await res.json();
-    if (!res.ok) throw new Error(data.error || "Gagal memuat sentimen");
+    let data;
+    try { data = await res.json(); } catch(e) { throw new Error("Format data salah."); }
+    if (!res.ok) {
+      const error = new Error(data.error || "Gagal memuat sentimen");
+      error.hint = data.hint;
+      throw error;
+    }
     const rows = [];
     if (data.fearGreed) rows.push(["Fear & Greed Index", `${data.fearGreed.value} (${data.fearGreed.classification})`]);
     if (data.cryptoGlobal) {
@@ -342,9 +382,10 @@ async function loadSentiment() {
     }
     body.innerHTML = rows.map(([k, v]) => `<div class="sentiment-row"><span class="muted">${k}</span><span>${v}</span></div>`).join("") || `<div class="muted">Data tidak tersedia.</div>`;
   } catch (err) {
-    body.innerHTML = `<div class="muted">Error: ${err.message}</div>`;
+    body.innerHTML = renderErrorHtml(err, 'sentiment');
   }
 }
+window.retryLoad.sentiment = loadSentiment;
 
 let snrChart = null;
 let snrSeries = null;
@@ -381,8 +422,6 @@ function renderSnrChart(data) {
   const candles = [...seen.values()].sort((a, b) => a.time - b.time);
   snrSeries.setData(candles);
 
-  // Garis level kunci: hanya Support & Resistance terdekat (lebih bersih dari
-  // sebelumnya yang menggambar semua zona sekaligus).
   const keyLevels = [];
   if (data.nearestSupport) keyLevels.push({ p: data.nearestSupport.mid, color: "#3fb950", title: `Support ${data.nearestSupport.mid.toFixed(2)}` });
   if (data.nearestResistance) keyLevels.push({ p: data.nearestResistance.mid, color: "#f85149", title: `Resistance ${data.nearestResistance.mid.toFixed(2)}` });
@@ -424,7 +463,6 @@ function renderSnrBody(data) {
   const body = el("snrBody");
   let html = "";
 
-  // Kartu analisa teknikal lengkap (bukan hanya SNR).
   const a = data.analysis;
   if (a) {
     const biasCls = a.bias === "bullish" ? "buy" : a.bias === "bearish" ? "sell" : "none";
@@ -476,26 +514,30 @@ async function loadSnrAnalysis() {
 
   try {
     const res = await fetch(`/api/snr?symbol=${encodeURIComponent(symbol)}&assetType=${type}&interval=${interval}`);
-    const data = await res.json();
-    if (!res.ok) throw new Error(data.error || "Gagal menganalisa");
+    let data;
+    try { data = await res.json(); } catch(e) { throw new Error("Format data salah."); }
+    if (!res.ok) {
+      const error = new Error(data.error || "Gagal menganalisa");
+      error.hint = data.hint;
+      throw error;
+    }
 
     renderSnrChart(data);
     renderSnrBody(data);
-    status.textContent = `Selesai (${new Date().toLocaleTimeString("id-ID")}) — TF: ${intervalSelect.options[intervalSelect.selectedIndex].text}`;
+    status.innerHTML = `<span style="color:#3fb950;">●</span> Selesai (${new Date().toLocaleTimeString("id-ID")}) — TF: ${intervalSelect.options[intervalSelect.selectedIndex].text}`;
   } catch (err) {
-    status.textContent = `Error: ${err.message}`;
+    status.innerHTML = renderErrorHtml(err, 'snr');
   } finally {
     btn.disabled = false;
   }
 }
+window.retryLoad.snr = loadSnrAnalysis;
 
 async function refreshFast() {
   await Promise.all([loadData(), loadSignal()]);
 }
 
 async function refreshAll() {
-  // loadSignal() ditunggu duluan supaya loadCalendar() bisa kombinasikan
-  // bias berita dengan sinyal teknikal yang sudah siap (hindari race condition).
   await loadSignal();
   await Promise.all([loadData(), loadNews(), loadCalendar(), loadSentiment()]);
 }
