@@ -1,6 +1,7 @@
 const INSTRUMENTS = {
   forex: [
-    { symbol: "XAUUSD", label: "Gold / USD (XAUUSD)", tv: "OANDA:XAUUSD" },
+    // PERUBAHAN DI SINI: OANDA:XAUUSD diubah menjadi BINANCE:PAXGUSDT agar sinkron dengan data harga
+    { symbol: "XAUUSD", label: "Gold / USD (XAUUSD)", tv: "BINANCE:PAXGUSDT" },
     { symbol: "XAGUSD", label: "Silver / USD (XAGUSD)", tv: "COMEX:SI1!" },
     { symbol: "EURUSD", label: "EUR/USD", tv: "OANDA:EURUSD" },
     { symbol: "GBPUSD", label: "GBP/USD", tv: "OANDA:GBPUSD" },
@@ -143,7 +144,6 @@ async function loadData() {
     changeEl.textContent = changeTxt;
     changeEl.className = `change ${q.change >= 0 ? "positive" : "negative"}`;
     
-    // PERBAIKAN #5: Timestamp lebih jelas
     el("lastUpdated").innerHTML = `<span style="color:#3fb950;">●</span> Diperbarui: ${new Date().toLocaleTimeString("id-ID")} · Sumber: ${q.source === "binance" ? "Binance" : "Yahoo Finance"} (${q.symbol})`;
 
     el("quoteLow").textContent = `L ${fmt(q.low)}`;
@@ -167,7 +167,7 @@ async function loadData() {
           ["RSI (14)", ind.rsi14 != null ? fmt(ind.rsi14, 1) : "-"],
           ["EMA 20", fmt(ind.ema20)],
           ["EMA 50", fmt(ind.ema50)],
-          ["SMA 200", ind.sma200 != null ? fmt(ind.sma200) : "Belum cukup data"], // Handle SMA 200 null
+          ["SMA 200", ind.sma200 != null ? fmt(ind.sma200) : "Belum cukup data"],
           ["MACD", ind.macd ? fmt(ind.macd.MACD, 4) : "-"],
           ["BB Upper", ind.bollinger ? fmt(ind.bollinger.upper) : "-"],
           ["BB Lower", ind.bollinger ? fmt(ind.bollinger.lower) : "-"]
