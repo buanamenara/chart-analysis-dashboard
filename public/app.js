@@ -1,7 +1,7 @@
 const INSTRUMENTS = {
   forex: [
-    // PERUBAHAN DI SINI: OANDA:XAUUSD diubah menjadi BINANCE:PAXGUSDT agar sinkron dengan data harga
-    { symbol: "XAUUSD", label: "Gold / USD (XAUUSD)", tv: "BINANCE:PAXGUSDT" },
+    // Dikembalikan ke OANDA:XAUUSD sesuai permintaan
+    { symbol: "XAUUSD", label: "Gold / USD (XAUUSD)", tv: "OANDA:XAUUSD" },
     { symbol: "XAGUSD", label: "Silver / USD (XAGUSD)", tv: "COMEX:SI1!" },
     { symbol: "EURUSD", label: "EUR/USD", tv: "OANDA:EURUSD" },
     { symbol: "GBPUSD", label: "GBP/USD", tv: "OANDA:GBPUSD" },
