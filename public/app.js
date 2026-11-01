@@ -593,6 +593,38 @@ async function loadBacktest() {
   }
 }
 
+async function loadOptimize() {
+  const { type, symbol } = currentInstrument();
+  const btn = el("btOptBtn"), status = el("btStatus"), out = el("btOptResult");
+  const q = new URLSearchParams({ symbol, assetType: type, interval: el("btInterval").value, strategy: el("btStrategy").value, costR: el("btCost").value });
+  btn.disabled = true; status.textContent = `Optimasi ${symbol}: menguji banyak kombinasi (in-sample) lalu validasi out-of-sample... bisa 10–30 detik.`;
+  out.innerHTML = "";
+  try {
+    const res = await fetch(`/api/optimize?${q.toString()}`);
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.error || data.hint || "Gagal optimasi");
+    const rows = data.top.map((c, idx) => {
+      const rec = data.recommended && JSON.stringify(data.recommended.params) === JSON.stringify(c.params);
+      return `<tr class="${rec ? 'opt-rec' : ''}">
+        <td>SL${c.params.slAtr} TP${c.params.tpAtr} RSI${c.params.rsiPullback} H${c.params.maxHold}${rec ? ' ⭐' : ''}</td>
+        <td>${c.is.winRate}% / ${c.is.profitFactor} / ${c.is.totalR > 0 ? '+' : ''}${c.is.totalR}R</td>
+        <td class="${c.oos.totalR > 0 ? 'oos-pos' : 'oos-neg'}">${c.oos.winRate}% / ${c.oos.profitFactor} / ${c.oos.totalR > 0 ? '+' : ''}${c.oos.totalR}R</td>
+        <td>${c.robust ? '<span class="rb-y">✔ robust</span>' : '<span class="rb-n">gagal OOS</span>'}</td></tr>`;
+    }).join("");
+    out.innerHTML = `
+      <div class="opt-head">Optimasi ${symbol} · ${data.interval} · ${data.strategy} — ${data.combosTested} kombinasi diuji</div>
+      <div class="muted" style="margin-bottom:8px">IS (dioptimasi): ${data.splitInfo.isFrom} → ${data.splitInfo.isTo} · OOS (validasi, belum dilihat): ${data.splitInfo.oosFrom} → ${data.splitInfo.oosTo}</div>
+      ${data.recommended ? `<div class="snr-potential buy">Rekomendasi (lolos OOS): <b>SL${data.recommended.params.slAtr} TP${data.recommended.params.tpAtr} RSI${data.recommended.params.rsiPullback} Hold${data.recommended.params.maxHold}</b> — OOS ${data.recommended.oos > 0 ? '+' : ''}${data.recommended.oos}R.</div>` : `<div class="snr-potential sell">⚠ Tidak ada kombinasi yang tetap profit di data out-of-sample — hati-hati, kemungkinan over-fit / tidak ada edge yang stabil.</div>`}
+      <table class="opt-table"><thead><tr><th>Parameter</th><th>In-Sample (win/PF/R)</th><th>Out-of-Sample (win/PF/R)</th><th>Status</th></tr></thead><tbody>${rows}</tbody></table>
+      <p class="muted" style="margin-top:8px">${data.disclaimer}</p>`;
+    status.innerHTML = `<span style="color:#3fb950;">●</span> Optimasi selesai (${new Date().toLocaleTimeString("id-ID")})`;
+  } catch (err) {
+    status.innerHTML = `<span style="color:#f85149;">●</span> Error: ${err.message}`;
+  } finally {
+    btn.disabled = false;
+  }
+}
+
 async function refreshFast() {
   await Promise.all([loadData(), loadSignal()]);
 }
@@ -630,6 +662,7 @@ el("refreshBtn").addEventListener("click", refreshAll);
 el("analyzeSnrBtn").addEventListener("click", loadSnrAnalysis);
 el("clearSnrBtn").addEventListener("click", clearSnrChart);
 el("btRunBtn").addEventListener("click", loadBacktest);
+el("btOptBtn").addEventListener("click", loadOptimize);
 autoRefreshBox.addEventListener("change", resetAutoRefresh);
 refreshIntervalSelect.addEventListener("change", resetAutoRefresh);
 

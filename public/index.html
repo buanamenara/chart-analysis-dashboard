@@ -180,9 +180,15 @@
       <div class="bt-controls">
         <label>Strategi
           <select id="btStrategy">
-            <option value="trendPB" selected>Trend Pullback (scalping, banyak trade)</option>
-            <option value="trendCross">Trend Cross (EMA20/50, lebih sedikit)</option>
-            <option value="meanRev">Mean Reversion (pembanding)</option>
+            <optgroup label="Klasik">
+              <option value="trendPB" selected>Trend Pullback (scalping)</option>
+              <option value="trendCross">Trend Cross (EMA20/50)</option>
+              <option value="meanRev">Mean Reversion</option>
+            </optgroup>
+            <optgroup label="Modern">
+              <option value="smc">SMC / ICT (liquidity sweep)</option>
+              <option value="supertrend">Supertrend (ATR)</option>
+            </optgroup>
           </select>
         </label>
         <label>Timeframe
@@ -201,10 +207,12 @@
         <label>Max hold (bar)<input type="number" id="btHold" value="12" step="1" min="2" max="50"></label>
         <label>Biaya/trade (R)<input type="number" id="btCost" value="0.1" step="0.05" min="0" max="1"></label>
         <button id="btRunBtn">Jalankan Backtest</button>
+        <button id="btOptBtn" class="btn-ghost">Optimasi Otomatis</button>
       </div>
       <div id="btStatus" class="muted"></div>
       <div id="btResult"></div>
       <div id="btEquityContainer"></div>
+      <div id="btOptResult"></div>
     </section>
     </div>
   </main>
