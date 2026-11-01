@@ -529,6 +529,7 @@ async function loadSnrAnalysis() {
       throw error;
     }
 
+    window.__lastSnr = data;
     renderSnrChart(data);
     renderSnrBody(data);
     status.innerHTML = `<span style="color:#3fb950;">●</span> Selesai (${new Date().toLocaleTimeString("id-ID")}) — TF: ${intervalSelect.options[intervalSelect.selectedIndex].text}`;
@@ -590,6 +591,49 @@ async function loadBacktest() {
     status.innerHTML = `<span style="color:#f85149;">●</span> Error: ${err.message}`;
   } finally {
     btn.disabled = false;
+  }
+}
+
+function buildAiPrompt() {
+  const { type, symbol } = currentInstrument();
+  const d = window.__lastSnr;
+  const q = el("quotePrice")?.textContent || "-";
+  const tf = intervalSelect.options[intervalSelect.selectedIndex]?.text || intervalSelect.value;
+  let s = `Kamu analis pasar. Berikut data TEKNIKAL + FUNDAMENTAL (rule-based, bukan AI) untuk ${symbol} (${ASSET_TYPE_LABELS[type] || type}), timeframe ${tf}. `;
+  s += `Tolong: (1) rangkum kondisi pasar dalam bahasa mudah, (2) pisahkan FAKTA vs OPINI, (3) beri skenario BULLISH & BEARISH beserta level pemicu, (4) JANGAN menyuruh beli/jual — ini edukasi, bukan nasihat keuangan.\n\n`;
+  s += `=== DATA ===\nHarga terakhir: ${q}\n`;
+  if (d?.analysis) {
+    const a = d.analysis;
+    s += `Bias teknikal: ${a.bias} | Keyakinan: ${a.confidenceLabel} ${a.overallConfidence}%\n`;
+    if (a.regime) s += `Kekuatan tren (ADX): ${a.regime.strength} (ADX ${a.regime.adx}${a.regime.direction ? ", " + a.regime.direction : ""})\n`;
+    s += `Multi-timeframe: ${a.multiTimeframeText || "-"}\n`;
+    s += `Tren: ${a.trend}\nMomentum: ${a.momentum}\nVolatilitas: ${a.volatility}\nPola candle: ${a.candle}\nSesi: ${a.sessions}\n`;
+    s += `Support: ${a.support ?? "-"} | Resistance: ${a.resistance ?? "-"}\n`;
+    if (a.fundamental?.text) s += `Fundamental/Makro: ${a.fundamental.text.replace(/\*\*/g, "")}\n`;
+  } else {
+    s += `(Buka tab "Analisa SNR" dan klik "Analisa" dulu agar data lengkap ikut tersalin.)\n`;
+  }
+  if (d?.potential) {
+    const p = d.potential;
+    s += `\nSetup area ${p.type === "BUY_ZONE" ? "BUY" : "SELL"} (otomatis): Entry ${p.entry}, SL ${p.stopLoss}, TP ${(p.takeProfit || []).join(" / ")}, R:R 1:${p.riskRewardRatio ?? "-"}\n`;
+  }
+  s += `\n(Sumber data: Yahoo Finance/CoinGecko/DeFiLlama, rule-based. Angka bergerak tiap waktu.)`;
+  return s;
+}
+
+async function copyForAi() {
+  const text = buildAiPrompt();
+  const status = el("snrStatus");
+  try {
+    await navigator.clipboard.writeText(text);
+    status.innerHTML = `<span style="color:#3fb950;">●</span> Tersalin! Tempel (Ctrl+V) di chat AI gratis — membuka chat.deepseek.com...`;
+    window.open("https://chat.deepseek.com/", "_blank", "noopener");
+  } catch (e) {
+    // Fallback bila clipboard diblokir: tampilkan teks untuk disalin manual.
+    const ta = document.createElement("textarea");
+    ta.value = text; ta.style.cssText = "width:100%;height:160px;margin-top:8px;background:var(--panel-raised);color:var(--text);border:1px solid var(--border);border-radius:8px;padding:8px;font-size:12px";
+    el("snrBody").prepend(ta); ta.select();
+    status.innerHTML = `<span style="color:#e3a008;">●</span> Salin manual teks di bawah (sudah diblok), lalu tempel ke chat.deepseek.com`;
   }
 }
 
@@ -661,6 +705,7 @@ intervalSelect.addEventListener("change", () => {
 el("refreshBtn").addEventListener("click", refreshAll);
 el("analyzeSnrBtn").addEventListener("click", loadSnrAnalysis);
 el("clearSnrBtn").addEventListener("click", clearSnrChart);
+el("copyAiBtn").addEventListener("click", copyForAi);
 el("btRunBtn").addEventListener("click", loadBacktest);
 el("btOptBtn").addEventListener("click", loadOptimize);
 autoRefreshBox.addEventListener("change", resetAutoRefresh);
