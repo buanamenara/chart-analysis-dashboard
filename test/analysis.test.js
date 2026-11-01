@@ -44,3 +44,29 @@ test("multi-timeframe summary measures directional agreement and ignores neutral
   assert.equal(result.currentAligned, true);
   assert.equal(result.directionalTimeframes, 2);
 });
+
+test("market regime classifies trending vs ranging from ADX and DI", () => {
+  const trending = analysis.classifyRegime(32, 28, 12);
+  assert.equal(trending.strength, "Trending");
+  assert.equal(trending.direction, "naik (+DI dominan)");
+
+  const ranging = analysis.classifyRegime(14, 15, 16);
+  assert.equal(ranging.strength, "Ranging (sideways)");
+  assert.equal(ranging.direction, null);
+
+  assert.equal(analysis.classifyRegime(null), null);
+});
+
+test("technical analysis lowers confidence when ranging and higher TF disagrees", () => {
+  const base = {
+    indicators: { lastClose: 100, ema20: 101, ema50: 100, sma200: 99, rsi14: 55,
+      macd: { histogram: 0.2 }, bollinger: { pb: 0.5 }, adx14: 15, plusDI: 14, minusDI: 16, atr14: 1.2, barsUsed: 120 },
+    dailyBars: [], bars: [], signal: { bullishCount: 3, bearishCount: 1, confidence: 60 },
+    nearestSupport: { mid: 98 }, nearestResistance: { mid: 103 }
+  };
+  const aligned = analysis.buildTechnicalAnalysis({ ...base,
+    multiTimeframe: { bias: "BUY", agreementPercent: 100, currentAligned: true, directionalTimeframes: 2 } });
+  const opposed = analysis.buildTechnicalAnalysis({ ...base,
+    multiTimeframe: { bias: "SELL", agreementPercent: 100, currentAligned: false, directionalTimeframes: 2 } });
+  assert.ok(opposed.overallConfidence < aligned.overallConfidence);
+});

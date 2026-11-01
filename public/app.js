@@ -429,9 +429,13 @@ function renderSnrBody(data) {
   if (a) {
     const biasCls = a.bias === "bullish" ? "buy" : a.bias === "bearish" ? "sell" : "none";
     const biasLabel = a.bias === "bullish" ? "BULLISH" : a.bias === "bearish" ? "BEARISH" : "NETRAL";
+    const conf = a.overallConfidence != null ? `<span class="an-conf conf-${(a.confidenceLabel || "").toLowerCase()}">Keyakinan: ${a.confidenceLabel} ${a.overallConfidence}%</span>` : "";
+    const regimeText = a.regime ? `${a.regime.strength} (ADX ${a.regime.adx}${a.regime.direction ? ", " + a.regime.direction : ""})` : "-";
     html += `<div class="snr-analysis">
-      <div class="an-head"><span class="an-bias ${biasCls}">Bias Teknikal: ${biasLabel}</span></div>
+      <div class="an-head"><span class="an-bias ${biasCls}">Bias Teknikal: ${biasLabel}</span>${conf}</div>
       <div class="an-grid">
+        <div class="an-item"><span class="an-k">Kekuatan Tren</span><span class="an-v">${regimeText}</span></div>
+        <div class="an-item"><span class="an-k">Multi-Timeframe</span><span class="an-v">${a.multiTimeframeText || "-"}</span></div>
         <div class="an-item"><span class="an-k">Tren</span><span class="an-v">${a.trend}</span></div>
         <div class="an-item"><span class="an-k">Momentum</span><span class="an-v">${a.momentum}</span></div>
         <div class="an-item"><span class="an-k">Volatilitas</span><span class="an-v">${a.volatility}</span></div>
@@ -440,7 +444,7 @@ function renderSnrBody(data) {
         ${a.keyLevel ? `<div class="an-item"><span class="an-k">Key Level</span><span class="an-v">${a.keyLevel}</span></div>` : ""}
         <div class="an-item"><span class="an-k">Support / Resistance</span><span class="an-v">${a.support ? fmt(a.support) : "-"} / ${a.resistance ? fmt(a.resistance) : "-"}</span></div>
       </div>
-      <div class="an-conclusion">${a.conclusion}</div>
+      <div class="an-conclusion">${mdBoldToHtml(a.conclusion)}</div>
     </div>`;
   }
 

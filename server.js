@@ -8,6 +8,7 @@ import { computeIndicators, summarizeTrend } from "./lib/indicators.js";
 import { generateRuleBasedSignal } from "./lib/ruleSignal.js";
 import { computeSnrZones } from "./lib/snr.js";
 import { buildTechnicalAnalysis } from "./lib/analysis.js";
+import { computeMultiTimeframe } from "./lib/multiTimeframe.js";
 import { fetchRss, fetchRssMulti } from "./lib/rss.js";
 import { NEWS_SOURCES, ECONOMIC_NEWS_SOURCE } from "./lib/newsSources.js";
 import { getEconomicCalendar, filterCalendarBySymbol, pairBiasFromCurrencyBias } from "./lib/calendar.js";
@@ -89,7 +90,8 @@ app.get("/api/snr", async (req, res) => {
     const indicators = computeIndicators(bars);
     const { zones, potential, nearestSupport, nearestResistance, pivotLevels } = computeSnrZones({ indicators, dailyBars, bars });
     const signal = generateRuleBasedSignal({ indicators, dailyBars, bars });
-    const analysis = buildTechnicalAnalysis({ indicators, dailyBars, bars, signal, nearestSupport, nearestResistance });
+    const multiTimeframe = await computeMultiTimeframe(assetType, symbol, interval, signal.signal, dailyBars);
+    const analysis = buildTechnicalAnalysis({ indicators, dailyBars, bars, signal, nearestSupport, nearestResistance, multiTimeframe });
 
     res.json({
       symbol,
@@ -102,9 +104,10 @@ app.get("/api/snr", async (req, res) => {
       nearestResistance,
       pivotLevels,
       analysis,
+      multiTimeframe,
       signal: signal.signal,
-      confidence: signal.confidence,
-      confidenceLabel: signal.confidenceLabel,
+      confidence: analysis.overallConfidence ?? signal.confidence,
+      confidenceLabel: analysis.confidenceLabel ?? signal.confidenceLabel,
       signalReasons: signal.reasons,
       disclaimer: signal.disclaimer,
       bars: bars.slice(-180)
