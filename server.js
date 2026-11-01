@@ -9,6 +9,7 @@ import { generateRuleBasedSignal } from "./lib/ruleSignal.js";
 import { computeSnrZones } from "./lib/snr.js";
 import { buildTechnicalAnalysis } from "./lib/analysis.js";
 import { computeMultiTimeframe } from "./lib/multiTimeframe.js";
+import { getFundamental } from "./lib/fundamental.js";
 import { fetchRss, fetchRssMulti } from "./lib/rss.js";
 import { NEWS_SOURCES, ECONOMIC_NEWS_SOURCE } from "./lib/newsSources.js";
 import { getEconomicCalendar, filterCalendarBySymbol, pairBiasFromCurrencyBias } from "./lib/calendar.js";
@@ -243,8 +244,11 @@ app.get("/api/snr", async (req, res) => {
       const indicators = computeIndicators(bars);
       const { zones, potential, nearestSupport, nearestResistance, pivotLevels } = computeSnrZones({ indicators, dailyBars, bars });
       const signal = generateRuleBasedSignal({ indicators, dailyBars, bars });
-      const multiTimeframe = await computeMultiTimeframe(assetType, symbol, interval, signal.signal, dailyBars);
-      const analysis = buildTechnicalAnalysis({ indicators, dailyBars, bars, signal, nearestSupport, nearestResistance, multiTimeframe });
+      const [multiTimeframe, fundamental] = await Promise.all([
+        computeMultiTimeframe(assetType, symbol, interval, signal.signal, dailyBars),
+        getFundamental(assetType, symbol).catch(() => null)
+      ]);
+      const analysis = buildTechnicalAnalysis({ indicators, dailyBars, bars, signal, nearestSupport, nearestResistance, multiTimeframe, fundamental });
 
       return {
         symbol,

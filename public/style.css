@@ -358,6 +358,9 @@ button:disabled { opacity: 0.5; cursor: not-allowed; }
 .snr-potential.sell { background: var(--red-bg); border: 1px solid rgba(248, 81, 73, 0.3); }
 .snr-potential.none { background: rgba(139, 148, 158, 0.08); border: 1px solid var(--border); }
 .snr-potential b { color: var(--accent); font-weight: 600; }
+.fund-note { font-size: 12.5px; font-weight: 600; padding: 8px 12px; border-radius: 8px; margin-bottom: 12px; }
+.fund-note.aligned { background: var(--green-bg); color: var(--green); border: 1px solid rgba(63, 185, 80, 0.3); }
+.fund-note.conflict { background: var(--amber-bg); color: var(--amber); border: 1px solid rgba(227, 160, 8, 0.35); }
 
 .snr-tpsl-table { width: 100%; font-size: 13px; border-collapse: collapse; margin-top: 10px; }
 .snr-tpsl-table td { padding: 6px 8px; border-bottom: 1px solid var(--border); }

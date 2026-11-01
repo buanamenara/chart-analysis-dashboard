@@ -4,6 +4,7 @@ import { generateRuleBasedSignal } from "../../lib/ruleSignal.js";
 import { computeSnrZones } from "../../lib/snr.js";
 import { buildTechnicalAnalysis } from "../../lib/analysis.js";
 import { computeMultiTimeframe } from "../../lib/multiTimeframe.js";
+import { getFundamental } from "../../lib/fundamental.js";
 
 export async function onRequestGet(context) {
   const { request } = context;
@@ -30,8 +31,11 @@ export async function onRequestGet(context) {
     const indicators = computeIndicators(bars);
     const { zones, potential, nearestSupport, nearestResistance, pivotLevels } = computeSnrZones({ indicators, dailyBars, bars });
     const signal = generateRuleBasedSignal({ indicators, dailyBars, bars });
-    const multiTimeframe = await computeMultiTimeframe(assetType, symbol, interval, signal.signal, dailyBars);
-    const analysis = buildTechnicalAnalysis({ indicators, dailyBars, bars, signal, nearestSupport, nearestResistance, multiTimeframe });
+    const [multiTimeframe, fundamental] = await Promise.all([
+      computeMultiTimeframe(assetType, symbol, interval, signal.signal, dailyBars),
+      getFundamental(assetType, symbol).catch(() => null)
+    ]);
+    const analysis = buildTechnicalAnalysis({ indicators, dailyBars, bars, signal, nearestSupport, nearestResistance, multiTimeframe, fundamental });
 
     const data = {
       symbol,

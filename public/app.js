@@ -474,6 +474,7 @@ function renderSnrBody(data) {
       <div class="an-grid">
         <div class="an-item"><span class="an-k">Kekuatan Tren</span><span class="an-v">${regimeText}</span></div>
         <div class="an-item"><span class="an-k">Multi-Timeframe</span><span class="an-v">${a.multiTimeframeText || "-"}</span></div>
+        ${a.fundamental?.text ? `<div class="an-item"><span class="an-k">${a.fundamental.kind === "crypto" ? "Fundamental" : "Makro"}</span><span class="an-v">${mdBoldToHtml(a.fundamental.text)}</span></div>` : ""}
         <div class="an-item"><span class="an-k">Tren</span><span class="an-v">${a.trend}</span></div>
         <div class="an-item"><span class="an-k">Momentum</span><span class="an-v">${a.momentum}</span></div>
         <div class="an-item"><span class="an-k">Volatilitas</span><span class="an-v">${a.volatility}</span></div>
@@ -490,6 +491,8 @@ function renderSnrBody(data) {
     const p = data.potential;
     const cls = p.type === "BUY_ZONE" ? "buy" : "sell";
     html += `<div class="snr-potential ${cls}">${mdBoldToHtml(p.reason)}</div>`;
+    if (a?.fundamental?.align === "aligned") html += `<div class="fund-note aligned">✔ ${a.fundamental.kind === "crypto" ? "Fundamental" : "Makro"} SEARAH dengan setup ini — konfluensi lebih kuat.</div>`;
+    else if (a?.fundamental?.align === "conflict") html += `<div class="fund-note conflict">⚠ ${a.fundamental.kind === "crypto" ? "Fundamental" : "Makro"} BERLAWANAN dengan setup ini — pertimbangkan kurangi ukuran / tunggu konfirmasi.</div>`;
     html += `<table class="snr-tpsl-table"><tbody>
       <tr class="row-entry"><td>Entry</td><td>${fmt(p.entry)}</td></tr>
       <tr class="row-sl"><td>Stop Loss</td><td>${fmt(p.stopLoss)}</td></tr>
