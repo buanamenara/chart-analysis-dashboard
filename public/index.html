@@ -44,6 +44,7 @@
     <button class="quicknav-btn active" data-view="chart">Chart &amp; Sinyal</button>
     <button class="quicknav-btn" data-view="snr">Analisa SNR</button>
     <button class="quicknav-btn" data-view="news">Kalender &amp; Berita</button>
+    <button class="quicknav-btn" data-view="backtest">Backtest</button>
   </nav>
 
   <main>
@@ -169,6 +170,41 @@
       <div class="tab-panel" id="tab-market-news" hidden>
         <div id="newsBody" class="scroll-list"></div>
       </div>
+    </section>
+    </div>
+
+    <div class="view" id="view-backtest" hidden>
+    <section class="card">
+      <h3>Backtest Strategi</h3>
+      <p class="muted">Uji strategi di data historis (Yahoo: 15m ≈ 2 bulan, 1h ≈ 2 tahun). Biaya per-trade sudah dihitung. <b>Simulasi masa lalu, bukan jaminan masa depan.</b></p>
+      <div class="bt-controls">
+        <label>Strategi
+          <select id="btStrategy">
+            <option value="trendPB" selected>Trend Pullback (scalping, banyak trade)</option>
+            <option value="trendCross">Trend Cross (EMA20/50, lebih sedikit)</option>
+            <option value="meanRev">Mean Reversion (pembanding)</option>
+          </select>
+        </label>
+        <label>Timeframe
+          <select id="btInterval">
+            <option value="5m">5 menit</option>
+            <option value="15m" selected>15 menit</option>
+            <option value="30m">30 menit</option>
+            <option value="1h">1 jam (2 tahun)</option>
+            <option value="4h">4 jam</option>
+            <option value="1d">1 hari</option>
+          </select>
+        </label>
+        <label>SL (×ATR)<input type="number" id="btSl" value="1.0" step="0.1" min="0.3" max="5"></label>
+        <label>TP (×ATR)<input type="number" id="btTp" value="1.5" step="0.1" min="0.3" max="10"></label>
+        <label>RSI pullback<input type="number" id="btRsi" value="45" step="1" min="20" max="50"></label>
+        <label>Max hold (bar)<input type="number" id="btHold" value="12" step="1" min="2" max="50"></label>
+        <label>Biaya/trade (R)<input type="number" id="btCost" value="0.1" step="0.05" min="0" max="1"></label>
+        <button id="btRunBtn">Jalankan Backtest</button>
+      </div>
+      <div id="btStatus" class="muted"></div>
+      <div id="btResult"></div>
+      <div id="btEquityContainer"></div>
     </section>
     </div>
   </main>

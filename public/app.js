@@ -540,6 +540,59 @@ async function loadSnrAnalysis() {
 }
 window.retryLoad.snr = loadSnrAnalysis;
 
+function equitySvg(curve) {
+  if (!curve || curve.length < 2) return "";
+  const w = 600, h = 160, pad = 8;
+  const min = Math.min(0, ...curve), max = Math.max(0, ...curve);
+  const range = (max - min) || 1;
+  const x = i => pad + (i / (curve.length - 1)) * (w - 2 * pad);
+  const y = v => h - pad - ((v - min) / range) * (h - 2 * pad);
+  const pts = curve.map((v, i) => `${x(i).toFixed(1)},${y(v).toFixed(1)}`).join(" ");
+  const zeroY = y(0).toFixed(1);
+  const up = curve[curve.length - 1] >= 0;
+  return `<svg viewBox="0 0 ${w} ${h}" width="100%" height="${h}" preserveAspectRatio="none" style="display:block">
+    <line x1="${pad}" y1="${zeroY}" x2="${w - pad}" y2="${zeroY}" stroke="#4a3f22" stroke-width="1" stroke-dasharray="3 3"/>
+    <polyline points="${pts}" fill="none" stroke="${up ? '#3fb950' : '#f85149'}" stroke-width="2"/>
+  </svg>`;
+}
+
+async function loadBacktest() {
+  const { type, symbol } = currentInstrument();
+  const btn = el("btRunBtn"), status = el("btStatus"), result = el("btResult"), eq = el("btEquityContainer");
+  const q = new URLSearchParams({
+    symbol, assetType: type, interval: el("btInterval").value, strategy: el("btStrategy").value,
+    slAtr: el("btSl").value, tpAtr: el("btTp").value, rsiPullback: el("btRsi").value,
+    maxHold: el("btHold").value, costR: el("btCost").value
+  });
+  btn.disabled = true; status.textContent = `Menjalankan backtest ${symbol}... (menarik data historis, bisa beberapa detik)`;
+  result.innerHTML = ""; eq.innerHTML = "";
+  try {
+    const res = await fetch(`/api/backtest?${q.toString()}`);
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.error || data.hint || "Gagal backtest");
+
+    const posCls = data.netPositive ? "buy" : "sell";
+    const pf = data.profitFactor >= 99 ? "∞" : data.profitFactor;
+    result.innerHTML = `
+      <div class="bt-head"><span class="an-bias ${posCls}">${data.netPositive ? "NET PROFIT" : "NET LOSS"}: ${data.totalR > 0 ? "+" : ""}${data.totalR}R</span>
+        <span class="muted">${symbol} · ${data.interval} · ${data.strategy} · ${data.fromDate} → ${data.toDate} (~${data.periodDays} hari)</span></div>
+      <div class="bt-grid">
+        <div class="bt-stat"><span class="bt-n">${data.trades}</span><span class="bt-l">Total Trade (${data.tradesPerMonth}/bln)</span></div>
+        <div class="bt-stat"><span class="bt-n">${data.winRate}%</span><span class="bt-l">Win Rate</span></div>
+        <div class="bt-stat"><span class="bt-n">${data.avgR}R</span><span class="bt-l">Avg / Trade</span></div>
+        <div class="bt-stat"><span class="bt-n">${pf}</span><span class="bt-l">Profit Factor</span></div>
+        <div class="bt-stat"><span class="bt-n">${data.maxDrawdownR}R</span><span class="bt-l">Max Drawdown</span></div>
+      </div>
+      <p class="muted" style="margin-top:10px">${data.disclaimer}</p>`;
+    eq.innerHTML = `<div class="bt-eqlabel">Kurva ekuitas (akumulasi R):</div>${equitySvg(data.equityCurve)}`;
+    status.innerHTML = `<span style="color:#3fb950;">●</span> Selesai (${new Date().toLocaleTimeString("id-ID")})`;
+  } catch (err) {
+    status.innerHTML = `<span style="color:#f85149;">●</span> Error: ${err.message}`;
+  } finally {
+    btn.disabled = false;
+  }
+}
+
 async function refreshFast() {
   await Promise.all([loadData(), loadSignal()]);
 }
@@ -576,6 +629,7 @@ intervalSelect.addEventListener("change", () => {
 el("refreshBtn").addEventListener("click", refreshAll);
 el("analyzeSnrBtn").addEventListener("click", loadSnrAnalysis);
 el("clearSnrBtn").addEventListener("click", clearSnrChart);
+el("btRunBtn").addEventListener("click", loadBacktest);
 autoRefreshBox.addEventListener("change", resetAutoRefresh);
 refreshIntervalSelect.addEventListener("change", resetAutoRefresh);
 

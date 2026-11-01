@@ -10,6 +10,7 @@ import { computeSnrZones } from "./lib/snr.js";
 import { buildTechnicalAnalysis } from "./lib/analysis.js";
 import { computeMultiTimeframe } from "./lib/multiTimeframe.js";
 import { getFundamental } from "./lib/fundamental.js";
+import { runBacktest } from "./lib/backtest.js";
 import { fetchRss, fetchRssMulti } from "./lib/rss.js";
 import { NEWS_SOURCES, ECONOMIC_NEWS_SOURCE } from "./lib/newsSources.js";
 import { getEconomicCalendar, filterCalendarBySymbol, pairBiasFromCurrencyBias } from "./lib/calendar.js";
@@ -341,6 +342,25 @@ app.get("/api/sentiment", async (req, res) => {
 
     const key = "sentiment";
     const data = shouldBypassCache(req) ? await compute() : await cached(key, 180_000, compute);
+    res.json(data);
+  } catch (err) {
+    sendError(res, err);
+  }
+});
+
+app.get("/api/backtest", async (req, res) => {
+  try {
+    const { symbol, assetType, interval = "15m", strategy = "trendPB" } = req.query;
+    if (!symbol || !assetType) return res.status(400).json({ error: "symbol & assetType wajib diisi" });
+    const num = (v, d) => (v != null && v !== "" && !isNaN(+v) ? +v : d);
+    const opts = {
+      symbol, assetType, interval, strategy,
+      slAtr: num(req.query.slAtr, 1.0), tpAtr: num(req.query.tpAtr, 1.5),
+      rsiPullback: num(req.query.rsiPullback, 45), maxHold: num(req.query.maxHold, 12),
+      costR: num(req.query.costR, 0.1)
+    };
+    const key = `bt:${assetType}:${symbol}:${interval}:${strategy}:${opts.slAtr}:${opts.tpAtr}:${opts.rsiPullback}:${opts.maxHold}:${opts.costR}`;
+    const data = shouldBypassCache(req) ? await runBacktest(opts) : await cached(key, 600_000, () => runBacktest(opts));
     res.json(data);
   } catch (err) {
     sendError(res, err);
