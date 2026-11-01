@@ -478,6 +478,9 @@ function renderSnrBody(data) {
         <div class="an-item"><span class="an-k">Tren</span><span class="an-v">${a.trend}</span></div>
         <div class="an-item"><span class="an-k">Momentum</span><span class="an-v">${a.momentum}</span></div>
         <div class="an-item"><span class="an-k">Volatilitas</span><span class="an-v">${a.volatility}</span></div>
+        ${a.divergence ? `<div class="an-item"><span class="an-k">Divergence</span><span class="an-v" style="color:${a.divergence === 'bullish' ? 'var(--green)' : 'var(--red)'}">RSI ${a.divergence.toUpperCase()} (sinyal pembalikan)</span></div>` : ""}
+        ${a.volume ? `<div class="an-item"><span class="an-k">Volume</span><span class="an-v">${a.volume.ratio}× rata-rata ${a.volume.aboveAvg ? "— di atas normal (konfirmasi)" : a.volume.thin ? "— tipis (lemah)" : "— normal"}</span></div>` : ""}
+        ${a.fib ? `<div class="an-item"><span class="an-k">Fibonacci</span><span class="an-v">Retrace ${a.fib.direction}; terdekat ${a.fib.nearest ? (a.fib.nearest.ratio * 100).toFixed(1) + '% @ ' + fmt(a.fib.nearest.price) : '-'}${a.fib.atGoldenZone ? ' <b style="color:var(--accent)">(golden zone)</b>' : ''}</span></div>` : ""}
         <div class="an-item"><span class="an-k">Pola Candle</span><span class="an-v">${a.candle}</span></div>
         <div class="an-item"><span class="an-k">Sesi Pasar</span><span class="an-v">${a.sessions}</span></div>
         ${a.keyLevel ? `<div class="an-item"><span class="an-k">Key Level</span><span class="an-v">${a.keyLevel}</span></div>` : ""}
