@@ -19,8 +19,9 @@ test("rule-based signal reports directional confidence from available evidence",
   });
 
   assert.equal(result.signal, "BUY");
-  assert.equal(result.confidence, 60);
-  assert.equal(result.confidenceLabel, "Sedang");
+  // Skor berbobot (weighted) menghasilkan kesepakatan 78% -> label "Tinggi".
+  assert.equal(result.confidence, 78);
+  assert.equal(result.confidenceLabel, "Tinggi");
 });
 
 test("higher-timeframe map selects the next one or two supported intervals", () => {

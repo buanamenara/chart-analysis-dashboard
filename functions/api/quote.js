@@ -1,16 +1,37 @@
 import { fetchQuote } from "../../lib/marketData.js";
 
-export async function onRequestGet({ request }) {
-  const { searchParams } = new URL(request.url);
-  const symbol = searchParams.get("symbol");
-  const assetType = searchParams.get("assetType");
+export async function onRequestGet(context) {
+  const { request } = context;
+  const url = new URL(request.url);
+  const symbol = url.searchParams.get("symbol");
+  const assetType = url.searchParams.get("assetType");
+
+  // 1. Pesan Error Jelas
   if (!symbol || !assetType) {
-    return Response.json({ error: "symbol & assetType wajib diisi" }, { status: 400 });
+    return new Response(JSON.stringify({
+      ok: false,
+      code: "MISSING_PARAMS",
+      error: "Parameter 'symbol' dan 'assetType' wajib diisi.",
+      hint: "Contoh: /api/quote?symbol=XAUUSD&assetType=gold"
+    }), { status: 400, headers: { "Content-Type": "application/json" } });
   }
+
   try {
     const quote = await fetchQuote(assetType, symbol);
-    return Response.json(quote);
+    
+    // 2. Cache 10 detik (Biar cepat)
+    return new Response(JSON.stringify(quote), {
+      headers: {
+        "Content-Type": "application/json",
+        "Cache-Control": "max-age=10" 
+      }
+    });
   } catch (err) {
-    return Response.json({ error: err.message }, { status: 502 });
+    return new Response(JSON.stringify({
+      ok: false,
+      code: "UPSTREAM_ERROR",
+      error: "Gagal mengambil data.",
+      hint: "Coba lagi beberapa saat."
+    }), { status: 502, headers: { "Content-Type": "application/json" } });
   }
 }
