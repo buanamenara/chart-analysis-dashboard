@@ -399,6 +399,42 @@ function clearSnrChart() {
   el("snrStatus").textContent = "";
 }
 
+// Primitive "pita"/band horizontal: menggambar ZONA sebagai kotak (persegi) transparan
+// antara dua harga, supaya zona S/R & ORB tidak jadi garis label yang menumpuk di sumbu.
+function makeBand(series, priceLow, priceHigh, fillColor) {
+  const view = {
+    renderer() {
+      return {
+        draw(target) {
+          target.useBitmapCoordinateSpace(scope => {
+            const yH = series.priceToCoordinate(priceHigh);
+            const yL = series.priceToCoordinate(priceLow);
+            if (yH == null || yL == null) return;
+            const ctx = scope.context;
+            const top = Math.min(yH, yL) * scope.verticalPixelRatio;
+            const bot = Math.max(yH, yL) * scope.verticalPixelRatio;
+            ctx.fillStyle = fillColor;
+            ctx.fillRect(0, top, scope.bitmapSize.width, Math.max(1, bot - top));
+          });
+        }
+      };
+    },
+    zOrder: () => "bottom"
+  };
+  return { updateAllViews() {}, paneViews() { return [view]; } };
+}
+
+function addBand(series, low, high, fill, edge) {
+  if (low == null || high == null) return;
+  if (typeof series.attachPrimitive === "function") {
+    series.attachPrimitive(makeBand(series, low, high, fill));
+  } else {
+    // Fallback bila primitive tak didukung: dua garis tepi tipis tanpa label sumbu.
+    series.createPriceLine({ price: high, color: edge, lineWidth: 1, lineStyle: LightweightCharts.LineStyle.Dotted, axisLabelVisible: false });
+    series.createPriceLine({ price: low, color: edge, lineWidth: 1, lineStyle: LightweightCharts.LineStyle.Dotted, axisLabelVisible: false });
+  }
+}
+
 function renderSnrChart(data) {
   const container = el("snrChartContainer");
   container.innerHTML = "";
@@ -422,40 +458,28 @@ function renderSnrChart(data) {
   const candles = [...seen.values()].sort((a, b) => a.time - b.time);
   snrSeries.setData(candles);
 
-  const keyLevels = [];
-  if (data.nearestSupport) keyLevels.push({ p: data.nearestSupport.mid, color: "#3fb950", title: `Support ${data.nearestSupport.mid.toFixed(2)}` });
-  if (data.nearestResistance) keyLevels.push({ p: data.nearestResistance.mid, color: "#f85149", title: `Resistance ${data.nearestResistance.mid.toFixed(2)}` });
-  keyLevels.forEach(l => {
-    snrSeries.createPriceLine({
-      price: l.p,
-      color: l.color,
-      lineWidth: 1,
-      lineStyle: LightweightCharts.LineStyle.Dashed,
-      axisLabelVisible: true,
-      title: l.title
-    });
-  });
+  // ZONA sebagai kotak (persegi) transparan — bukan garis label yang menumpuk:
+  if (data.nearestSupport) addBand(snrSeries, data.nearestSupport.low, data.nearestSupport.high, "rgba(63,185,80,0.15)", "#3fb950");
+  if (data.nearestResistance) addBand(snrSeries, data.nearestResistance.low, data.nearestResistance.high, "rgba(248,81,73,0.15)", "#f85149");
+  if (data.orb?.high) addBand(snrSeries, data.orb.low, data.orb.high, "rgba(227,160,8,0.10)", "#e3a008");
 
-  // Garis referensi berbasis volume: POC (ungu) + VWAP (biru) — magnet harga & bias intraday.
-  if (data.volumeProfile?.poc) {
-    snrSeries.createPriceLine({ price: data.volumeProfile.poc, color: "#a371f7", lineWidth: 2, lineStyle: LightweightCharts.LineStyle.Dotted, axisLabelVisible: true, title: "POC" });
-  }
-  if (data.vwap?.vwap) {
-    snrSeries.createPriceLine({ price: data.vwap.vwap, color: "#58a6ff", lineWidth: 1, lineStyle: LightweightCharts.LineStyle.Dashed, axisLabelVisible: true, title: "VWAP" });
-  }
-  // Opening Range Breakout: garis OR High/Low (oranye).
-  if (data.orb?.high) {
-    snrSeries.createPriceLine({ price: data.orb.high, color: "#e3a008", lineWidth: 1, lineStyle: LightweightCharts.LineStyle.Dotted, axisLabelVisible: true, title: "OR High" });
-    snrSeries.createPriceLine({ price: data.orb.low, color: "#e3a008", lineWidth: 1, lineStyle: LightweightCharts.LineStyle.Dotted, axisLabelVisible: true, title: "OR Low" });
-  }
+  // Level referensi (garis tipis, judul di garis, TANPA label sumbu -> tak menumpuk di kanan):
+  const refLine = (price, color, style, title) => {
+    if (price == null) return;
+    snrSeries.createPriceLine({ price, color, lineWidth: 1, lineStyle: style, axisLabelVisible: false, title });
+  };
+  if (data.nearestSupport) refLine(data.nearestSupport.mid, "#3fb950", LightweightCharts.LineStyle.Dashed, `S ${data.nearestSupport.mid.toFixed(2)}`);
+  if (data.nearestResistance) refLine(data.nearestResistance.mid, "#f85149", LightweightCharts.LineStyle.Dashed, `R ${data.nearestResistance.mid.toFixed(2)}`);
+  refLine(data.vwap?.vwap, "#58a6ff", LightweightCharts.LineStyle.Dashed, "VWAP");
+  refLine(data.volumeProfile?.poc, "#a371f7", LightweightCharts.LineStyle.Dotted, "POC");
 
+  // Level TRADE (garis tegas + label sumbu — HANYA ini yang muncul di sumbu kanan):
   if (data.potential) {
     const p = data.potential;
-    snrSeries.createPriceLine({ price: p.entry, color: "#d4af37", lineWidth: 2, lineStyle: LightweightCharts.LineStyle.Solid, axisLabelVisible: true, title: "Entry" });
-    snrSeries.createPriceLine({ price: p.stopLoss, color: "#f85149", lineWidth: 2, lineStyle: LightweightCharts.LineStyle.Solid, axisLabelVisible: true, title: "SL" });
-    (p.takeProfit || []).forEach((tp, i) => {
-      snrSeries.createPriceLine({ price: tp, color: "#3fb950", lineWidth: 2, lineStyle: LightweightCharts.LineStyle.Solid, axisLabelVisible: true, title: `TP${i + 1}` });
-    });
+    const tradeLine = (price, color, title) => snrSeries.createPriceLine({ price, color, lineWidth: 2, lineStyle: LightweightCharts.LineStyle.Solid, axisLabelVisible: true, title });
+    tradeLine(p.entry, "#d4af37", "Entry");
+    tradeLine(p.stopLoss, "#f85149", "SL");
+    (p.takeProfit || []).forEach((tp, i) => tradeLine(tp, "#3fb950", `TP${i + 1}`));
 
     const lastCandle = candles.at(-1);
     if (lastCandle) {
