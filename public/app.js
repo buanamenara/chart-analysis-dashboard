@@ -571,6 +571,53 @@ function renderSnrBody(data) {
   body.innerHTML = html;
 }
 
+// Kalkulator ukuran posisi: dari Entry/SL setup + modal & risiko -> lot aman.
+// Formula umum: unit = (modal x risiko%) / jarakSL. Akurat utk instrumen quote-USD
+// (gold, pair /USD, crypto/USDT). Pair non-USD (mis. /JPY) ditandai "perkiraan".
+function calcPosition() {
+  const res = el("pcResult");
+  if (!res) return;
+  const d = window.__lastSnr;
+  const { type, symbol } = currentInstrument();
+  const bal = +el("pcBalance").value, riskPct = +el("pcRisk").value;
+  const p = d?.potential;
+  if (!p || p.entry == null || p.stopLoss == null) {
+    res.innerHTML = `<div class="pc-note">Belum ada setup Entry/SL di timeframe ini (harga belum di zona Buy/Sell). Coba timeframe lain atau tunggu harga ke area.</div>`;
+    return;
+  }
+  if (!(bal > 0) || !(riskPct > 0)) { res.innerHTML = `<div class="pc-note">Isi modal &amp; risiko dengan angka lebih dari 0.</div>`; return; }
+  const entry = p.entry, sl = p.stopLoss, tp1 = (p.takeProfit || [])[0] ?? null;
+  const slDist = Math.abs(entry - sl);
+  if (!(slDist > 0)) { res.innerHTML = `<div class="pc-note">Jarak SL tidak valid.</div>`; return; }
+
+  const riskAmt = bal * riskPct / 100;
+  const units = riskAmt / slDist; // unit base: pergerakan sejauh slDist = riskAmt (quote USD)
+  let sizeStr = "", accurate = true;
+  if (type === "forex") {
+    if (symbol.startsWith("XAU")) sizeStr = `${(units / 100).toFixed(2)} lot <span class="muted">(1 lot = 100 oz)</span>`;
+    else if (symbol.startsWith("XAG")) { sizeStr = `${(units / 5000).toFixed(2)} lot <span class="muted">(1 lot = 5000 oz)</span>`; accurate = false; }
+    else { sizeStr = `${(units / 100000).toFixed(2)} lot <span class="muted">(standar)</span>`; if (!symbol.endsWith("USD")) accurate = false; }
+  } else if (type === "crypto") {
+    sizeStr = `${(+units.toPrecision(4))} ${symbol.replace(/USDT?$/, "")} <span class="muted">(spot)</span>`;
+  } else {
+    sizeStr = `${Math.floor(units)} lembar <span class="muted">(saham)</span>`; accurate = false;
+  }
+
+  const reward = tp1 != null ? Math.abs(tp1 - entry) : null;
+  const profitAmt = reward != null ? units * reward : null;
+  const rr = reward != null ? reward / slDist : null;
+  const dp = slDist < 1 ? 5 : 2;
+  res.innerHTML = `
+    <table class="pc-table"><tbody>
+      <tr><td>Risiko ($)</td><td>$${riskAmt.toFixed(2)} <span class="muted">(${riskPct}% dari $${bal})</span></td></tr>
+      <tr><td>Jarak SL</td><td>${slDist.toFixed(dp)} <span class="muted">(${fmt(entry)} → ${fmt(sl)})</span></td></tr>
+      <tr class="pc-hi"><td>Ukuran posisi</td><td>${sizeStr}</td></tr>
+      ${profitAmt != null ? `<tr><td>Potensi profit TP1</td><td style="color:var(--green)">+$${profitAmt.toFixed(2)}${rr ? ` <span class="muted">(R:R 1:${rr.toFixed(2)})</span>` : ""}</td></tr>` : ""}
+    </tbody></table>
+    ${accurate ? "" : `<div class="pc-note">⚠ Instrumen ini bukan quote-USD / non-standar — angka lot ini <b>perkiraan</b>. Sesuaikan nilai pip di brokermu.</div>`}
+    <div class="pc-note">Edukasi, bukan nasihat. Umumnya jangan risiko &gt; 1–2% modal per trade.</div>`;
+}
+
 async function loadSnrAnalysis() {
   const { type, symbol } = currentInstrument();
   const interval = intervalSelect.value;
@@ -594,6 +641,7 @@ async function loadSnrAnalysis() {
     renderSnrChart(data);
     renderSnrBody(data);
     const lg = el("snrLegend"); if (lg) lg.hidden = false;
+    const pc = el("posCalc"); if (pc) { pc.hidden = false; calcPosition(); }
     status.innerHTML = `<span style="color:#3fb950;">●</span> Selesai (${new Date().toLocaleTimeString("id-ID")}) — TF: ${intervalSelect.options[intervalSelect.selectedIndex].text}`;
   } catch (err) {
     status.innerHTML = renderErrorHtml(err, 'snr');
@@ -896,6 +944,9 @@ el("btRunBtn").addEventListener("click", loadBacktest);
 el("btOptBtn").addEventListener("click", loadOptimize);
 el("scoutRunBtn").addEventListener("click", loadScout);
 el("scoutQualityOnly").addEventListener("change", renderScout);
+el("pcCalcBtn").addEventListener("click", calcPosition);
+el("pcBalance").addEventListener("input", calcPosition);
+el("pcRisk").addEventListener("input", calcPosition);
 autoRefreshBox.addEventListener("change", resetAutoRefresh);
 refreshIntervalSelect.addEventListener("change", resetAutoRefresh);
 
