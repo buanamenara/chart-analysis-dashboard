@@ -496,3 +496,23 @@ button:disabled { opacity: 0.5; cursor: not-allowed; }
 .trap-warn b { color: var(--red); }
 .rr-warn { background: var(--amber-bg); border: 1px solid rgba(227,160,8,0.4); color: var(--amber); font-weight: 600; font-size: 12.5px; line-height: 1.55; padding: 9px 12px; border-radius: 8px; margin-bottom: 12px; }
 .rr-warn b { color: var(--amber); }
+
+/* Scout — pemindai peluang */
+.scout-controls { display: flex; flex-wrap: wrap; gap: 12px; align-items: end; margin: 12px 0; }
+.scout-controls label { display: flex; flex-direction: column; gap: 5px; font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.4px; color: var(--muted-2); }
+.scout-tablewrap { overflow-x: auto; }
+.scout-table { width: 100%; border-collapse: collapse; font-size: 13px; margin-top: 10px; }
+.scout-table th { text-align: left; color: var(--muted-2); font-size: 11px; text-transform: uppercase; letter-spacing: 0.3px; padding: 8px; border-bottom: 1px solid var(--border-strong); white-space: nowrap; }
+.scout-table td { padding: 9px 8px; border-bottom: 1px solid var(--border); vertical-align: middle; font-variant-numeric: tabular-nums; }
+.scout-table tr.scout-top { background: rgba(212, 175, 55, 0.1); }
+.scout-rank { font-weight: 700; color: var(--muted); }
+.scout-sym { min-width: 150px; }
+.scout-score { font-weight: 700; font-variant-numeric: tabular-nums; }
+.scout-go { font-size: 12px; padding: 6px 10px; white-space: nowrap; }
+.rr-q { font-size: 10.5px; text-transform: uppercase; letter-spacing: 0.3px; margin-left: 4px; }
+.rr-baik, .rr-q.rr-baik { color: var(--green); font-weight: 700; }
+.rr-cukup, .rr-q.rr-cukup { color: var(--amber); }
+.rr-marginal, .rr-q.rr-marginal { color: var(--amber); }
+.rr-buruk, .rr-q.rr-buruk { color: var(--red); font-weight: 700; }
+.scout-flag { display: inline-block; font-size: 10.5px; padding: 2px 7px; border-radius: 999px; background: rgba(139,148,158,0.14); color: var(--muted); white-space: nowrap; }
+.scout-flag.warn { background: var(--red-bg); color: var(--red); font-weight: 600; }

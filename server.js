@@ -11,6 +11,7 @@ import { buildTechnicalAnalysis } from "./lib/analysis.js";
 import { computeMultiTimeframe } from "./lib/multiTimeframe.js";
 import { getFundamental } from "./lib/fundamental.js";
 import { runBacktest, optimizeBacktest } from "./lib/backtest.js";
+import { runScout } from "./lib/scout.js";
 import { fetchRss, fetchRssMulti } from "./lib/rss.js";
 import { NEWS_SOURCES, ECONOMIC_NEWS_SOURCE } from "./lib/newsSources.js";
 import { getEconomicCalendar, filterCalendarBySymbol, pairBiasFromCurrencyBias } from "./lib/calendar.js";
@@ -375,6 +376,27 @@ app.get("/api/optimize", async (req, res) => {
     const opts = { symbol, assetType, interval, strategy, costR: num(req.query.costR, 0.1) };
     const key = `opt:${assetType}:${symbol}:${interval}:${strategy}:${opts.costR}`;
     const data = shouldBypassCache(req) ? await optimizeBacktest(opts) : await cached(key, 900_000, () => optimizeBacktest(opts));
+    res.json(data);
+  } catch (err) {
+    sendError(res, err);
+  }
+});
+
+app.get("/api/scout", async (req, res) => {
+  try {
+    const { assetType, interval = "15m", symbols = "" } = req.query;
+    const list = symbols.split(",").map(s => s.trim()).filter(Boolean);
+    if (!assetType || !list.length) {
+      return res.status(400).json({
+        ok: false,
+        code: "MISSING_PARAMS",
+        error: "Parameter 'assetType' dan 'symbols' (dipisah koma) wajib diisi.",
+        hint: "Contoh: /api/scout?assetType=forex&interval=15m&symbols=XAUUSD,EURUSD,GBPUSD"
+      });
+    }
+    const key = `scout:${assetType}:${interval}:${list.join(",")}`;
+    const compute = () => runScout(assetType, list, interval);
+    const data = shouldBypassCache(req) ? await compute() : await cached(key, 60_000, compute);
     res.json(data);
   } catch (err) {
     sendError(res, err);

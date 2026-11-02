@@ -42,6 +42,7 @@
 
   <nav class="quicknav">
     <button class="quicknav-btn active" data-view="chart">Chart &amp; Sinyal</button>
+    <button class="quicknav-btn" data-view="scout">Scout (Pemindai)</button>
     <button class="quicknav-btn" data-view="snr">Analisa SNR</button>
     <button class="quicknav-btn" data-view="news">Kalender &amp; Berita</button>
     <button class="quicknav-btn" data-view="backtest">Backtest</button>
@@ -135,6 +136,27 @@
         <h3>Sentimen Crypto</h3>
         <div id="sentimentBody"></div>
       </div>
+    </section>
+    </div>
+
+    <div class="view" id="view-scout" hidden>
+    <section class="card">
+      <h3>Scout — Pemindai Peluang</h3>
+      <p class="muted">Pindai <b>semua instrumen</b> di kategori yang dipilih (atas) pada satu timeframe, lalu diurutkan dari peluang terkuat. Filter otomatis menurunkan skor setup R:R buruk &amp; momentum yang melawan sinyal. <b>Prioritas, bukan nasihat</b> — buka Analisa SNR untuk kajian penuh.</p>
+      <div class="scout-controls">
+        <label>Timeframe
+          <select id="scoutInterval">
+            <option value="5m">5 menit</option>
+            <option value="15m" selected>15 menit</option>
+            <option value="1h">1 jam</option>
+            <option value="4h">4 jam</option>
+            <option value="1d">1 hari</option>
+          </select>
+        </label>
+        <button id="scoutRunBtn">Pindai Sekarang</button>
+      </div>
+      <div id="scoutStatus" class="muted"></div>
+      <div id="scoutResult"></div>
     </section>
     </div>
 

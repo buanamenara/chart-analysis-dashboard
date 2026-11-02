@@ -547,6 +547,82 @@ async function loadSnrAnalysis() {
 }
 window.retryLoad.snr = loadSnrAnalysis;
 
+// Pindah view secara programatik (mis. dari hasil Scout -> Analisa SNR)
+function switchToView(name) {
+  const btn = document.querySelector(`.quicknav-btn[data-view="${name}"]`);
+  if (btn) btn.click();
+}
+
+// Dari baris hasil Scout: pilih instrumen itu, pindah ke Analisa SNR, lalu analisa.
+function scoutOpen(symbol) {
+  symbolSelect.value = symbol;
+  symbolSelect.dispatchEvent(new Event("change"));
+  switchToView("snr");
+  loadSnrAnalysis();
+}
+window.scoutOpen = scoutOpen;
+
+function sigBadge(sig) {
+  const cls = sig === "BUY" ? "buy" : sig === "SELL" ? "sell" : "none";
+  return `<span class="an-bias ${cls}">${sig}</span>`;
+}
+
+async function loadScout() {
+  const { type } = currentInstrument();
+  const interval = el("scoutInterval").value;
+  const symbols = INSTRUMENTS[type].map(i => i.symbol);
+  const labelOf = s => INSTRUMENTS[type].find(i => i.symbol === s)?.label || s;
+  const btn = el("scoutRunBtn"), status = el("scoutStatus"), result = el("scoutResult");
+
+  btn.disabled = true;
+  status.textContent = `Memindai ${Math.min(symbols.length, 12)} instrumen ${ASSET_TYPE_LABELS[type]} di TF ${interval}... (menarik data, bisa beberapa detik)`;
+  result.innerHTML = "";
+  try {
+    const q = new URLSearchParams({ assetType: type, interval, symbols: symbols.join(",") });
+    const res = await fetch(`/api/scout?${q.toString()}`);
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.error || data.hint || "Gagal memindai");
+
+    if (!data.results.length) {
+      result.innerHTML = `<p class="muted">Tidak ada data yang bisa diambil. Coba timeframe lain.</p>`;
+    } else {
+      const rows = data.results.map((r, i) => {
+        const rrCls = r.rrQuality ? `rr-${r.rrQuality}` : "";
+        const rrTxt = r.rr != null ? `1:${r.rr} <span class="rr-q ${rrCls}">${r.rrQuality || ""}</span>` : "—";
+        const flags = [];
+        if (r.divOpp) flags.push(`<span class="scout-flag warn">divergence lawan</span>`);
+        if (r.rrQuality === "buruk") flags.push(`<span class="scout-flag warn">R:R buruk</span>`);
+        if (!r.hasSetup) flags.push(`<span class="scout-flag">belum di area</span>`);
+        const top = i === 0 && r.signal !== "NETRAL" && r.score >= 60;
+        return `<tr class="${top ? "scout-top" : ""}">
+          <td class="scout-rank">${i + 1}</td>
+          <td class="scout-sym"><b>${r.symbol}</b><br><span class="muted">${labelOf(r.symbol)}</span></td>
+          <td>${sigBadge(r.signal)}</td>
+          <td>${r.confidence}%</td>
+          <td class="${rrCls}">${rrTxt}</td>
+          <td>${flags.join(" ") || "<span class=\"muted\">—</span>"}</td>
+          <td class="scout-score">${r.score}</td>
+          <td><button class="btn-ghost scout-go" onclick="window.scoutOpen('${r.symbol}')">Analisa →</button></td>
+        </tr>`;
+      }).join("");
+      result.innerHTML = `
+        <div class="scout-tablewrap">
+          <table class="scout-table">
+            <thead><tr><th>#</th><th>Instrumen</th><th>Sinyal</th><th>Confidence</th><th>R:R setup</th><th>Catatan</th><th>Skor</th><th></th></tr></thead>
+            <tbody>${rows}</tbody>
+          </table>
+        </div>
+        <p class="muted" style="margin-top:10px">${data.disclaimer}</p>`;
+    }
+    status.innerHTML = `<span style="color:#3fb950;">●</span> Selesai (${new Date().toLocaleTimeString("id-ID")}) — ${data.scanned} instrumen`;
+  } catch (err) {
+    status.innerHTML = renderErrorHtml(err, 'scout');
+  } finally {
+    btn.disabled = false;
+  }
+}
+window.retryLoad.scout = loadScout;
+
 function equitySvg(curve) {
   if (!curve || curve.length < 2) return "";
   const w = 600, h = 160, pad = 8;
@@ -714,6 +790,7 @@ el("clearSnrBtn").addEventListener("click", clearSnrChart);
 el("copyAiBtn").addEventListener("click", copyForAi);
 el("btRunBtn").addEventListener("click", loadBacktest);
 el("btOptBtn").addEventListener("click", loadOptimize);
+el("scoutRunBtn").addEventListener("click", loadScout);
 autoRefreshBox.addEventListener("change", resetAutoRefresh);
 refreshIntervalSelect.addEventListener("change", resetAutoRefresh);
 
