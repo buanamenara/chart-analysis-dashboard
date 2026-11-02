@@ -436,6 +436,14 @@ function renderSnrChart(data) {
     });
   });
 
+  // Garis referensi berbasis volume: POC (ungu) + VWAP (biru) — magnet harga & bias intraday.
+  if (data.volumeProfile?.poc) {
+    snrSeries.createPriceLine({ price: data.volumeProfile.poc, color: "#a371f7", lineWidth: 2, lineStyle: LightweightCharts.LineStyle.Dotted, axisLabelVisible: true, title: "POC" });
+  }
+  if (data.vwap?.vwap) {
+    snrSeries.createPriceLine({ price: data.vwap.vwap, color: "#58a6ff", lineWidth: 1, lineStyle: LightweightCharts.LineStyle.Dashed, axisLabelVisible: true, title: "VWAP" });
+  }
+
   if (data.potential) {
     const p = data.potential;
     snrSeries.createPriceLine({ price: p.entry, color: "#d4af37", lineWidth: 2, lineStyle: LightweightCharts.LineStyle.Solid, axisLabelVisible: true, title: "Entry" });
@@ -479,6 +487,10 @@ function renderSnrBody(data) {
         <div class="an-item"><span class="an-k">Momentum</span><span class="an-v">${a.momentum}</span></div>
         <div class="an-item"><span class="an-k">Volatilitas</span><span class="an-v">${a.volatility}</span></div>
         ${a.divergence ? `<div class="an-item"><span class="an-k">Divergence</span><span class="an-v" style="color:${a.divergence === 'bullish' ? 'var(--green)' : 'var(--red)'}">RSI ${a.divergence.toUpperCase()} (sinyal pembalikan)</span></div>` : ""}
+        ${a.hiddenDivergence ? `<div class="an-item"><span class="an-k">Hidden Divergence</span><span class="an-v" style="color:${a.hiddenDivergence === 'bullish' ? 'var(--green)' : 'var(--red)'}">${a.hiddenDivergence.toUpperCase()} (penerusan tren)</span></div>` : ""}
+        ${a.vwap ? `<div class="an-item"><span class="an-k">VWAP</span><span class="an-v">${fmt(a.vwap.vwap)} — harga ${a.vwap.bias === 'bullish' ? 'di ATAS (bias naik)' : a.vwap.bias === 'bearish' ? 'di BAWAH (bias turun)' : 'di VWAP (netral)'}</span></div>` : ""}
+        ${a.volumeProfile ? `<div class="an-item"><span class="an-k">Volume Profile</span><span class="an-v">POC <b>${fmt(a.volumeProfile.poc)}</b> · Value Area ${fmt(a.volumeProfile.val)}–${fmt(a.volumeProfile.vah)}${a.volumeProfile.usedVolume ? "" : " (proxy rentang)"}</span></div>` : ""}
+        ${a.structure?.bos ? `<div class="an-item"><span class="an-k">Struktur (ICT)</span><span class="an-v" style="color:${a.structure.bos === 'bullish' ? 'var(--green)' : 'var(--red)'}">BOS ${a.structure.bos.toUpperCase()}${a.structure.orderBlock ? ` · OB ${fmt(a.structure.orderBlock.low)}–${fmt(a.structure.orderBlock.high)}` : ""}</span></div>` : ""}
         ${a.volume ? `<div class="an-item"><span class="an-k">Volume</span><span class="an-v">${a.volume.ratio}× rata-rata ${a.volume.aboveAvg ? "— di atas normal (konfirmasi)" : a.volume.thin ? "— tipis (lemah)" : "— normal"}</span></div>` : ""}
         ${a.fib ? `<div class="an-item"><span class="an-k">Fibonacci</span><span class="an-v">Retrace ${a.fib.direction}; terdekat ${a.fib.nearest ? (a.fib.nearest.ratio * 100).toFixed(1) + '% @ ' + fmt(a.fib.nearest.price) : '-'}${a.fib.atGoldenZone ? ' <b style="color:var(--accent)">(golden zone)</b>' : ''}</span></div>` : ""}
         <div class="an-item"><span class="an-k">Pola Candle</span><span class="an-v">${a.candle}</span></div>
@@ -645,7 +657,13 @@ async function loadScout() {
   try {
     const q = new URLSearchParams({ assetType: type, interval, symbols: symbols.join(",") });
     const res = await fetch(`/api/scout?${q.toString()}`);
-    const data = await res.json();
+    let data;
+    try { data = await res.json(); }
+    catch (e) {
+      const err = new Error("Server sedang sibuk atau deploy baru belum selesai.");
+      err.hint = "Tunggu ±1 menit lalu klik Coba Lagi.";
+      throw err;
+    }
     if (!res.ok) throw new Error(data.error || data.hint || "Gagal memindai");
 
     window.__lastScout = data;
@@ -728,6 +746,10 @@ function buildAiPrompt() {
     s += `Multi-timeframe: ${a.multiTimeframeText || "-"}\n`;
     s += `Tren: ${a.trend}\nMomentum: ${a.momentum}\nVolatilitas: ${a.volatility}\nPola candle: ${a.candle}\nSesi: ${a.sessions}\n`;
     s += `Support: ${a.support ?? "-"} | Resistance: ${a.resistance ?? "-"}\n`;
+    if (a.vwap) s += `VWAP: ${a.vwap.vwap} (harga ${a.vwap.bias}) | band ±1σ ${a.vwap.lower1}-${a.vwap.upper1}\n`;
+    if (a.volumeProfile) s += `Volume Profile: POC ${a.volumeProfile.poc}, Value Area ${a.volumeProfile.val}-${a.volumeProfile.vah}${a.volumeProfile.usedVolume ? "" : " (proxy)"}\n`;
+    if (a.structure?.bos) s += `Struktur: BOS ${a.structure.bos}${a.structure.orderBlock ? `, order block ${a.structure.orderBlock.low}-${a.structure.orderBlock.high}` : ""}\n`;
+    if (a.hiddenDivergence) s += `Hidden divergence: ${a.hiddenDivergence} (penerusan tren)\n`;
     if (a.fundamental?.text) s += `Fundamental/Makro: ${a.fundamental.text.replace(/\*\*/g, "")}\n`;
   } else {
     s += `(Buka tab "Analisa SNR" dan klik "Analisa" dulu agar data lengkap ikut tersalin.)\n`;

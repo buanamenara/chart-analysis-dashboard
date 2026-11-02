@@ -29,13 +29,13 @@ export async function onRequestGet(context) {
     ]);
     
     const indicators = computeIndicators(bars);
-    const { zones, potential, nearestSupport, nearestResistance, pivotLevels } = computeSnrZones({ indicators, dailyBars, bars });
+    const { zones, potential, nearestSupport, nearestResistance, pivotLevels, volumeProfile, vwap, structure } = computeSnrZones({ indicators, dailyBars, bars });
     const signal = generateRuleBasedSignal({ indicators, dailyBars, bars });
     const [multiTimeframe, fundamental] = await Promise.all([
       computeMultiTimeframe(assetType, symbol, interval, signal.signal, dailyBars),
       getFundamental(assetType, symbol).catch(() => null)
     ]);
-    const analysis = buildTechnicalAnalysis({ indicators, dailyBars, bars, signal, nearestSupport, nearestResistance, multiTimeframe, fundamental });
+    const analysis = buildTechnicalAnalysis({ indicators, dailyBars, bars, signal, nearestSupport, nearestResistance, multiTimeframe, fundamental, volumeProfile, vwap, structure });
 
     const data = {
       symbol,
@@ -47,6 +47,9 @@ export async function onRequestGet(context) {
       nearestSupport,
       nearestResistance,
       pivotLevels,
+      volumeProfile,
+      vwap,
+      structure,
       analysis,
       multiTimeframe,
       signal: signal.signal,
