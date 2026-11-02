@@ -567,15 +567,80 @@ function sigBadge(sig) {
   return `<span class="an-bias ${cls}">${sig}</span>`;
 }
 
+const HTF_ARROW = { up: "▲", down: "▼", flat: "—" };
+function htfCell(r) {
+  if (r.signal === "NETRAL") return `<span class="muted">${HTF_ARROW[r.htfTrend] || "—"}</span>`;
+  const cls = r.htfAlign === "align" ? "htf-align" : r.htfAlign === "conflict" ? "htf-conflict" : "muted";
+  const txt = r.htfAlign === "align" ? "searah" : r.htfAlign === "conflict" ? "lawan" : "netral";
+  return `<span class="${cls}">${HTF_ARROW[r.htfTrend] || "—"} ${txt}</span>`;
+}
+
+// Hasil terakhir disimpan supaya toggle "hanya peluang berkualitas" tak perlu scan ulang.
+window.__lastScout = null;
+function scoutIsQuality(r) {
+  return r.signal !== "NETRAL" && r.score >= 55 && r.rrQuality !== "buruk" && r.htfAlign !== "conflict";
+}
+
+function renderScout() {
+  const data = window.__lastScout;
+  const result = el("scoutResult");
+  if (!data) return;
+  const type = data.assetType;
+  const labelOf = s => (INSTRUMENTS[type] || []).find(i => i.symbol === s)?.label || s;
+  const qualityOnly = el("scoutQualityOnly")?.checked;
+  let rowsData = data.results;
+  if (qualityOnly) rowsData = rowsData.filter(scoutIsQuality);
+
+  if (!data.results.length) {
+    result.innerHTML = `<p class="muted">Tidak ada data yang bisa diambil. Coba timeframe lain.</p>`;
+    return;
+  }
+  if (!rowsData.length) {
+    result.innerHTML = `<p class="muted">Tidak ada peluang berkualitas saat ini (semua NETRAL / skor rendah / lawan tren HTF). Hilangkan centang untuk lihat semua.</p>`;
+    return;
+  }
+
+  const rows = rowsData.map((r, i) => {
+    const rrCls = r.rrQuality ? `rr-${r.rrQuality}` : "";
+    const rrTxt = r.rr != null ? `1:${r.rr} <span class="rr-q ${rrCls}">${r.rrQuality || ""}</span>` : "—";
+    const flags = [];
+    if (r.divOpp) flags.push(`<span class="scout-flag warn">divergence lawan</span>`);
+    if (r.rrQuality === "buruk") flags.push(`<span class="scout-flag warn">R:R buruk</span>`);
+    if (r.htfAlign === "conflict") flags.push(`<span class="scout-flag warn">lawan tren HTF</span>`);
+    if (!r.hasSetup) flags.push(`<span class="scout-flag">belum di area</span>`);
+    const top = i === 0 && r.signal !== "NETRAL" && r.score >= 60;
+    return `<tr class="${top ? "scout-top" : ""}">
+      <td class="scout-rank">${i + 1}</td>
+      <td class="scout-sym"><b>${r.symbol}</b><br><span class="muted">${labelOf(r.symbol)}</span></td>
+      <td>${sigBadge(r.signal)}</td>
+      <td>${r.confidence}%</td>
+      <td class="${rrCls}">${rrTxt}</td>
+      <td>${htfCell(r)}</td>
+      <td>${flags.join(" ") || "<span class=\"muted\">—</span>"}</td>
+      <td class="scout-score">${r.score}</td>
+      <td><button class="btn-ghost scout-go" onclick="window.scoutOpen('${r.symbol}')">Analisa →</button></td>
+    </tr>`;
+  }).join("");
+
+  const shownNote = qualityOnly ? ` — menampilkan ${rowsData.length}/${data.results.length} (filter kualitas aktif)` : "";
+  result.innerHTML = `
+    <div class="scout-tablewrap">
+      <table class="scout-table">
+        <thead><tr><th>#</th><th>Instrumen</th><th>Sinyal</th><th>Confidence</th><th>R:R setup</th><th>Tren HTF (D1)</th><th>Catatan</th><th>Skor</th><th></th></tr></thead>
+        <tbody>${rows}</tbody>
+      </table>
+    </div>
+    <p class="muted" style="margin-top:10px">${data.disclaimer}${shownNote}</p>`;
+}
+
 async function loadScout() {
   const { type } = currentInstrument();
   const interval = el("scoutInterval").value;
   const symbols = INSTRUMENTS[type].map(i => i.symbol);
-  const labelOf = s => INSTRUMENTS[type].find(i => i.symbol === s)?.label || s;
   const btn = el("scoutRunBtn"), status = el("scoutStatus"), result = el("scoutResult");
 
   btn.disabled = true;
-  status.textContent = `Memindai ${Math.min(symbols.length, 12)} instrumen ${ASSET_TYPE_LABELS[type]} di TF ${interval}... (menarik data, bisa beberapa detik)`;
+  status.textContent = `Memindai ${Math.min(symbols.length, 16)} instrumen ${ASSET_TYPE_LABELS[type]} di TF ${interval}... (menarik data, bisa beberapa detik)`;
   result.innerHTML = "";
   try {
     const q = new URLSearchParams({ assetType: type, interval, symbols: symbols.join(",") });
@@ -583,38 +648,10 @@ async function loadScout() {
     const data = await res.json();
     if (!res.ok) throw new Error(data.error || data.hint || "Gagal memindai");
 
-    if (!data.results.length) {
-      result.innerHTML = `<p class="muted">Tidak ada data yang bisa diambil. Coba timeframe lain.</p>`;
-    } else {
-      const rows = data.results.map((r, i) => {
-        const rrCls = r.rrQuality ? `rr-${r.rrQuality}` : "";
-        const rrTxt = r.rr != null ? `1:${r.rr} <span class="rr-q ${rrCls}">${r.rrQuality || ""}</span>` : "—";
-        const flags = [];
-        if (r.divOpp) flags.push(`<span class="scout-flag warn">divergence lawan</span>`);
-        if (r.rrQuality === "buruk") flags.push(`<span class="scout-flag warn">R:R buruk</span>`);
-        if (!r.hasSetup) flags.push(`<span class="scout-flag">belum di area</span>`);
-        const top = i === 0 && r.signal !== "NETRAL" && r.score >= 60;
-        return `<tr class="${top ? "scout-top" : ""}">
-          <td class="scout-rank">${i + 1}</td>
-          <td class="scout-sym"><b>${r.symbol}</b><br><span class="muted">${labelOf(r.symbol)}</span></td>
-          <td>${sigBadge(r.signal)}</td>
-          <td>${r.confidence}%</td>
-          <td class="${rrCls}">${rrTxt}</td>
-          <td>${flags.join(" ") || "<span class=\"muted\">—</span>"}</td>
-          <td class="scout-score">${r.score}</td>
-          <td><button class="btn-ghost scout-go" onclick="window.scoutOpen('${r.symbol}')">Analisa →</button></td>
-        </tr>`;
-      }).join("");
-      result.innerHTML = `
-        <div class="scout-tablewrap">
-          <table class="scout-table">
-            <thead><tr><th>#</th><th>Instrumen</th><th>Sinyal</th><th>Confidence</th><th>R:R setup</th><th>Catatan</th><th>Skor</th><th></th></tr></thead>
-            <tbody>${rows}</tbody>
-          </table>
-        </div>
-        <p class="muted" style="margin-top:10px">${data.disclaimer}</p>`;
-    }
-    status.innerHTML = `<span style="color:#3fb950;">●</span> Selesai (${new Date().toLocaleTimeString("id-ID")}) — ${data.scanned} instrumen`;
+    window.__lastScout = data;
+    renderScout();
+    const trunc = data.requested < symbols.length ? ` (${data.requested} teratas dipindai)` : "";
+    status.innerHTML = `<span style="color:#3fb950;">●</span> Selesai (${new Date().toLocaleTimeString("id-ID")}) — ${data.scanned} instrumen${trunc}`;
   } catch (err) {
     status.innerHTML = renderErrorHtml(err, 'scout');
   } finally {
@@ -791,6 +828,7 @@ el("copyAiBtn").addEventListener("click", copyForAi);
 el("btRunBtn").addEventListener("click", loadBacktest);
 el("btOptBtn").addEventListener("click", loadOptimize);
 el("scoutRunBtn").addEventListener("click", loadScout);
+el("scoutQualityOnly").addEventListener("change", renderScout);
 autoRefreshBox.addEventListener("change", resetAutoRefresh);
 refreshIntervalSelect.addEventListener("change", resetAutoRefresh);
 

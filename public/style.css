@@ -516,3 +516,7 @@ button:disabled { opacity: 0.5; cursor: not-allowed; }
 .rr-buruk, .rr-q.rr-buruk { color: var(--red); font-weight: 700; }
 .scout-flag { display: inline-block; font-size: 10.5px; padding: 2px 7px; border-radius: 999px; background: rgba(139,148,158,0.14); color: var(--muted); white-space: nowrap; }
 .scout-flag.warn { background: var(--red-bg); color: var(--red); font-weight: 600; }
+.scout-check { display: flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 600; text-transform: none; letter-spacing: 0; color: var(--text); cursor: pointer; }
+.scout-check input { width: 15px; height: 15px; accent-color: var(--gold, #d4af37); cursor: pointer; }
+.htf-align { color: var(--green); font-weight: 600; white-space: nowrap; }
+.htf-conflict { color: var(--red); font-weight: 600; white-space: nowrap; }
