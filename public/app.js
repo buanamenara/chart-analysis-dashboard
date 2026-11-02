@@ -443,6 +443,11 @@ function renderSnrChart(data) {
   if (data.vwap?.vwap) {
     snrSeries.createPriceLine({ price: data.vwap.vwap, color: "#58a6ff", lineWidth: 1, lineStyle: LightweightCharts.LineStyle.Dashed, axisLabelVisible: true, title: "VWAP" });
   }
+  // Opening Range Breakout: garis OR High/Low (oranye).
+  if (data.orb?.high) {
+    snrSeries.createPriceLine({ price: data.orb.high, color: "#e3a008", lineWidth: 1, lineStyle: LightweightCharts.LineStyle.Dotted, axisLabelVisible: true, title: "OR High" });
+    snrSeries.createPriceLine({ price: data.orb.low, color: "#e3a008", lineWidth: 1, lineStyle: LightweightCharts.LineStyle.Dotted, axisLabelVisible: true, title: "OR Low" });
+  }
 
   if (data.potential) {
     const p = data.potential;
@@ -491,6 +496,7 @@ function renderSnrBody(data) {
         ${a.vwap ? `<div class="an-item"><span class="an-k">VWAP</span><span class="an-v">${fmt(a.vwap.vwap)} — harga ${a.vwap.bias === 'bullish' ? 'di ATAS (bias naik)' : a.vwap.bias === 'bearish' ? 'di BAWAH (bias turun)' : 'di VWAP (netral)'}</span></div>` : ""}
         ${a.volumeProfile ? `<div class="an-item"><span class="an-k">Volume Profile</span><span class="an-v">POC <b>${fmt(a.volumeProfile.poc)}</b> · Value Area ${fmt(a.volumeProfile.val)}–${fmt(a.volumeProfile.vah)}${a.volumeProfile.usedVolume ? "" : " (proxy rentang)"}</span></div>` : ""}
         ${a.structure?.bos ? `<div class="an-item"><span class="an-k">Struktur (ICT)</span><span class="an-v" style="color:${a.structure.bos === 'bullish' ? 'var(--green)' : 'var(--red)'}">BOS ${a.structure.bos.toUpperCase()}${a.structure.orderBlock ? ` · OB ${fmt(a.structure.orderBlock.low)}–${fmt(a.structure.orderBlock.high)}` : ""}</span></div>` : ""}
+        ${a.orb ? `<div class="an-item"><span class="an-k">ORB (${a.orb.session})</span><span class="an-v" style="color:${a.orb.bias === 'bullish' ? 'var(--green)' : a.orb.bias === 'bearish' ? 'var(--red)' : 'var(--text)'}">${fmt(a.orb.low)}–${fmt(a.orb.high)} · ${a.orb.state}${a.orb.bias !== 'netral' ? ` → target ${fmt(a.orb.target)}` : ""}</span></div>` : ""}
         ${a.volume ? `<div class="an-item"><span class="an-k">Volume</span><span class="an-v">${a.volume.ratio}× rata-rata ${a.volume.aboveAvg ? "— di atas normal (konfirmasi)" : a.volume.thin ? "— tipis (lemah)" : "— normal"}</span></div>` : ""}
         ${a.fib ? `<div class="an-item"><span class="an-k">Fibonacci</span><span class="an-v">Retrace ${a.fib.direction}; terdekat ${a.fib.nearest ? (a.fib.nearest.ratio * 100).toFixed(1) + '% @ ' + fmt(a.fib.nearest.price) : '-'}${a.fib.atGoldenZone ? ' <b style="color:var(--accent)">(golden zone)</b>' : ''}</span></div>` : ""}
         <div class="an-item"><span class="an-k">Pola Candle</span><span class="an-v">${a.candle}</span></div>
@@ -749,6 +755,7 @@ function buildAiPrompt() {
     if (a.vwap) s += `VWAP: ${a.vwap.vwap} (harga ${a.vwap.bias}) | band ±1σ ${a.vwap.lower1}-${a.vwap.upper1}\n`;
     if (a.volumeProfile) s += `Volume Profile: POC ${a.volumeProfile.poc}, Value Area ${a.volumeProfile.val}-${a.volumeProfile.vah}${a.volumeProfile.usedVolume ? "" : " (proxy)"}\n`;
     if (a.structure?.bos) s += `Struktur: BOS ${a.structure.bos}${a.structure.orderBlock ? `, order block ${a.structure.orderBlock.low}-${a.structure.orderBlock.high}` : ""}\n`;
+    if (a.orb) s += `ORB ${a.orb.session}: ${a.orb.low}-${a.orb.high}, ${a.orb.state}${a.orb.bias !== 'netral' ? `, target ${a.orb.target}` : ""}\n`;
     if (a.hiddenDivergence) s += `Hidden divergence: ${a.hiddenDivergence} (penerusan tren)\n`;
     if (a.fundamental?.text) s += `Fundamental/Makro: ${a.fundamental.text.replace(/\*\*/g, "")}\n`;
   } else {
