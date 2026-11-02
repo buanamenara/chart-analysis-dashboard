@@ -490,3 +490,9 @@ button:disabled { opacity: 0.5; cursor: not-allowed; }
 .opt-table .oos-neg { color: var(--red); }
 .rb-y { color: var(--green); font-weight: 700; }
 .rb-n { color: var(--muted); }
+
+/* Trap & R:R warning */
+.trap-warn { background: var(--red-bg); border: 1px solid rgba(248,81,73,0.4); color: var(--red); font-weight: 600; font-size: 13px; line-height: 1.6; padding: 12px 14px; border-radius: 10px; margin-bottom: 12px; }
+.trap-warn b { color: var(--red); }
+.rr-warn { background: var(--amber-bg); border: 1px solid rgba(227,160,8,0.4); color: var(--amber); font-weight: 600; font-size: 12.5px; line-height: 1.55; padding: 9px 12px; border-radius: 8px; margin-bottom: 12px; }
+.rr-warn b { color: var(--amber); }

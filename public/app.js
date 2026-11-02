@@ -490,17 +490,20 @@ function renderSnrBody(data) {
     </div>`;
   }
 
+  if (a?.trapWarning) html += `<div class="trap-warn">${mdBoldToHtml(a.trapWarning)}</div>`;
+
   if (data.potential) {
     const p = data.potential;
     const cls = p.type === "BUY_ZONE" ? "buy" : "sell";
     html += `<div class="snr-potential ${cls}">${mdBoldToHtml(p.reason)}</div>`;
+    if (p.rrWarning) html += `<div class="rr-warn">${mdBoldToHtml(p.rrWarning)}</div>`;
     if (a?.fundamental?.align === "aligned") html += `<div class="fund-note aligned">✔ ${a.fundamental.kind === "crypto" ? "Fundamental" : "Makro"} SEARAH dengan setup ini — konfluensi lebih kuat.</div>`;
     else if (a?.fundamental?.align === "conflict") html += `<div class="fund-note conflict">⚠ ${a.fundamental.kind === "crypto" ? "Fundamental" : "Makro"} BERLAWANAN dengan setup ini — pertimbangkan kurangi ukuran / tunggu konfirmasi.</div>`;
     html += `<table class="snr-tpsl-table"><tbody>
       <tr class="row-entry"><td>Entry</td><td>${fmt(p.entry)}</td></tr>
       <tr class="row-sl"><td>Stop Loss</td><td>${fmt(p.stopLoss)}</td></tr>
       ${(p.takeProfit || []).map((tp, i) => `<tr class="row-tp"><td>Take Profit ${i + 1}</td><td>${fmt(tp)}</td></tr>`).join("")}
-      ${p.riskRewardRatio ? `<tr><td>Risk:Reward</td><td>1:${p.riskRewardRatio}</td></tr>` : ""}
+      ${p.riskRewardRatio ? `<tr><td>Risk:Reward</td><td style="color:${p.rrQuality === 'buruk' ? 'var(--red)' : p.rrQuality === 'baik' ? 'var(--green)' : 'var(--text)'}">1:${p.riskRewardRatio}${p.rrQuality ? ` (${p.rrQuality})` : ""}</td></tr>` : ""}
     </tbody></table>`;
   } else {
     html += `<div class="snr-potential none">Harga saat ini belum tepat berada di zona support/resistance kuat — belum ada area Buy/Sell spesifik di timeframe ini. Lihat level-level di bawah sebagai referensi.</div>`;
