@@ -439,10 +439,19 @@ function renderSnrChart(data) {
   const container = el("snrChartContainer");
   container.innerHTML = "";
   snrChart = LightweightCharts.createChart(container, {
-    layout: { background: { color: "#131722" }, textColor: "#d1d4dc" },
-    grid: { vertLines: { color: "#242832" }, horzLines: { color: "#242832" } },
-    timeScale: { timeVisible: true, secondsVisible: false },
-    rightPriceScale: { borderColor: "#242832" },
+    layout: { background: { color: "#0d1117" }, textColor: "#b4bfce" },
+    grid: { vertLines: { color: "#1b222c" }, horzLines: { color: "#1b222c" } },
+    timeScale: { timeVisible: true, secondsVisible: false, borderColor: "#272e3a" },
+    rightPriceScale: { borderColor: "#272e3a" },
+    crosshair: { mode: LightweightCharts.CrosshairMode ? LightweightCharts.CrosshairMode.Normal : 0 },
+    watermark: {
+      visible: true,
+      text: `${data.symbol || ""} · ${data.interval || ""}`,
+      color: "rgba(180,191,206,0.08)",
+      fontSize: 34,
+      horzAlign: "center",
+      vertAlign: "center"
+    },
     autoSize: true
   });
   snrSeries = snrChart.addCandlestickSeries({
@@ -458,9 +467,13 @@ function renderSnrChart(data) {
   const candles = [...seen.values()].sort((a, b) => a.time - b.time);
   snrSeries.setData(candles);
 
-  // ZONA sebagai kotak (persegi) transparan — bukan garis label yang menumpuk:
-  if (data.nearestSupport) addBand(snrSeries, data.nearestSupport.low, data.nearestSupport.high, "rgba(63,185,80,0.15)", "#3fb950");
-  if (data.nearestResistance) addBand(snrSeries, data.nearestResistance.low, data.nearestResistance.high, "rgba(248,81,73,0.15)", "#f85149");
+  // SEMUA zona SNR sebagai kotak transparan — makin kuat (banyak konfluensi) makin pekat.
+  (data.zones || []).forEach(z => {
+    const isRes = z.type === "resistance";
+    const op = Math.min(0.07 + (z.strength || 1) * 0.03, 0.2);
+    const rgb = isRes ? "248,81,73" : "63,185,80";
+    addBand(snrSeries, z.low, z.high, `rgba(${rgb},${op.toFixed(2)})`, isRes ? "#f85149" : "#3fb950");
+  });
   if (data.orb?.high) addBand(snrSeries, data.orb.low, data.orb.high, "rgba(227,160,8,0.10)", "#e3a008");
 
   // Level referensi (garis tipis, judul di garis, TANPA label sumbu -> tak menumpuk di kanan):
@@ -580,6 +593,7 @@ async function loadSnrAnalysis() {
     window.__lastSnr = data;
     renderSnrChart(data);
     renderSnrBody(data);
+    const lg = el("snrLegend"); if (lg) lg.hidden = false;
     status.innerHTML = `<span style="color:#3fb950;">●</span> Selesai (${new Date().toLocaleTimeString("id-ID")}) — TF: ${intervalSelect.options[intervalSelect.selectedIndex].text}`;
   } catch (err) {
     status.innerHTML = renderErrorHtml(err, 'snr');

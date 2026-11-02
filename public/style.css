@@ -1,22 +1,23 @@
 :root {
   color-scheme: dark;
-  --bg: #0a0906;
-  --panel: #15130c;
-  --panel-raised: #1d1a10;
-  --border: #2d2718;
-  --border-strong: #4a3f22;
-  --text: #f3ead2;
-  --muted: #a99b74;
-  --muted-2: #726648;
+  /* Base netral (gaya TradingView) — emas hanya jadi aksen, bukan warna utama */
+  --bg: #0d1117;
+  --panel: #161b22;
+  --panel-raised: #1c2230;
+  --border: #272e3a;
+  --border-strong: #3a4454;
+  --text: #e9eef5;
+  --muted: #9aa6b6;
+  --muted-2: #6b7688;
   --green: #3fb950;
   --green-bg: rgba(63, 185, 80, 0.14);
   --red: #f85149;
   --red-bg: rgba(248, 81, 73, 0.14);
   --amber: #e3a008;
   --amber-bg: rgba(227, 160, 8, 0.14);
-  --accent: #d4af37;
-  --accent-text: #1a1203;
-  --accent-bg: rgba(212, 175, 55, 0.16);
+  --accent: #e4b740;
+  --accent-text: #15120a;
+  --accent-bg: rgba(228, 183, 64, 0.14);
   --radius: 10px;
 }
 
@@ -520,3 +521,9 @@ button:disabled { opacity: 0.5; cursor: not-allowed; }
 .scout-check input { width: 15px; height: 15px; accent-color: var(--gold, #d4af37); cursor: pointer; }
 .htf-align { color: var(--green); font-weight: 600; white-space: nowrap; }
 .htf-conflict { color: var(--red); font-weight: 600; white-space: nowrap; }
+
+/* Legenda warna chart SNR */
+.snr-legend { display: flex; flex-wrap: wrap; gap: 8px 14px; align-items: center; padding: 10px 12px; margin-top: 8px; background: var(--panel-raised); border: 1px solid var(--border); border-radius: 8px; font-size: 12px; color: var(--muted); }
+.snr-legend span { display: inline-flex; align-items: center; gap: 6px; white-space: nowrap; }
+.snr-legend .lg-box { width: 14px; height: 11px; border-radius: 2px; border: 1px solid; flex-shrink: 0; }
+.snr-legend .lg-line { width: 15px; height: 3px; border-radius: 2px; flex-shrink: 0; }
