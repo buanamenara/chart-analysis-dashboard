@@ -3,15 +3,11 @@ import express from "express";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 
-import { fetchQuote, fetchOhlcv, fetchDailyBars, assetTypeError } from "./lib/marketData.js";
+import { fetchQuote, fetchOhlcv, assetTypeError } from "./lib/marketData.js";
 import { computeIndicators, summarizeTrend } from "./lib/indicators.js";
-import { generateRuleBasedSignal } from "./lib/ruleSignal.js";
-import { computeSnrZones } from "./lib/snr.js";
-import { buildTechnicalAnalysis } from "./lib/analysis.js";
-import { computeMultiTimeframe } from "./lib/multiTimeframe.js";
-import { getFundamental } from "./lib/fundamental.js";
 import { runBacktest, optimizeBacktest } from "./lib/backtest.js";
 import { runScout } from "./lib/scout.js";
+import { buildSignalReport, buildSnrReport } from "./lib/analysisPipeline.js";
 import { fetchRss, fetchRssMulti } from "./lib/rss.js";
 import { NEWS_SOURCES, ECONOMIC_NEWS_SOURCE } from "./lib/newsSources.js";
 import { getEconomicCalendar, filterCalendarBySymbol, pairBiasFromCurrencyBias } from "./lib/calendar.js";
@@ -181,7 +177,7 @@ app.get("/api/analysis-data", async (req, res) => {
         fetchQuote(assetType, symbol),
         fetchOhlcv(assetType, symbol, interval)
       ]);
-      const indicators = computeIndicators(bars);
+      const indicators = computeIndicators(bars, { interval });
       const trend = summarizeTrend(indicators);
       return {
         symbol,
@@ -216,14 +212,7 @@ app.get("/api/signal", async (req, res) => {
       });
     }
 
-    const compute = async () => {
-      const [bars, dailyBars] = await Promise.all([
-        fetchOhlcv(assetType, symbol, interval),
-        fetchDailyBars(assetType, symbol)
-      ]);
-      const indicators = computeIndicators(bars);
-      return generateRuleBasedSignal({ indicators, dailyBars, bars });
-    };
+    const compute = () => buildSignalReport(assetType, symbol, interval);
 
     const key = `signal:${assetType}:${symbol}:${interval}`;
     const result = shouldBypassCache(req) ? await compute() : await cached(key, 20_000, compute);
@@ -246,44 +235,7 @@ app.get("/api/snr", async (req, res) => {
       });
     }
 
-    const compute = async () => {
-      const [bars, dailyBars] = await Promise.all([
-        fetchOhlcv(assetType, symbol, interval),
-        fetchDailyBars(assetType, symbol)
-      ]);
-      const indicators = computeIndicators(bars);
-      const { zones, potential, nearestSupport, nearestResistance, pivotLevels, volumeProfile, vwap, structure, orb } = computeSnrZones({ indicators, dailyBars, bars });
-      const signal = generateRuleBasedSignal({ indicators, dailyBars, bars });
-      const [multiTimeframe, fundamental] = await Promise.all([
-        computeMultiTimeframe(assetType, symbol, interval, signal.signal, dailyBars),
-        getFundamental(assetType, symbol).catch(() => null)
-      ]);
-      const analysis = buildTechnicalAnalysis({ indicators, dailyBars, bars, signal, nearestSupport, nearestResistance, multiTimeframe, fundamental, volumeProfile, vwap, structure, orb });
-
-      return {
-        symbol,
-        assetType,
-        interval,
-        currentPrice: indicators.lastClose,
-        zones,
-        potential,
-        nearestSupport,
-        nearestResistance,
-        pivotLevels,
-        volumeProfile,
-        vwap,
-        structure,
-        orb,
-        analysis,
-        multiTimeframe,
-        signal: signal.signal,
-        confidence: analysis.overallConfidence ?? signal.confidence,
-        confidenceLabel: analysis.confidenceLabel ?? signal.confidenceLabel,
-        signalReasons: signal.reasons,
-        disclaimer: signal.disclaimer,
-        bars: bars.slice(-180)
-      };
-    };
+    const compute = () => buildSnrReport(assetType, symbol, interval);
 
     const key = `snr:${assetType}:${symbol}:${interval}`;
     const data = shouldBypassCache(req) ? await compute() : await cached(key, 30_000, compute);

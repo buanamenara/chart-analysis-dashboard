@@ -23,7 +23,7 @@ export async function onRequestGet(context) {
       fetchOhlcv(assetType, symbol, interval)
     ]);
     
-    const indicators = computeIndicators(bars);
+    const indicators = computeIndicators(bars, { interval });
     const trend = summarizeTrend(indicators);
 
     const data = {

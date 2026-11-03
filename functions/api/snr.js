@@ -1,10 +1,4 @@
-import { fetchOhlcv, fetchDailyBars } from "../../lib/marketData.js";
-import { computeIndicators } from "../../lib/indicators.js";
-import { generateRuleBasedSignal } from "../../lib/ruleSignal.js";
-import { computeSnrZones } from "../../lib/snr.js";
-import { buildTechnicalAnalysis } from "../../lib/analysis.js";
-import { computeMultiTimeframe } from "../../lib/multiTimeframe.js";
-import { getFundamental } from "../../lib/fundamental.js";
+import { buildSnrReport } from "../../lib/analysisPipeline.js";
 
 export async function onRequestGet(context) {
   const { request } = context;
@@ -23,43 +17,7 @@ export async function onRequestGet(context) {
   }
 
   try {
-    const [bars, dailyBars] = await Promise.all([
-      fetchOhlcv(assetType, symbol, interval),
-      fetchDailyBars(assetType, symbol)
-    ]);
-    
-    const indicators = computeIndicators(bars);
-    const { zones, potential, nearestSupport, nearestResistance, pivotLevels, volumeProfile, vwap, structure, orb } = computeSnrZones({ indicators, dailyBars, bars });
-    const signal = generateRuleBasedSignal({ indicators, dailyBars, bars });
-    const [multiTimeframe, fundamental] = await Promise.all([
-      computeMultiTimeframe(assetType, symbol, interval, signal.signal, dailyBars),
-      getFundamental(assetType, symbol).catch(() => null)
-    ]);
-    const analysis = buildTechnicalAnalysis({ indicators, dailyBars, bars, signal, nearestSupport, nearestResistance, multiTimeframe, fundamental, volumeProfile, vwap, structure, orb });
-
-    const data = {
-      symbol,
-      assetType,
-      interval,
-      currentPrice: indicators.lastClose,
-      zones,
-      potential,
-      nearestSupport,
-      nearestResistance,
-      pivotLevels,
-      volumeProfile,
-      vwap,
-      structure,
-      orb,
-      analysis,
-      multiTimeframe,
-      signal: signal.signal,
-      confidence: analysis.overallConfidence ?? signal.confidence,
-      confidenceLabel: analysis.confidenceLabel ?? signal.confidenceLabel,
-      signalReasons: signal.reasons,
-      disclaimer: signal.disclaimer,
-      bars: bars.slice(-180)
-    };
+    const data = await buildSnrReport(assetType, symbol, interval);
 
     return new Response(JSON.stringify(data), {
       headers: {

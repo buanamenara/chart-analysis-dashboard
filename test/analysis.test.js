@@ -19,8 +19,8 @@ test("rule-based signal reports directional confidence from available evidence",
   });
 
   assert.equal(result.signal, "BUY");
-  // Skor berbobot (weighted) menghasilkan kesepakatan 78% -> label "Tinggi".
-  assert.equal(result.confidence, 78);
+  // Semua bukti yang memberi arah bullish (RSI & %b netral tidak ikut dihitung) -> 100%.
+  assert.equal(result.confidence, 100);
   assert.equal(result.confidenceLabel, "Tinggi");
 });
 
@@ -37,13 +37,14 @@ test("multi-timeframe summary measures directional agreement and ignores neutral
   assert.equal(typeof analysis.summarizeTimeframeSignals, "function");
   const result = analysis.summarizeTimeframeSignals("BUY", [
     { interval: "4h", signal: "BUY" },
-    { interval: "1d", signal: "SELL" },
-    { interval: "1wk", signal: "NETRAL" }
+    { interval: "1d", signal: "BUY" },
+    { interval: "1wk", signal: "SELL" },
+    { interval: "1mo", signal: "NETRAL" }
   ]);
   assert.equal(result.bias, "BUY");
-  assert.equal(result.agreementPercent, 50);
+  assert.equal(result.agreementPercent, 67);
   assert.equal(result.currentAligned, true);
-  assert.equal(result.directionalTimeframes, 2);
+  assert.equal(result.directionalTimeframes, 3);
 });
 
 test("market regime classifies trending vs ranging from ADX and DI", () => {
