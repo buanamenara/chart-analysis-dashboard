@@ -65,7 +65,12 @@ test("OHLCV: candle terakhir null tanpa harga live -> dibuang", () => {
 // ---------- 3. Binance host cadangan ----------
 const okRes = body => ({ ok: true, status: 200, json: async () => body });
 
-test("Binance: host utama gagal -> pakai data-api.binance.vision, lalu diingat", async () => {
+test("Binance: data-api.binance.vision dicoba pertama", () => {
+  assert.equal(BINANCE_HOSTS[0], "https://data-api.binance.vision");
+  assert.equal(BINANCE_HOSTS[1], "https://api.binance.com");
+});
+
+test("Binance: host pertama gagal -> pakai host cadangan, lalu diingat", async () => {
   _resetPreferredHost();
   const calls = [];
   const fake = async url => {
@@ -75,16 +80,16 @@ test("Binance: host utama gagal -> pakai data-api.binance.vision, lalu diingat",
   };
   assert.deepEqual(await binanceGet("/ticker/24hr?symbol=BTCUSDT", fake), { lastPrice: "1" });
   assert.equal(calls.length, 2);
-  assert.ok(calls[1].startsWith("https://data-api.binance.vision/api/v3/"));
+  assert.ok(calls[1].startsWith(`${BINANCE_HOSTS[1]}/api/v3/`));
 
   calls.length = 0;
   await binanceGet("/ticker/24hr?symbol=ETHUSDT", fake);
   assert.equal(calls.length, 1, "host yang berhasil dipakai duluan");
-  assert.ok(calls[0].startsWith("https://data-api.binance.vision"));
+  assert.ok(calls[0].startsWith(BINANCE_HOSTS[1]));
   _resetPreferredHost();
 });
 
-test("Binance: HTTP 451 di host utama -> fallback", async () => {
+test("Binance: HTTP 451 di host pertama -> fallback", async () => {
   _resetPreferredHost();
   const fake = async url => url.startsWith(BINANCE_HOSTS[0])
     ? { ok: false, status: 451 }
