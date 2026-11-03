@@ -13,7 +13,7 @@ export async function onRequestGet(context) {
       ok: false,
       code: "MISSING_PARAMS",
       error: "Parameter 'symbol' dan 'assetType' wajib diisi.",
-      hint: "Contoh: /api/analysis-data?symbol=XAUUSD&assetType=gold&interval=1h"
+      hint: "Contoh: /api/analysis-data?symbol=XAUUSD&assetType=forex&interval=1h"
     }), { status: 400, headers: { "Content-Type": "application/json" } });
   }
 

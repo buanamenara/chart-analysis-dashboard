@@ -3,7 +3,7 @@ import express from "express";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 
-import { fetchQuote, fetchOhlcv, fetchDailyBars } from "./lib/marketData.js";
+import { fetchQuote, fetchOhlcv, fetchDailyBars, assetTypeError } from "./lib/marketData.js";
 import { computeIndicators, summarizeTrend } from "./lib/indicators.js";
 import { generateRuleBasedSignal } from "./lib/ruleSignal.js";
 import { computeSnrZones } from "./lib/snr.js";
@@ -22,6 +22,14 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const app = express();
 app.use(express.json());
 app.use(express.static(path.join(__dirname, "public")));
+
+// Tolak assetType yang tidak dikenal (400) untuk semua /api/*.
+// Padanan Cloudflare: functions/api/_middleware.js (logika sama dari lib/marketData.js).
+app.use("/api", (req, res, next) => {
+  const err = assetTypeError(req.query.assetType);
+  if (err) return res.status(400).json(err);
+  next();
+});
 
 // ============================================================
 // CACHE SEDERHANA (in-memory) — dari perbaikan #3
@@ -142,7 +150,7 @@ app.get("/api/quote", async (req, res) => {
         ok: false,
         code: "MISSING_PARAMS",
         error: "Parameter 'symbol' dan 'assetType' wajib diisi.",
-        hint: "Contoh: /api/quote?symbol=XAUUSD&assetType=gold"
+        hint: "Contoh: /api/quote?symbol=XAUUSD&assetType=forex"
       });
     }
 
@@ -164,7 +172,7 @@ app.get("/api/analysis-data", async (req, res) => {
         ok: false,
         code: "MISSING_PARAMS",
         error: "Parameter 'symbol' dan 'assetType' wajib diisi.",
-        hint: "Contoh: /api/analysis-data?symbol=XAUUSD&assetType=gold&interval=1h"
+        hint: "Contoh: /api/analysis-data?symbol=XAUUSD&assetType=forex&interval=1h"
       });
     }
 
@@ -204,7 +212,7 @@ app.get("/api/signal", async (req, res) => {
         ok: false,
         code: "MISSING_PARAMS",
         error: "Parameter 'symbol' dan 'assetType' wajib diisi.",
-        hint: "Contoh: /api/signal?symbol=XAUUSD&assetType=gold&interval=1h"
+        hint: "Contoh: /api/signal?symbol=XAUUSD&assetType=forex&interval=1h"
       });
     }
 
@@ -234,7 +242,7 @@ app.get("/api/snr", async (req, res) => {
         ok: false,
         code: "MISSING_PARAMS",
         error: "Parameter 'symbol' dan 'assetType' wajib diisi.",
-        hint: "Contoh: /api/snr?symbol=XAUUSD&assetType=gold&interval=1h"
+        hint: "Contoh: /api/snr?symbol=XAUUSD&assetType=forex&interval=1h"
       });
     }
 

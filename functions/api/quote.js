@@ -1,4 +1,9 @@
 import { fetchQuote } from "../../lib/marketData.js";
+import { createMemoCache } from "../../lib/memoCache.js";
+
+// Sama dengan server.js: cache 10 detik per simbol (bypass dengan ?nocache=1).
+const memo = createMemoCache();
+const QUOTE_TTL_MS = 10_000;
 
 export async function onRequestGet(context) {
   const { request } = context;
@@ -12,12 +17,15 @@ export async function onRequestGet(context) {
       ok: false,
       code: "MISSING_PARAMS",
       error: "Parameter 'symbol' dan 'assetType' wajib diisi.",
-      hint: "Contoh: /api/quote?symbol=XAUUSD&assetType=gold"
+      hint: "Contoh: /api/quote?symbol=XAUUSD&assetType=forex"
     }), { status: 400, headers: { "Content-Type": "application/json" } });
   }
 
   try {
-    const quote = await fetchQuote(assetType, symbol);
+    const nocache = ["1", "true"].includes(url.searchParams.get("nocache"));
+    const quote = nocache
+      ? await fetchQuote(assetType, symbol)
+      : await memo(`quote:${assetType}:${symbol}`, QUOTE_TTL_MS, () => fetchQuote(assetType, symbol));
     
     // 2. Cache 10 detik (Biar cepat)
     return new Response(JSON.stringify(quote), {
