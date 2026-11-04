@@ -102,7 +102,8 @@ Cocok untuk:
 ## Spread & Kontrak Broker
 
 EA menghitung dolar per point dari spesifikasi broker (tick value/size), jadi otomatis benar untuk:
-- Exness: **XAUUSDm** (0.01 lot = 1 oz, spread ~$0.24–0.40)
+- Exness: **XAUUSDm** (terminal terhubung: contract size 100 oz, minimum/step 0.01 lot, spread observasi $0.24). Akun terhubung memakai mata uang **IDR**, sehingga EA mengonversi target USD melalui `USDIDRm` sebelum menghitung jarak harga.
+- Exness: **BTCUSDm** (terminal terhubung: contract size 1 BTC, minimum/step 0.01 lot, spread observasi $6.40). Ini jauh lebih besar daripada asumsi biaya riset Binance.
 - Vantage: **XAUUSD** (kontrak & spread tergantung akun)
 - BTC: cek nama simbol (`BTCUSD`, `BTCUSDm`, dsb.) dan lot size di Market Watch → Specification.
 

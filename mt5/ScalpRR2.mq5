@@ -69,7 +69,32 @@ double MoneyPerPriceUnit(const double lots)
    if(tickValue <= 0.0) tickValue = SymbolInfoDouble(_Symbol, SYMBOL_TRADE_TICK_VALUE);
    const double tickSize = SymbolInfoDouble(_Symbol, SYMBOL_TRADE_TICK_SIZE);
    if(tickValue <= 0.0 || tickSize <= 0.0) return 0.0;
-   return tickValue / tickSize * lots;
+   return tickValue / tickSize * lots; // dalam mata uang akun
+  }
+
+// Konversi nominal USD ke mata uang akun. Exness account user terdeteksi IDR;
+// tanpa konversi ini input TP/SL "$10" akan salah sebesar ~18.000x.
+bool UsdToAccount(const double usd, double &accountAmount)
+  {
+   const string accountCurrency = AccountInfoString(ACCOUNT_CURRENCY);
+   if(accountCurrency == "USD") { accountAmount = usd; return true; }
+   const string direct = "USD" + accountCurrency + "m";
+   const string plain = "USD" + accountCurrency;
+   string conv = "";
+   if(SymbolSelect(direct, true) && SymbolInfoDouble(direct, SYMBOL_BID) > 0.0) conv = direct;
+   else if(SymbolSelect(plain, true) && SymbolInfoDouble(plain, SYMBOL_BID) > 0.0) conv = plain;
+   if(conv == "") return false;
+   const double rate = SymbolInfoDouble(conv, SYMBOL_BID);
+   accountAmount = usd * rate;
+   return true;
+  }
+
+bool AccountToUsd(const double accountAmount, double &usdAmount)
+  {
+   double oneUsd = 0.0;
+   if(!UsdToAccount(1.0, oneUsd) || oneUsd <= 0.0) return false;
+   usdAmount = accountAmount / oneUsd;
+   return true;
   }
 
 double NormalizeLots(double lots)
@@ -242,10 +267,13 @@ int OnInit()
    trade.SetDeviationInPoints(30);
    const double lots = NormalizeLots(InpLots);
    const double mpu = MoneyPerPriceUnit(lots);
-   PrintFormat("ScalpRR2 %s | mode=%s | lot=%.2f | $ per 1.0 harga=%.4f | TP $%.2f = %.*f harga | SL $%.2f = %.*f harga",
-               _Symbol, InpAutoTrade ? "AUTO-TRADE" : "SINYAL SAJA", lots, mpu,
-               InpTakeProfitUSD, _Digits, mpu > 0 ? InpTakeProfitUSD / mpu : 0.0,
-               InpStopLossUSD, _Digits, mpu > 0 ? InpStopLossUSD / mpu : 0.0);
+   double tpAccount = 0.0, slAccount = 0.0;
+   if(!UsdToAccount(InpTakeProfitUSD, tpAccount) || !UsdToAccount(InpStopLossUSD, slAccount))
+      Print("PERINGATAN: currency akun bukan USD dan simbol konversi USD/akun tidak ditemukan.");
+   PrintFormat("ScalpRR2 %s | mode=%s | akun=%s | lot=%.2f | nilai 1.0 harga=%.4f akun | TP $%.2f (%.2f akun) = %.*f harga | SL $%.2f (%.2f akun) = %.*f harga",
+               _Symbol, InpAutoTrade ? "AUTO-TRADE" : "SINYAL SAJA", AccountInfoString(ACCOUNT_CURRENCY), lots, mpu,
+               InpTakeProfitUSD, tpAccount, _Digits, mpu > 0 ? tpAccount / mpu : 0.0,
+               InpStopLossUSD, slAccount, _Digits, mpu > 0 ? slAccount / mpu : 0.0);
    lastBarTime = iTime(_Symbol, InpSignalTF, 0); // jangan menembak sinyal lama saat EA baru dipasang
    return INIT_SUCCEEDED;
   }
@@ -275,6 +303,9 @@ void OnTick()
    const double lots = NormalizeLots(InpLots);
    const double mpu = MoneyPerPriceUnit(lots);
    if(mpu <= 0.0) { Print("Spesifikasi simbol tidak lengkap (tick value/size)."); return; }
+   double tpAccount = 0.0, slAccount = 0.0;
+   if(!UsdToAccount(InpTakeProfitUSD, tpAccount) || !UsdToAccount(InpStopLossUSD, slAccount))
+     { Notify("Sinyal dilewati: tidak bisa mengonversi USD ke mata uang akun " + AccountInfoString(ACCOUNT_CURRENCY)); return; }
 
    MqlTick tick;
    if(!SymbolInfoTick(_Symbol, tick)) return;
@@ -286,7 +317,7 @@ void OnTick()
      }
 
    const double entry = dir > 0 ? tick.ask : tick.bid;
-   const double tpDist = InpTakeProfitUSD / mpu, slDist = InpStopLossUSD / mpu;
+   const double tpDist = tpAccount / mpu, slDist = slAccount / mpu;
    const double stopsLevel = SymbolInfoInteger(_Symbol, SYMBOL_TRADE_STOPS_LEVEL) * _Point;
    if(slDist <= stopsLevel || tpDist <= stopsLevel)
      {
