@@ -1,5 +1,16 @@
 # Instalasi EA ScalpRR2 ke MT5
 
+## Status Kompilasi
+
+EA source `ScalpRR2.mq5` sudah dikompilasi dengan MetaEditor 5 lokal pada 5 November 2026:
+
+```text
+Compile ... ScalpRR2.mq5 - 0 errors, 0 warnings
+Output: ScalpRR2.ex5
+```
+
+Compile ulang tetap disarankan di MetaEditor milik instalasi MT5 broker yang akan dipakai.
+
 ## Cara 1: Kompilasi Manual (Termudah)
 
 1. **Buka MT5 desktop** yang sudah terhubung ke broker (Exness/Vantage).
@@ -33,7 +44,7 @@
 
 ## Cara 2: Copy File Langsung (Kalau MetaEditor Tidak Tersedia)
 
-File `.mq5` (source code) harus dikompilasi dulu menjadi `.ex5` (executable) agar bisa dijalankan MT5. Karena MetaEditor belum terdeteksi di sistem ini, **ikuti Cara 1 di atas** dengan MetaEditor dari instalasi MT5 milik broker.
+File `.mq5` (source code) harus dikompilasi dulu menjadi `.ex5` (executable) agar bisa dijalankan MT5. Source ini sudah lolos compile lokal dengan 0 error dan 0 warning, tetapi tetap ikuti Cara 1 di atas di instalasi MT5 broker yang akan dipakai.
 
 ---
 
