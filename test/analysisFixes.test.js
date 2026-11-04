@@ -1,7 +1,7 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import { summarizeTimeframeSignals, buildTechnicalAnalysis, biasFromSignal } from "../lib/analysis.js";
-import { generateRuleBasedSignal, regimeWeights } from "../lib/ruleSignal.js";
+import { generateRuleBasedSignal, counterTrendWeight } from "../lib/ruleSignal.js";
 import { computeIndicators, isLastBarOpen } from "../lib/indicators.js";
 import { computeSnrZones, clusterLevels, pickTargets } from "../lib/snr.js";
 
@@ -73,10 +73,10 @@ test("B: overbought saat pasar tidak trending tetap dihitung", () => {
 });
 
 test("B: bobot pantulan melawan tren turun bertahap (tanpa lompatan)", () => {
-  assert.equal(regimeWeights(20).counterMult, 1);
-  assert.equal(regimeWeights(30).counterMult, 0.5);
-  assert.equal(regimeWeights(40).counterMult, 0);
-  assert.equal(regimeWeights(null).counterMult, 1);
+  assert.equal(counterTrendWeight(20), 1);
+  assert.equal(counterTrendWeight(30), 0.5);
+  assert.equal(counterTrendWeight(40), 0);
+  assert.equal(counterTrendWeight(null), 1);
 });
 
 const mkBars = (n, t0, step) => Array.from({ length: n }, (_, i) => {
@@ -98,6 +98,10 @@ test("B: indikator dihitung dari candle tertutup; harga live tetap jadi lastClos
   assert.equal(a.ema20, closedOnly.ema20);
   // tanpa interval: perilaku lama
   assert.equal(computeIndicators(live).lastBarOpen, false);
+  // candle berjalan SELALU dibuang, termasuk saat datanya pas-pasan (31 candle)
+  const short = live.slice(-31);
+  assert.equal(computeIndicators(short, { interval: "1h", now }).barsUsed, 30);
+  assert.equal(computeIndicators(short.slice(-30), { interval: "1h", now }).insufficientData, true);
 });
 
 // ---------- C. zona SNR ----------

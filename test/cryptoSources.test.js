@@ -92,7 +92,7 @@ test("rantai sumber: semua gagal -> error berisi alasan tiap sumber", async () =
 });
 
 test("cryptoOhlcv menempelkan sumber data pada array (tidak ikut JSON)", async () => {
-  const bars = Array.from({ length: 40 }, (_, i) => ({ time: i * H, open: 1, high: 1, low: 1, close: 1, volume: 1 }));
+  const bars = Array.from({ length: 250 }, (_, i) => ({ time: i * H, open: 1, high: 1, low: 1, close: 1, volume: 1 }));
   const out = await cryptoOhlcv("BTCUSDT", "1h", 250, { sources: [{ name: "x", ohlcv: async () => bars }] });
   assert.equal(out.source, "x");
   assert.equal(out.fallbackReason, null);
