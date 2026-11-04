@@ -294,12 +294,21 @@ async function loadSignal() {
       : data.signal === "SELL" ? `Bias turun · keyakinan ${data.confidenceLabel || "-"}`
       : "Belum ada dominasi arah";
 
-    el("signalReasons").innerHTML = (data.reasons || []).map(r => `<li>${mdBoldToHtml(r)}</li>`).join("");
+    // Ringkas seperti mockup: 3 alasan teratas, sisanya dilipat di "Lihat semua alasan".
+    const reasons = (data.reasons || []).map(r => `<li>${mdBoldToHtml(r)}</li>`);
+    el("signalReasons").innerHTML = reasons.slice(0, 3).join("");
+    el("signalReasonsMore").innerHTML = reasons.slice(3).join("");
+    el("signalMoreWrap").hidden = reasons.length <= 3;
+    document.querySelectorAll(".ss-pill").forEach(p => p.classList.toggle("active", p.dataset.s === data.signal));
     el("signalDisclaimer").textContent = data.disclaimer || "";
   } catch (err) {
     el("signalBadge").textContent = "ERROR";
     el("signalBadge").className = "signal-badge signal-netral";
     el("signalReasons").innerHTML = `<li>${renderErrorHtml(err, 'signal')}</li>`;
+    el("signalMoreWrap").hidden = true;
+    el("signalConf").textContent = "-";
+    el("signalConfFill").style.width = "0%";
+    document.querySelectorAll(".ss-pill").forEach(p => p.classList.remove("active"));
   }
 }
 window.retryLoad.signal = loadSignal;
@@ -327,11 +336,37 @@ async function loadNews() {
     }
     html += data.items?.length ? data.items.map(newsRow).join("") : `<div class="muted">Tidak ada berita.</div>`;
     body.innerHTML = html;
+    renderNewsMini(sn, data.items || [], symbol);
   } catch (err) {
     body.innerHTML = renderErrorHtml(err, 'news');
   }
 }
 window.retryLoad.news = loadNews;
+
+// Kartu berita ringkas di halaman Chart (mockup Canva: "Khusus Emas").
+// Pakai berita khusus simbol bila ada; kalau tidak (mis. EURUSD/saham), berita umum.
+function renderNewsMini(symbolNews, generalItems, symbol) {
+  const body = el("newsMiniBody");
+  if (!body) return;
+  const items = (symbolNews?.items?.length ? symbolNews.items : generalItems).slice(0, 4);
+  el("newsMiniTitle").textContent = symbolNews ? `Khusus ${symbolNews.asset}` : `Berita ${symbol}`;
+  if (!items.length) { body.innerHTML = `<div class="muted">Belum ada berita relevan.</div>`; return; }
+  const hhmm = d => {
+    const t = Date.parse(d);
+    return Number.isFinite(t) ? new Date(t).toLocaleTimeString("id-ID", { timeZone: "Asia/Jakarta", hour: "2-digit", minute: "2-digit" }) : "";
+  };
+  body.innerHTML = items.map(n => {
+    const title = n.link ? `<a class="nm-title" href="${esc(n.link)}" target="_blank" rel="noopener">${esc(n.title)}</a>` : `<span class="nm-title">${esc(n.title)}</span>`;
+    const tag = (n.tags || [])[0];
+    return `<div class="nm-item"><span class="nm-time">${esc(hhmm(n.pubDate))}</span>${title}<span class="nm-tag">${tag ? `<span class="news-tag t-${esc(String(tag).replace(/\s+/g, "-"))}">${esc(tag)}</span>` : ""}</span></div>`;
+  }).join("");
+}
+
+// "Lihat semua berita →": pindah ke Kalender & Berita, tab Berita Pasar.
+function openAllNews() {
+  document.querySelector('.quicknav-btn[data-view="news"]')?.click();
+  document.querySelector('.tab-btn[data-tab="market-news"]')?.click();
+}
 
 function renderEventBias(e, assetType, symbol) {
   const info = e.biasInfo;
@@ -1041,6 +1076,7 @@ el("btOptBtn").addEventListener("click", loadOptimize);
 el("scoutRunBtn").addEventListener("click", loadScout);
 el("scoutQualityOnly").addEventListener("change", renderScout);
 el("pcCalcBtn").addEventListener("click", calcPosition);
+el("newsMiniMore").addEventListener("click", openAllNews);
 el("pcBalance").addEventListener("input", calcPosition);
 el("pcRisk").addEventListener("input", calcPosition);
 autoRefreshBox.addEventListener("change", resetAutoRefresh);

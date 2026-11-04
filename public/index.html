@@ -36,7 +36,7 @@
       <div>
         <h1>WAR-GOLD-FX</h1>
         <p class="tagline">Trade<span class="dot">•</span>Analyze<span class="dot">•</span>Profit</p>
-        <p class="subtitle">Analisa Forex, Gold &amp; Crypto real-time — tumbuh bersama.</p>
+        <p class="subtitle">Tumbuh Bersama</p>
       </div>
     </div>
     <div class="market-clock" aria-live="off">
@@ -96,6 +96,8 @@
     </section>
 
     <div class="view" id="view-chart">
+    <div class="chart-layout">
+      <div class="chart-main">
     <section class="chart-panel">
       <div id="tv_chart_container"></div>
     </section>
@@ -109,7 +111,16 @@
       <div class="is-cell"><div class="is-k">Resistance Terdekat</div><div class="is-v down" id="isRes">-</div><div class="is-s" id="isResSub"></div></div>
     </section>
 
-    <section class="info-grid">
+      <div class="card indicator-card">
+        <h3>Indikator Teknikal</h3>
+        <table id="indicatorTable">
+          <tbody></tbody>
+        </table>
+        <p class="trend-summary" id="trendSummary"></p>
+      </div>
+      </div>
+
+      <aside class="chart-side">
       <div class="card quote-card">
         <h2 id="quoteSymbol">-</h2>
         <div class="quote-head">
@@ -150,22 +161,33 @@
           </div>
         </div>
         <ul id="signalReasons" class="signal-reasons"></ul>
+        <details class="signal-more" id="signalMoreWrap" hidden>
+          <summary>Lihat semua alasan</summary>
+          <ul id="signalReasonsMore" class="signal-reasons"></ul>
+        </details>
+        <div class="signal-scale" aria-label="Status sinyal">
+          <span class="ss-label">Status sinyal</span>
+          <div class="ss-pills">
+            <span class="ss-pill buy" data-s="BUY">BUY</span>
+            <span class="ss-pill sell" data-s="SELL">SELL</span>
+            <span class="ss-pill netral" data-s="NETRAL">NETRAL</span>
+          </div>
+        </div>
         <p class="muted" id="signalDisclaimer"></p>
       </div>
 
-      <div class="card indicator-card">
-        <h3>Indikator Teknikal</h3>
-        <table id="indicatorTable">
-          <tbody></tbody>
-        </table>
-        <p class="trend-summary" id="trendSummary"></p>
+      <div class="card news-mini">
+        <h3 id="newsMiniTitle">Berita Khusus</h3>
+        <div id="newsMiniBody" class="news-mini-list"><div class="muted">Memuat berita...</div></div>
+        <button type="button" class="link-btn" id="newsMiniMore">Lihat semua berita →</button>
       </div>
 
       <div class="card sentiment-card" id="sentimentCard" style="display:none">
         <h3>Sentimen Crypto</h3>
         <div id="sentimentBody"></div>
       </div>
-    </section>
+      </aside>
+    </div>
     </div>
 
     <div class="view" id="view-scout" hidden>
