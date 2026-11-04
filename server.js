@@ -3,11 +3,10 @@ import express from "express";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 
-import { fetchQuote, fetchOhlcv, assetTypeError } from "./lib/marketData.js";
-import { computeIndicators, summarizeTrend } from "./lib/indicators.js";
+import { fetchQuote, assetTypeError } from "./lib/marketData.js";
 import { runBacktest, optimizeBacktest } from "./lib/backtest.js";
 import { runScout } from "./lib/scout.js";
-import { buildSignalReport, buildSnrReport } from "./lib/analysisPipeline.js";
+import { buildSignalReport, buildSnrReport, buildAnalysisData } from "./lib/analysisPipeline.js";
 import { buildNewsReport } from "./lib/newsReport.js";
 import { fetchRss } from "./lib/rss.js";
 import { ECONOMIC_NEWS_SOURCE } from "./lib/newsSources.js";
@@ -173,24 +172,7 @@ app.get("/api/analysis-data", async (req, res) => {
       });
     }
 
-    const compute = async () => {
-      const [quote, bars] = await Promise.all([
-        fetchQuote(assetType, symbol),
-        fetchOhlcv(assetType, symbol, interval)
-      ]);
-      const indicators = computeIndicators(bars, { interval });
-      const trend = summarizeTrend(indicators);
-      return {
-        symbol,
-        assetType,
-        interval,
-        quote,
-        indicators,
-        trendSummary: trend,
-        barCount: bars.length,
-        lastBars: bars.slice(-20)
-      };
-    };
+    const compute = () => buildAnalysisData(assetType, symbol, interval);
 
     const key = `analysis:${assetType}:${symbol}:${interval}`;
     const data = shouldBypassCache(req) ? await compute() : await cached(key, 15_000, compute);

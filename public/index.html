@@ -11,9 +11,9 @@
 <!-- ===== DISCLAIMER BANNER (mulai) ===== -->
 <style>
   .disclaimer-banner {
-    background: #fff3cd;
-    color: #664d03;
-    border-bottom: 1px solid #ffe69c;
+    background: #1a1608;
+    color: #e9d9a6;
+    border-bottom: 1px solid rgba(228, 183, 64, 0.35);
     padding: 8px 14px;
     font-size: 13px;
     text-align: center;
@@ -35,8 +35,15 @@
       <img src="favicon.webp" alt="WAR-GOLD-FX" class="logo" />
       <div>
         <h1>WAR-GOLD-FX</h1>
-        <p class="subtitle">Analisa Forex, Gold &amp; Crypto real-time — sinyal otomatis, zona Buy/Sell, dan kalender ekonomi dalam satu dashboard.</p>
+        <p class="tagline">Trade<span class="dot">•</span>Analyze<span class="dot">•</span>Profit</p>
+        <p class="subtitle">Analisa Forex, Gold &amp; Crypto real-time — tumbuh bersama.</p>
       </div>
+    </div>
+    <div class="market-clock" aria-live="off">
+      <div class="mc-top"><span>Waktu Pasar</span><span class="mc-status" id="mcStatus">-</span></div>
+      <div class="mc-date" id="mcDate">-</div>
+      <div class="mc-time" id="mcTime">--:--:-- WIB</div>
+      <div class="mc-session" id="mcSession"></div>
     </div>
   </header>
 
@@ -93,11 +100,25 @@
       <div id="tv_chart_container"></div>
     </section>
 
+    <section class="info-strip" id="infoStrip" aria-label="Ringkasan pasar">
+      <div class="is-cell"><div class="is-k">Tren</div><div class="is-v" id="isTrend">-</div><div class="is-s" id="isTrendSub"></div></div>
+      <div class="is-cell"><div class="is-k">Volatilitas (ATR)</div><div class="is-v" id="isAtr">-</div><div class="is-s" id="isAtrSub"></div></div>
+      <div class="is-cell"><div class="is-k">Volume</div><div class="is-v" id="isVol">-</div><div class="is-s" id="isVolSub"></div></div>
+      <div class="is-cell"><div class="is-k">Range Harian</div><div class="is-v" id="isRange">-</div><div class="is-s" id="isRangeSub"></div></div>
+      <div class="is-cell"><div class="is-k">Support Terdekat</div><div class="is-v up" id="isSup">-</div><div class="is-s" id="isSupSub"></div></div>
+      <div class="is-cell"><div class="is-k">Resistance Terdekat</div><div class="is-v down" id="isRes">-</div><div class="is-s" id="isResSub"></div></div>
+    </section>
+
     <section class="info-grid">
       <div class="card quote-card">
         <h2 id="quoteSymbol">-</h2>
-        <div class="price" id="quotePrice">-</div>
-        <div class="change" id="quoteChange">-</div>
+        <div class="quote-head">
+          <div>
+            <div class="price" id="quotePrice">-</div>
+            <div class="change" id="quoteChange">-</div>
+          </div>
+          <svg class="spark" id="quoteSpark" viewBox="0 0 120 44" preserveAspectRatio="none" aria-hidden="true"></svg>
+        </div>
 
         <div class="range-block">
           <div class="range-row">
@@ -118,8 +139,16 @@
       </div>
 
       <div class="card signal-card">
-        <h3>Sinyal Teknikal</h3>
-        <div id="signalBadge" class="signal-badge signal-netral">-</div>
+        <h3>Sinyal Utama</h3>
+        <div class="signal-top">
+          <div id="signalBadge" class="signal-badge signal-netral">-</div>
+          <div class="conf">
+            <div class="conf-label">Keyakinan</div>
+            <div class="conf-val" id="signalConf">-</div>
+            <div class="conf-track"><div class="conf-fill" id="signalConfFill"></div></div>
+            <div class="signal-sub" id="signalSub"></div>
+          </div>
+        </div>
         <ul id="signalReasons" class="signal-reasons"></ul>
         <p class="muted" id="signalDisclaimer"></p>
       </div>

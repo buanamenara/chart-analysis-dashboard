@@ -1,5 +1,4 @@
-import { fetchQuote, fetchOhlcv } from "../../lib/marketData.js";
-import { computeIndicators, summarizeTrend } from "../../lib/indicators.js";
+import { buildAnalysisData } from "../../lib/analysisPipeline.js";
 
 export async function onRequestGet(context) {
   const { request } = context;
@@ -18,24 +17,7 @@ export async function onRequestGet(context) {
   }
 
   try {
-    const [quote, bars] = await Promise.all([
-      fetchQuote(assetType, symbol),
-      fetchOhlcv(assetType, symbol, interval)
-    ]);
-    
-    const indicators = computeIndicators(bars, { interval });
-    const trend = summarizeTrend(indicators);
-
-    const data = {
-      symbol,
-      assetType,
-      interval,
-      quote,
-      indicators,
-      trendSummary: trend,
-      barCount: bars.length,
-      lastBars: bars.slice(-20)
-    };
+    const data = await buildAnalysisData(assetType, symbol, interval);
 
     return new Response(JSON.stringify(data), {
       headers: {

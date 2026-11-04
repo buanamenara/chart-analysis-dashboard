@@ -103,7 +103,7 @@ function renderTvChart() {
     theme: "dark",
     style: "1",
     locale: "id",
-    toolbar_bg: "#15130c",
+    toolbar_bg: "#10151c",
     enable_publishing: false,
     allow_symbol_change: false,
     container_id: "tv_chart_container"
@@ -138,16 +138,19 @@ async function loadData() {
     }
 
     const q = data.quote;
-    el("quotePrice").textContent = fmt(q.price, type === "crypto" ? 2 : 5);
+    const dp = priceDigits(type, q.price);
+    el("quotePrice").textContent = fmt(q.price, dp);
     const changeEl = el("quoteChange");
-    const changeTxt = `${q.change >= 0 ? "+" : ""}${fmt(q.change, 4)} (${fmt(q.changePercent, 2)}%)`;
+    const changeTxt = `${q.change >= 0 ? "+" : ""}${fmt(q.change, dp)} (${fmt(q.changePercent, 2)}%)`;
     changeEl.textContent = changeTxt;
     changeEl.className = `change ${q.change >= 0 ? "positive" : "negative"}`;
     
-    el("lastUpdated").innerHTML = `<span style="color:#3fb950;">●</span> Diperbarui: ${new Date().toLocaleTimeString("id-ID")} · Sumber: ${q.source === "binance" ? "Binance" : "Yahoo Finance"} (${q.symbol})`;
+    el("lastUpdated").innerHTML = `<span style="color:#3fb950;">●</span> Diperbarui: ${new Date().toLocaleTimeString("id-ID", { timeZone: "Asia/Jakarta" })} WIB · Sumber: ${esc(SOURCE_LABELS[q.source] || q.source || "-")} (${esc(q.symbol)})`;
+    renderSparkline(data.lastBars || []);
+    renderInfoStrip(data, type);
 
-    el("quoteLow").textContent = `L ${fmt(q.low)}`;
-    el("quoteHigh").textContent = `H ${fmt(q.high)}`;
+    el("quoteLow").textContent = `L ${fmt(q.low, dp)}`;
+    el("quoteHigh").textContent = `H ${fmt(q.high, dp)}`;
     if (q.high > q.low) {
       const pct = Math.min(100, Math.max(0, ((q.price - q.low) / (q.high - q.low)) * 100));
       el("rangePct").textContent = `${fmt(pct, 0)}%`;
@@ -182,6 +185,84 @@ async function loadData() {
 }
 window.retryLoad.data = loadData;
 
+// Jumlah desimal harga: crypto & harga besar (emas, indeks) 2 desimal, pair forex 5.
+function priceDigits(type, price) {
+  if (type === "crypto") return price >= 1 ? 2 : 6;
+  return price > 100 ? 2 : 5;
+}
+
+const SOURCE_LABELS = { binance: "Binance", gateio: "Gate.io", coinbase: "Coinbase", kraken: "Kraken", yahoo: "Yahoo Finance" };
+
+// Grafik mini harga di kartu harga (dari 20 candle terakhir).
+function renderSparkline(bars) {
+  const svg = el("quoteSpark");
+  if (!svg) return;
+  const closes = bars.map(b => b.close).filter(Number.isFinite);
+  if (closes.length < 2) { svg.innerHTML = ""; return; }
+  const min = Math.min(...closes), max = Math.max(...closes), span = max - min || 1;
+  const W = 120, H = 44, pad = 3;
+  const pts = closes.map((c, i) => [i / (closes.length - 1) * W, pad + (1 - (c - min) / span) * (H - 2 * pad)]);
+  const line = pts.map(([x, y], i) => `${i ? "L" : "M"}${x.toFixed(1)},${y.toFixed(1)}`).join(" ");
+  svg.setAttribute("class", `spark ${closes.at(-1) >= closes[0] ? "up" : "down"}`);
+  svg.innerHTML = `<path class="area" d="${line} L${W},${H} L0,${H} Z"></path><path class="line" d="${line}"></path>`;
+}
+
+// Strip info di bawah chart: tren, ATR, volume, range harian, S/R terdekat.
+function renderInfoStrip(data, type) {
+  const ind = data.indicators || {}, q = data.quote || {}, lv = data.levels || {};
+  const price = q.price ?? ind.lastClose;
+  const dp = priceDigits(type, price);
+  const set = (id, text, cls) => { const e = el(id); if (!e) return; e.textContent = text; if (cls !== undefined) e.className = `is-v ${cls}`; };
+  const sub = (id, text) => { const e = el(id); if (e) e.textContent = text; };
+
+  if (ind.insufficientData) {
+    ["isTrend", "isAtr", "isVol"].forEach(id => set(id, "-", ""));
+    sub("isTrendSub", "data belum cukup");
+  } else {
+    const up = ind.ema20 > ind.ema50 && (ind.sma200 == null || price > ind.sma200);
+    const down = ind.ema20 < ind.ema50 && (ind.sma200 == null || price < ind.sma200);
+    set("isTrend", up ? "BULLISH" : down ? "BEARISH" : "CAMPUR", up ? "up" : down ? "down" : "");
+    sub("isTrendSub", ind.adx14 == null ? "" : ind.adx14 >= 25 ? `Kuat (ADX ${fmt(ind.adx14, 0)})` : ind.adx14 >= 20 ? `Sedang (ADX ${fmt(ind.adx14, 0)})` : `Lemah / sideways (ADX ${fmt(ind.adx14, 0)})`);
+    set("isAtr", ind.atr14 != null ? fmt(ind.atr14, dp) : "-", "");
+    sub("isAtrSub", ind.atr14 != null && price ? `${fmt(ind.atr14 / price * 100, 2)}% dari harga / candle` : "");
+    const v = ind.volume;
+    if (v?.available && v.ratio != null) {
+      set("isVol", v.aboveAvg ? "Tinggi" : v.thin ? "Tipis" : "Normal", v.aboveAvg ? "up" : v.thin ? "down" : "");
+      sub("isVolSub", `${fmt(v.ratio, 2)}× rata-rata`);
+    } else {
+      set("isVol", "-", "");
+      sub("isVolSub", "tidak tersedia");
+    }
+  }
+  if (q.high > q.low) {
+    set("isRange", `${fmt(q.low, dp)} – ${fmt(q.high, dp)}`, "");
+    sub("isRangeSub", `harga di ${fmt((price - q.low) / (q.high - q.low) * 100, 0)}% range`);
+  } else { set("isRange", "-", ""); sub("isRangeSub", ""); }
+  const dist = lvl => (lvl != null && price ? `${fmt(Math.abs(price - lvl) / price * 100, 2)}% dari harga` : "");
+  set("isSup", lv.support != null ? fmt(lv.support, dp) : "-", "up"); sub("isSupSub", dist(lv.support));
+  set("isRes", lv.resistance != null ? fmt(lv.resistance, dp) : "-", "down"); sub("isResSub", dist(lv.resistance));
+}
+
+// Jam pasar (WIB) + status pasar & sesi aktif. Jam sesi perkiraan (UTC):
+// Sydney 21–06, Tokyo 00–09, London 07–16, New York 12–21. Forex/emas libur
+// Jumat 21:00 UTC s.d. Minggu 21:00 UTC; crypto buka 24/7.
+function updateMarketClock() {
+  const now = new Date();
+  const wib = { timeZone: "Asia/Jakarta" };
+  el("mcTime").textContent = `${now.toLocaleTimeString("id-ID", { ...wib, hour12: false })} WIB`;
+  el("mcDate").textContent = now.toLocaleDateString("id-ID", { ...wib, weekday: "long", day: "numeric", month: "long", year: "numeric" });
+  const type = assetTypeSelect.value;
+  const d = now.getUTCDay(), h = now.getUTCHours();
+  const fxClosed = (d === 5 && h >= 21) || d === 6 || (d === 0 && h < 21);
+  const status = el("mcStatus");
+  if (type === "crypto") { status.textContent = "Buka 24/7"; status.className = "mc-status"; }
+  else if (type === "forex") { status.textContent = fxClosed ? "Libur" : "Buka"; status.className = `mc-status${fxClosed ? " closed" : ""}`; }
+  else { status.textContent = "Cek jam bursa"; status.className = "mc-status closed"; }
+  const sessions = [["Sydney", 21, 6], ["Tokyo", 0, 9], ["London", 7, 16], ["New York", 12, 21]]
+    .filter(([, a, b]) => (a < b ? h >= a && h < b : h >= a || h < b)).map(([n]) => n);
+  el("mcSession").textContent = type === "stock" ? "" : (type === "forex" && fxClosed) ? "Pasar forex tutup akhir pekan" : `Sesi aktif: ${sessions.join(" + ") || "-"}`;
+}
+
 function mdBoldToHtml(text) {
   const span = document.createElement("span");
   span.textContent = text;
@@ -204,8 +285,14 @@ async function loadSignal() {
     lastSignal = data.signal;
 
     const badge = el("signalBadge");
-    badge.textContent = data.signal === "BUY" ? "BUY (bias naik)" : data.signal === "SELL" ? "SELL (bias turun)" : "NETRAL";
+    badge.textContent = data.signal;
     badge.className = `signal-badge signal-${data.signal.toLowerCase()}`;
+    const conf = Number.isFinite(data.confidence) ? data.confidence : null;
+    el("signalConf").textContent = conf != null ? `${conf}%` : "-";
+    el("signalConfFill").style.width = `${conf ?? 0}%`;
+    el("signalSub").textContent = data.signal === "BUY" ? `Bias naik · keyakinan ${data.confidenceLabel || "-"}`
+      : data.signal === "SELL" ? `Bias turun · keyakinan ${data.confidenceLabel || "-"}`
+      : "Belum ada dominasi arah";
 
     el("signalReasons").innerHTML = (data.reasons || []).map(r => `<li>${mdBoldToHtml(r)}</li>`).join("");
     el("signalDisclaimer").textContent = data.disclaimer || "";
@@ -230,7 +317,7 @@ async function loadNews() {
       error.hint = data.hint;
       throw error;
     }
-    const newsRow = n => `<div class="news-item">${n.link ? `<a href="${esc(n.link)}" target="_blank" rel="noopener">${esc(n.title)}</a>` : `<span>${esc(n.title)}</span>`}<div class="news-source">${(n.tags || []).map(t => `<span class="news-tag">${esc(t)}</span>`).join("")}${esc(n.source)}${n.pubDate ? " · " + new Date(n.pubDate).toLocaleString("id-ID") : ""}</div></div>`;
+    const newsRow = n => `<div class="news-item">${n.link ? `<a href="${esc(n.link)}" target="_blank" rel="noopener">${esc(n.title)}</a>` : `<span>${esc(n.title)}</span>`}<div class="news-source">${(n.tags || []).map(t => `<span class="news-tag t-${esc(String(t).replace(/\s+/g, "-"))}">${esc(t)}</span>`).join("")}${esc(n.source)}${n.pubDate ? " · " + new Date(n.pubDate).toLocaleString("id-ID") : ""}</div></div>`;
     let html = "";
     const sn = data.symbolNews;
     if (sn) {
@@ -966,3 +1053,5 @@ populateSymbols();
 renderTvChart();
 refreshAll();
 resetAutoRefresh();
+updateMarketClock();
+setInterval(updateMarketClock, 1000);
