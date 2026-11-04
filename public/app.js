@@ -167,14 +167,14 @@ async function loadData() {
     const rows = ind.insufficientData
       ? [["Status", "Data historis belum cukup"]]
       : [
-          ["Harga Terakhir", fmt(ind.lastClose)],
+          ["Harga Terakhir", fmt(ind.lastClose, dp)],
           ["RSI (14)", ind.rsi14 != null ? fmt(ind.rsi14, 1) : "-"],
-          ["EMA 20", fmt(ind.ema20)],
-          ["EMA 50", fmt(ind.ema50)],
-          ["SMA 200", ind.sma200 != null ? fmt(ind.sma200) : "Belum cukup data"],
+          ["EMA 20", fmt(ind.ema20, dp)],
+          ["EMA 50", fmt(ind.ema50, dp)],
+          ["SMA 200", ind.sma200 != null ? fmt(ind.sma200, dp) : "Belum cukup data"],
           ["MACD", ind.macd ? fmt(ind.macd.MACD, 4) : "-"],
-          ["BB Upper", ind.bollinger ? fmt(ind.bollinger.upper) : "-"],
-          ["BB Lower", ind.bollinger ? fmt(ind.bollinger.lower) : "-"]
+          ["BB Upper", ind.bollinger ? fmt(ind.bollinger.upper, dp) : "-"],
+          ["BB Lower", ind.bollinger ? fmt(ind.bollinger.lower, dp) : "-"]
         ];
     el("indicatorTable").querySelector("tbody").innerHTML = rows
       .map(([k, v]) => `<tr><td>${k}</td><td>${v}</td></tr>`)
