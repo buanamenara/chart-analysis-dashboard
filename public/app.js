@@ -149,10 +149,11 @@ async function loadData() {
     renderSparkline(data.lastBars || []);
     renderInfoStrip(data, type);
 
-    el("quoteLow").textContent = `L ${fmt(q.low, dp)}`;
-    el("quoteHigh").textContent = `H ${fmt(q.high, dp)}`;
-    if (q.high > q.low) {
-      const pct = Math.min(100, Math.max(0, ((q.price - q.low) / (q.high - q.low)) * 100));
+    const { low, high } = dayRange(q);
+    el("quoteLow").textContent = `L ${fmt(low, dp)}`;
+    el("quoteHigh").textContent = `H ${fmt(high, dp)}`;
+    if (high > low) {
+      const pct = Math.min(100, Math.max(0, ((q.price - low) / (high - low)) * 100));
       el("rangePct").textContent = `${fmt(pct, 0)}%`;
       el("rangeFill").style.width = `${pct}%`;
       el("rangeDot").style.left = `${pct}%`;
@@ -189,6 +190,15 @@ window.retryLoad.data = loadData;
 function priceDigits(type, price) {
   if (type === "crypto") return price >= 1 ? 2 : 6;
   return price > 100 ? 2 : 5;
+}
+
+// High/low harian dari sumber data kadang tertinggal dari harga terkini (mis. Yahoo):
+// rentang diperluas agar selalu memuat harga sekarang (posisi tidak lewat 100%).
+function dayRange(q) {
+  const p = Number.isFinite(q?.price) ? q.price : null;
+  const low = Number.isFinite(q?.low) ? (p != null ? Math.min(q.low, p) : q.low) : null;
+  const high = Number.isFinite(q?.high) ? (p != null ? Math.max(q.high, p) : q.high) : null;
+  return { low, high };
 }
 
 const SOURCE_LABELS = { binance: "Binance", gateio: "Gate.io", coinbase: "Coinbase", kraken: "Kraken", yahoo: "Yahoo Finance" };
@@ -234,9 +244,10 @@ function renderInfoStrip(data, type) {
       sub("isVolSub", "tidak tersedia");
     }
   }
-  if (q.high > q.low) {
-    set("isRange", `${fmt(q.low, dp)} – ${fmt(q.high, dp)}`, "");
-    sub("isRangeSub", `harga di ${fmt((price - q.low) / (q.high - q.low) * 100, 0)}% range`);
+  const { low, high } = dayRange(q);
+  if (high > low) {
+    set("isRange", `${fmt(low, dp)} – ${fmt(high, dp)}`, "");
+    sub("isRangeSub", `harga di ${fmt((price - low) / (high - low) * 100, 0)}% range`);
   } else { set("isRange", "-", ""); sub("isRangeSub", ""); }
   const dist = lvl => (lvl != null && price ? `${fmt(Math.abs(price - lvl) / price * 100, 2)}% dari harga` : "");
   set("isSup", lv.support != null ? fmt(lv.support, dp) : "-", "up"); sub("isSupSub", dist(lv.support));

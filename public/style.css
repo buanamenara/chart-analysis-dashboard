@@ -378,6 +378,7 @@ a.nm-title:hover { color: var(--accent); }
 .is-cell:last-child { border-right: none; }
 .is-k { font-size: 10.5px; font-weight: 700; letter-spacing: 0.5px; text-transform: uppercase; color: var(--muted-2); }
 .is-v { font-size: 17px; font-weight: 800; margin-top: 4px; font-variant-numeric: tabular-nums; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+#isRange { font-size: 14px; white-space: normal; line-height: 1.25; } /* rentang 2 angka: boleh 2 baris, jangan terpotong */
 .is-s { font-size: 11px; color: var(--muted); margin-top: 2px; }
 .is-v.up { color: var(--green); }
 .is-v.down { color: var(--red); }
