@@ -63,9 +63,9 @@ let lastSignal = null;
 window.retryLoad = {};
 function renderErrorHtml(err, retryKey) {
   const msg = err.message || "Gagal mengambil data.";
-  const hint = err.hint ? `<div style="font-size: 13px; color: #d1d4dc; margin-top: 6px;">${err.hint}</div>` : "";
+  const hint = err.hint ? `<div style="font-size: 13px; color: #d1d4dc; margin-top: 6px;">${esc(err.hint)}</div>` : "";
   return `<div class="error-box" style="padding: 12px; background: rgba(248, 81, 73, 0.1); border-left: 3px solid #f85149; margin: 10px 0; border-radius: 4px; text-align: left;">
-    <div style="color: #f85149; font-weight: 600;">⚠️ ${msg}</div>
+    <div style="color: #f85149; font-weight: 600;">⚠️ ${esc(msg)}</div>
     ${hint}
     <button onclick="window.retryLoad['${retryKey}']()" style="margin-top: 10px; font-size: 12px; padding: 6px 12px; background: transparent; border: 1px solid #555; color: #fff; border-radius: 4px; cursor: pointer; transition: 0.2s;" onmouseover="this.style.background='#333'" onmouseout="this.style.background='transparent'">Coba Lagi</button>
   </div>`;
@@ -301,7 +301,9 @@ async function loadSignal() {
     const conf = Number.isFinite(data.confidence) ? data.confidence : null;
     el("signalConf").textContent = conf != null ? `${conf}%` : "-";
     el("signalConfFill").style.width = `${conf ?? 0}%`;
-    el("signalSub").textContent = data.signal === "BUY" ? `Bias naik · keyakinan ${data.confidenceLabel || "-"}`
+    badge.classList.toggle("signal-weak", !!data.weakSignal);
+    el("signalSub").textContent = data.weakSignal ? `${data.signal} lemah — banyak faktor berlawanan, lebih aman tunggu konfirmasi`
+      : data.signal === "BUY" ? `Bias naik · keyakinan ${data.confidenceLabel || "-"}`
       : data.signal === "SELL" ? `Bias turun · keyakinan ${data.confidenceLabel || "-"}`
       : "Belum ada dominasi arah";
 
@@ -360,7 +362,9 @@ function renderNewsMini(symbolNews, generalItems, symbol) {
   const body = el("newsMiniBody");
   if (!body) return;
   const items = (symbolNews?.items?.length ? symbolNews.items : generalItems).slice(0, 4);
-  el("newsMiniTitle").textContent = symbolNews ? `Khusus ${symbolNews.asset}` : `Berita ${symbol}`;
+  // Tanpa berita khusus simbol, yang tampil berita UMUM kategori — beri judul jujur.
+  const usingSymbol = !!symbolNews?.items?.length;
+  el("newsMiniTitle").textContent = usingSymbol ? `Khusus ${symbolNews.asset}` : `Berita ${ASSET_TYPE_LABELS[assetTypeSelect.value] || "Pasar"} (umum)`;
   if (!items.length) { body.innerHTML = `<div class="muted">Belum ada berita relevan.</div>`; return; }
   const hhmm = d => {
     const t = Date.parse(d);
@@ -659,7 +663,7 @@ function renderSnrBody(data) {
     const conf = a.overallConfidence != null ? `<span class="an-conf conf-${(a.confidenceLabel || "").toLowerCase()}">Keyakinan: ${a.confidenceLabel} ${a.overallConfidence}%</span>` : "";
     const regimeText = a.regime ? `${a.regime.strength} (ADX ${a.regime.adx}${a.regime.direction ? ", " + a.regime.direction : ""})` : "-";
     html += `<div class="snr-analysis">
-      <div class="an-head"><span class="an-bias ${biasCls}">Bias Teknikal: ${biasLabel}</span>${conf}</div>
+      <div class="an-head"><span class="an-bias ${biasCls}">Bias Teknikal: ${biasLabel}</span>${conf}${a.weakSignal ? `<span class="an-conf conf-rendah">⚠ Sinyal lemah</span>` : ""}</div>
       <div class="an-grid">
         <div class="an-item"><span class="an-k">Kekuatan Tren</span><span class="an-v">${regimeText}</span></div>
         <div class="an-item"><span class="an-k">Multi-Timeframe</span><span class="an-v">${a.multiTimeframeText || "-"}</span></div>
@@ -697,7 +701,7 @@ function renderSnrBody(data) {
     html += `<table class="snr-tpsl-table"><tbody>
       <tr class="row-entry"><td>Entry</td><td>${fmt(p.entry)}</td></tr>
       <tr class="row-sl"><td>Stop Loss</td><td>${fmt(p.stopLoss)}</td></tr>
-      ${(p.takeProfit || []).map((tp, i) => `<tr class="row-tp"><td>Take Profit ${i + 1}</td><td>${fmt(tp)}</td></tr>`).join("")}
+      ${(p.takeProfit || []).map((tp, i) => `<tr class="row-tp"><td>Take Profit ${i + 1}${p.tpProjected ? ` <span class="muted">(proyeksi 1:2)</span>` : ""}</td><td>${fmt(tp)}</td></tr>`).join("")}
       ${p.riskRewardRatio ? `<tr><td>Risk:Reward</td><td style="color:${p.rrQuality === 'buruk' ? 'var(--red)' : p.rrQuality === 'baik' ? 'var(--green)' : 'var(--text)'}">1:${p.riskRewardRatio}${p.rrQuality ? ` (${p.rrQuality})` : ""}</td></tr>` : ""}
     </tbody></table>`;
   } else if (data.skippedSetup) {
@@ -872,7 +876,7 @@ function renderScout() {
   result.innerHTML = `
     <div class="scout-tablewrap">
       <table class="scout-table">
-        <thead><tr><th>#</th><th>Instrumen</th><th>Sinyal</th><th>Confidence</th><th>R:R setup</th><th>Tren HTF (D1)</th><th>Catatan</th><th>Skor</th><th></th></tr></thead>
+        <thead><tr><th>#</th><th>Instrumen</th><th>Sinyal</th><th title="Porsi indikator yang searah (Scout tidak menghitung konfirmasi TF besar)">Kesepakatan</th><th>R:R setup</th><th>Tren HTF (D1)</th><th>Catatan</th><th>Skor</th><th></th></tr></thead>
         <tbody>${rows}</tbody>
       </table>
     </div>
@@ -959,7 +963,7 @@ async function loadBacktest() {
     eq.innerHTML = `<div class="bt-eqlabel">Kurva ekuitas (akumulasi R):</div>${equitySvg(data.equityCurve)}`;
     status.innerHTML = `<span style="color:#3fb950;">●</span> Selesai (${new Date().toLocaleTimeString("id-ID")})`;
   } catch (err) {
-    status.innerHTML = `<span style="color:#f85149;">●</span> Error: ${err.message}`;
+    status.innerHTML = `<span style="color:#f85149;">●</span> Error: ${esc(err.message)}`;
   } finally {
     btn.disabled = false;
   }
@@ -1039,7 +1043,7 @@ async function loadOptimize() {
       <p class="muted" style="margin-top:8px">${data.disclaimer}</p>`;
     status.innerHTML = `<span style="color:#3fb950;">●</span> Optimasi selesai (${new Date().toLocaleTimeString("id-ID")})`;
   } catch (err) {
-    status.innerHTML = `<span style="color:#f85149;">●</span> Error: ${err.message}`;
+    status.innerHTML = `<span style="color:#f85149;">●</span> Error: ${esc(err.message)}`;
   } finally {
     btn.disabled = false;
   }
