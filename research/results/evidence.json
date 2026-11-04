@@ -1,0 +1,2150 @@
+{
+  "status": "completed",
+  "started_utc": "2026-11-04T16:42:06.416378+00:00",
+  "seed": 271828,
+  "script_sha256": "dd5dcd181543b45daecdceeed21e953428550fcbc0477c23714cc8ed64fa65aa",
+  "python": "3.12.10 (tags/v3.12.10:0cc8128, Apr  8 2025, 12:21:36) [MSC v.1943 64 bit (AMD64)]",
+  "versions": {
+    "numpy": "2.1.3",
+    "pandas": "2.2.3",
+    "sklearn": "1.5.2"
+  },
+  "fixed_window": {
+    "start_utc": "2026-08-06T00:00:00Z",
+    "end_exclusive_utc": "2026-11-04T00:00:00Z",
+    "days": 90
+  },
+  "source": "https://data-api.binance.vision/api/v3/klines",
+  "methodology": {
+    "horizon_minutes": 30,
+    "split": "60/20/20 chronological; H+1 bars purged at train and validation ends",
+    "entry": "Next bar open after completed signal candle",
+    "labels": "Gross TP first vs SL first within 30 minutes; ambiguous same-minute touches SL first; timeout forced close; final full-horizon-unavailable bars dropped",
+    "gaps": "Adverse gap fills at opening price; favorable gaps capped at TP. Opening TP gap precedes subsequent intrabar SL because its order is observable.",
+    "models": "Logistic C=.1; HGB 60 iterations depth 3 leaves 7. Fixed seed. No early-stopping random validation.",
+    "selection": "64 fixed hypotheses per symbol: 2 gross TPs x 2 directions x 2 models x 4 thresholds. Validation max net PnL with >=30 trades; tie first hypothesis. No retraining. Selected policy tested once; same trades repriced for cost stress.",
+    "predictions": "Uncalibrated model scores, NOT calibrated win probabilities.",
+    "execution": "One position per symbol, no overlapping trades, no signals until strictly after exit bar.",
+    "costs": "Gross levels derived from assumed quantities; fixed scenario spread+slippage deducted from every exit. No broker spread path or bid/ask execution evidence."
+  },
+  "warnings": [
+    "PAXGUSDT is exchange-traded gold token, not broker XAUUSDm; BTCUSDT spot is not broker BTCUSD. Proxy results do not establish broker performance.",
+    "XAU .01 lot = 1 oz and BTC .01 lot = .01 BTC are UNCONFIRMED contract assumptions; USDT is treated as USD without FX/depeg modeling.",
+    "XAU spread .24 based only on user screenshot around 2026-11-04 16:00 server time (Bid 4048.435 Ask 4048.675); .40 wider assumption; commission zero from user; .02 slippage invented scenario, not observed.",
+    "BTC spread .20/.50 and .10 slippage are USD PnL cost assumptions, not quotes. Commission zero is an unverified BTC scenario.",
+    "Wilson 95% intervals assume independent trades; sequential samples are dependent and selection/multiple testing increases uncertainty. Intervals are descriptive, likely too narrow.",
+    "85% is a desired target, never a guarantee. No test optimization or reruns to improve outcomes. High hit rate alone is insufficient.",
+    "No MT5 tick data, broker contract verification, financing, execution latency, partial fills, margin or liquidation simulation. Spread is an additive approximation, not bid/ask replay.",
+    "Fixed 90-day window selected before market-data inspection. No prior flawed script conclusions used."
+  ],
+  "symbols": {
+    "BTCUSDT": {
+      "data": {
+        "path": "cache\\BTCUSDT_1m_1785974400000_1793750400000.csv",
+        "sha256": "9cc9053fc10ac5877893021595ab19c076f942374d477c40f7dd8cce5857a247",
+        "rows": 129600,
+        "requests_this_run": 130,
+        "first_utc": "2026-08-06T00:00:00+00:00",
+        "last_utc": "2026-11-03T23:59:00+00:00"
+      },
+      "hypotheses": [
+        {
+          "tp_usd": 5.0,
+          "sl_usd": 2.5,
+          "direction": 1,
+          "model": "logistic",
+          "threshold": 0.4,
+          "validation": {
+            "n_trades": 16,
+            "net_wins": 5,
+            "net_win_rate": 0.3125,
+            "tp_hits": 5,
+            "tp_hit_rate": 0.3125,
+            "gross_pnl_usd": 2.662599999999948,
+            "net_pnl_usd": -2.137400000000051,
+            "expectancy_usd": -0.1335875000000032,
+            "realized_max_drawdown_usd": 14.941900000000023,
+            "trades_per_day": 0.8899532620031674,
+            "net_win_rate_wilson95": [
+              0.14164643854782039,
+              0.5559564416525933
+            ],
+            "tp_hit_rate_wilson95": [
+              0.14164643854782039,
+              0.5559564416525933
+            ],
+            "timeout_count": 3,
+            "cost_per_round_trip_usd": 0.30000000000000004
+          },
+          "eligible": false
+        },
+        {
+          "tp_usd": 5.0,
+          "sl_usd": 2.5,
+          "direction": 1,
+          "model": "logistic",
+          "threshold": 0.5,
+          "validation": {
+            "n_trades": 8,
+            "net_wins": 2,
+            "net_win_rate": 0.25,
+            "tp_hits": 2,
+            "tp_hit_rate": 0.25,
+            "gross_pnl_usd": -5.0,
+            "net_pnl_usd": -7.399999999999999,
+            "expectancy_usd": -0.9249999999999998,
+            "realized_max_drawdown_usd": 14.0,
+            "trades_per_day": 0.4449766310015837,
+            "net_win_rate_wilson95": [
+              0.071479212752109,
+              0.5907245696898311
+            ],
+            "tp_hit_rate_wilson95": [
+              0.071479212752109,
+              0.5907245696898311
+            ],
+            "timeout_count": 0,
+            "cost_per_round_trip_usd": 0.30000000000000004
+          },
+          "eligible": false
+        },
+        {
+          "tp_usd": 5.0,
+          "sl_usd": 2.5,
+          "direction": 1,
+          "model": "logistic",
+          "threshold": 0.6,
+          "validation": {
+            "n_trades": 6,
+            "net_wins": 0,
+            "net_win_rate": 0.0,
+            "tp_hits": 0,
+            "tp_hit_rate": 0.0,
+            "gross_pnl_usd": -15.0,
+            "net_pnl_usd": -16.8,
+            "expectancy_usd": -2.8000000000000003,
+            "realized_max_drawdown_usd": 16.8,
+            "trades_per_day": 0.33373247325118777,
+            "net_win_rate_wilson95": [
+              2.7755575615628914e-17,
+              0.3903342879021653
+            ],
+            "tp_hit_rate_wilson95": [
+              2.7755575615628914e-17,
+              0.3903342879021653
+            ],
+            "timeout_count": 0,
+            "cost_per_round_trip_usd": 0.30000000000000004
+          },
+          "eligible": false
+        },
+        {
+          "tp_usd": 5.0,
+          "sl_usd": 2.5,
+          "direction": 1,
+          "model": "logistic",
+          "threshold": 0.7,
+          "validation": {
+            "n_trades": 2,
+            "net_wins": 0,
+            "net_win_rate": 0.0,
+            "tp_hits": 0,
+            "tp_hit_rate": 0.0,
+            "gross_pnl_usd": -5.0,
+            "net_pnl_usd": -5.6,
+            "expectancy_usd": -2.8,
+            "realized_max_drawdown_usd": 5.6,
+            "trades_per_day": 0.11124415775039592,
+            "net_win_rate_wilson95": [
+              0.0,
+              0.6576197724933469
+            ],
+            "tp_hit_rate_wilson95": [
+              0.0,
+              0.6576197724933469
+            ],
+            "timeout_count": 0,
+            "cost_per_round_trip_usd": 0.30000000000000004
+          },
+          "eligible": false
+        },
+        {
+          "tp_usd": 5.0,
+          "sl_usd": 2.5,
+          "direction": 1,
+          "model": "hist_gradient_boosting",
+          "threshold": 0.4,
+          "validation": {
+            "n_trades": 0,
+            "net_wins": 0,
+            "net_win_rate": null,
+            "tp_hits": 0,
+            "tp_hit_rate": null,
+            "gross_pnl_usd": 0.0,
+            "net_pnl_usd": 0.0,
+            "expectancy_usd": null,
+            "realized_max_drawdown_usd": 0.0,
+            "trades_per_day": 0.0,
+            "net_win_rate_wilson95": [
+              null,
+              null
+            ],
+            "tp_hit_rate_wilson95": [
+              null,
+              null
+            ],
+            "timeout_count": 0,
+            "cost_per_round_trip_usd": 0.30000000000000004
+          },
+          "eligible": false
+        },
+        {
+          "tp_usd": 5.0,
+          "sl_usd": 2.5,
+          "direction": 1,
+          "model": "hist_gradient_boosting",
+          "threshold": 0.5,
+          "validation": {
+            "n_trades": 0,
+            "net_wins": 0,
+            "net_win_rate": null,
+            "tp_hits": 0,
+            "tp_hit_rate": null,
+            "gross_pnl_usd": 0.0,
+            "net_pnl_usd": 0.0,
+            "expectancy_usd": null,
+            "realized_max_drawdown_usd": 0.0,
+            "trades_per_day": 0.0,
+            "net_win_rate_wilson95": [
+              null,
+              null
+            ],
+            "tp_hit_rate_wilson95": [
+              null,
+              null
+            ],
+            "timeout_count": 0,
+            "cost_per_round_trip_usd": 0.30000000000000004
+          },
+          "eligible": false
+        },
+        {
+          "tp_usd": 5.0,
+          "sl_usd": 2.5,
+          "direction": 1,
+          "model": "hist_gradient_boosting",
+          "threshold": 0.6,
+          "validation": {
+            "n_trades": 0,
+            "net_wins": 0,
+            "net_win_rate": null,
+            "tp_hits": 0,
+            "tp_hit_rate": null,
+            "gross_pnl_usd": 0.0,
+            "net_pnl_usd": 0.0,
+            "expectancy_usd": null,
+            "realized_max_drawdown_usd": 0.0,
+            "trades_per_day": 0.0,
+            "net_win_rate_wilson95": [
+              null,
+              null
+            ],
+            "tp_hit_rate_wilson95": [
+              null,
+              null
+            ],
+            "timeout_count": 0,
+            "cost_per_round_trip_usd": 0.30000000000000004
+          },
+          "eligible": false
+        },
+        {
+          "tp_usd": 5.0,
+          "sl_usd": 2.5,
+          "direction": 1,
+          "model": "hist_gradient_boosting",
+          "threshold": 0.7,
+          "validation": {
+            "n_trades": 0,
+            "net_wins": 0,
+            "net_win_rate": null,
+            "tp_hits": 0,
+            "tp_hit_rate": null,
+            "gross_pnl_usd": 0.0,
+            "net_pnl_usd": 0.0,
+            "expectancy_usd": null,
+            "realized_max_drawdown_usd": 0.0,
+            "trades_per_day": 0.0,
+            "net_win_rate_wilson95": [
+              null,
+              null
+            ],
+            "tp_hit_rate_wilson95": [
+              null,
+              null
+            ],
+            "timeout_count": 0,
+            "cost_per_round_trip_usd": 0.30000000000000004
+          },
+          "eligible": false
+        },
+        {
+          "tp_usd": 5.0,
+          "sl_usd": 2.5,
+          "direction": -1,
+          "model": "logistic",
+          "threshold": 0.4,
+          "validation": {
+            "n_trades": 14,
+            "net_wins": 5,
+            "net_win_rate": 0.35714285714285715,
+            "tp_hits": 2,
+            "tp_hit_rate": 0.14285714285714285,
+            "gross_pnl_usd": -7.701600000000035,
+            "net_pnl_usd": -11.901600000000034,
+            "expectancy_usd": -0.8501142857142882,
+            "realized_max_drawdown_usd": 13.801600000000034,
+            "trades_per_day": 0.7787091042527714,
+            "net_win_rate_wilson95": [
+              0.1634473175355414,
+              0.612355768960926
+            ],
+            "tp_hit_rate_wilson95": [
+              0.040093921271464966,
+              0.39941379496970353
+            ],
+            "timeout_count": 3,
+            "cost_per_round_trip_usd": 0.30000000000000004
+          },
+          "eligible": false
+        },
+        {
+          "tp_usd": 5.0,
+          "sl_usd": 2.5,
+          "direction": -1,
+          "model": "logistic",
+          "threshold": 0.5,
+          "validation": {
+            "n_trades": 7,
+            "net_wins": 2,
+            "net_win_rate": 0.2857142857142857,
+            "tp_hits": 1,
+            "tp_hit_rate": 0.14285714285714285,
+            "gross_pnl_usd": -5.648399999999965,
+            "net_pnl_usd": -7.748399999999964,
+            "expectancy_usd": -1.1069142857142806,
+            "realized_max_drawdown_usd": 9.648399999999963,
+            "trades_per_day": 0.3893545521263857,
+            "net_win_rate_wilson95": [
+              0.08221892400405678,
+              0.6410655481673808
+            ],
+            "tp_hit_rate_wilson95": [
+              0.02567962434474355,
+              0.5131278292743189
+            ],
+            "timeout_count": 1,
+            "cost_per_round_trip_usd": 0.30000000000000004
+          },
+          "eligible": false
+        },
+        {
+          "tp_usd": 5.0,
+          "sl_usd": 2.5,
+          "direction": -1,
+          "model": "logistic",
+          "threshold": 0.6,
+          "validation": {
+            "n_trades": 7,
+            "net_wins": 2,
+            "net_win_rate": 0.2857142857142857,
+            "tp_hits": 1,
+            "tp_hit_rate": 0.14285714285714285,
+            "gross_pnl_usd": -5.648399999999965,
+            "net_pnl_usd": -7.748399999999964,
+            "expectancy_usd": -1.1069142857142806,
+            "realized_max_drawdown_usd": 9.648399999999963,
+            "trades_per_day": 0.3893545521263857,
+            "net_win_rate_wilson95": [
+              0.08221892400405678,
+              0.6410655481673808
+            ],
+            "tp_hit_rate_wilson95": [
+              0.02567962434474355,
+              0.5131278292743189
+            ],
+            "timeout_count": 1,
+            "cost_per_round_trip_usd": 0.30000000000000004
+          },
+          "eligible": false
+        },
+        {
+          "tp_usd": 5.0,
+          "sl_usd": 2.5,
+          "direction": -1,
+          "model": "logistic",
+          "threshold": 0.7,
+          "validation": {
+            "n_trades": 3,
+            "net_wins": 1,
+            "net_win_rate": 0.3333333333333333,
+            "tp_hits": 0,
+            "tp_hit_rate": 0.0,
+            "gross_pnl_usd": -3.148399999999965,
+            "net_pnl_usd": -4.0483999999999645,
+            "expectancy_usd": -1.3494666666666548,
+            "realized_max_drawdown_usd": 4.0483999999999645,
+            "trades_per_day": 0.16686623662559388,
+            "net_win_rate_wilson95": [
+              0.06149194472039621,
+              0.7923403991979522
+            ],
+            "tp_hit_rate_wilson95": [
+              5.551115123125783e-17,
+              0.5614970317550454
+            ],
+            "timeout_count": 1,
+            "cost_per_round_trip_usd": 0.30000000000000004
+          },
+          "eligible": false
+        },
+        {
+          "tp_usd": 5.0,
+          "sl_usd": 2.5,
+          "direction": -1,
+          "model": "hist_gradient_boosting",
+          "threshold": 0.4,
+          "validation": {
+            "n_trades": 0,
+            "net_wins": 0,
+            "net_win_rate": null,
+            "tp_hits": 0,
+            "tp_hit_rate": null,
+            "gross_pnl_usd": 0.0,
+            "net_pnl_usd": 0.0,
+            "expectancy_usd": null,
+            "realized_max_drawdown_usd": 0.0,
+            "trades_per_day": 0.0,
+            "net_win_rate_wilson95": [
+              null,
+              null
+            ],
+            "tp_hit_rate_wilson95": [
+              null,
+              null
+            ],
+            "timeout_count": 0,
+            "cost_per_round_trip_usd": 0.30000000000000004
+          },
+          "eligible": false
+        },
+        {
+          "tp_usd": 5.0,
+          "sl_usd": 2.5,
+          "direction": -1,
+          "model": "hist_gradient_boosting",
+          "threshold": 0.5,
+          "validation": {
+            "n_trades": 0,
+            "net_wins": 0,
+            "net_win_rate": null,
+            "tp_hits": 0,
+            "tp_hit_rate": null,
+            "gross_pnl_usd": 0.0,
+            "net_pnl_usd": 0.0,
+            "expectancy_usd": null,
+            "realized_max_drawdown_usd": 0.0,
+            "trades_per_day": 0.0,
+            "net_win_rate_wilson95": [
+              null,
+              null
+            ],
+            "tp_hit_rate_wilson95": [
+              null,
+              null
+            ],
+            "timeout_count": 0,
+            "cost_per_round_trip_usd": 0.30000000000000004
+          },
+          "eligible": false
+        },
+        {
+          "tp_usd": 5.0,
+          "sl_usd": 2.5,
+          "direction": -1,
+          "model": "hist_gradient_boosting",
+          "threshold": 0.6,
+          "validation": {
+            "n_trades": 0,
+            "net_wins": 0,
+            "net_win_rate": null,
+            "tp_hits": 0,
+            "tp_hit_rate": null,
+            "gross_pnl_usd": 0.0,
+            "net_pnl_usd": 0.0,
+            "expectancy_usd": null,
+            "realized_max_drawdown_usd": 0.0,
+            "trades_per_day": 0.0,
+            "net_win_rate_wilson95": [
+              null,
+              null
+            ],
+            "tp_hit_rate_wilson95": [
+              null,
+              null
+            ],
+            "timeout_count": 0,
+            "cost_per_round_trip_usd": 0.30000000000000004
+          },
+          "eligible": false
+        },
+        {
+          "tp_usd": 5.0,
+          "sl_usd": 2.5,
+          "direction": -1,
+          "model": "hist_gradient_boosting",
+          "threshold": 0.7,
+          "validation": {
+            "n_trades": 0,
+            "net_wins": 0,
+            "net_win_rate": null,
+            "tp_hits": 0,
+            "tp_hit_rate": null,
+            "gross_pnl_usd": 0.0,
+            "net_pnl_usd": 0.0,
+            "expectancy_usd": null,
+            "realized_max_drawdown_usd": 0.0,
+            "trades_per_day": 0.0,
+            "net_win_rate_wilson95": [
+              null,
+              null
+            ],
+            "tp_hit_rate_wilson95": [
+              null,
+              null
+            ],
+            "timeout_count": 0,
+            "cost_per_round_trip_usd": 0.30000000000000004
+          },
+          "eligible": false
+        },
+        {
+          "tp_usd": 10.0,
+          "sl_usd": 5.0,
+          "direction": 1,
+          "model": "logistic",
+          "threshold": 0.4,
+          "validation": {
+            "n_trades": 1,
+            "net_wins": 1,
+            "net_win_rate": 1.0,
+            "tp_hits": 0,
+            "tp_hit_rate": 0.0,
+            "gross_pnl_usd": 4.43070000000007,
+            "net_pnl_usd": 4.13070000000007,
+            "expectancy_usd": 4.13070000000007,
+            "realized_max_drawdown_usd": 0.0,
+            "trades_per_day": 0.05562207887519796,
+            "net_win_rate_wilson95": [
+              0.20654931437723745,
+              1.0
+            ],
+            "tp_hit_rate_wilson95": [
+              0.0,
+              0.7934506856227626
+            ],
+            "timeout_count": 1,
+            "cost_per_round_trip_usd": 0.30000000000000004
+          },
+          "eligible": false
+        },
+        {
+          "tp_usd": 10.0,
+          "sl_usd": 5.0,
+          "direction": 1,
+          "model": "logistic",
+          "threshold": 0.5,
+          "validation": {
+            "n_trades": 1,
+            "net_wins": 1,
+            "net_win_rate": 1.0,
+            "tp_hits": 0,
+            "tp_hit_rate": 0.0,
+            "gross_pnl_usd": 4.43070000000007,
+            "net_pnl_usd": 4.13070000000007,
+            "expectancy_usd": 4.13070000000007,
+            "realized_max_drawdown_usd": 0.0,
+            "trades_per_day": 0.05562207887519796,
+            "net_win_rate_wilson95": [
+              0.20654931437723745,
+              1.0
+            ],
+            "tp_hit_rate_wilson95": [
+              0.0,
+              0.7934506856227626
+            ],
+            "timeout_count": 1,
+            "cost_per_round_trip_usd": 0.30000000000000004
+          },
+          "eligible": false
+        },
+        {
+          "tp_usd": 10.0,
+          "sl_usd": 5.0,
+          "direction": 1,
+          "model": "logistic",
+          "threshold": 0.6,
+          "validation": {
+            "n_trades": 1,
+            "net_wins": 1,
+            "net_win_rate": 1.0,
+            "tp_hits": 0,
+            "tp_hit_rate": 0.0,
+            "gross_pnl_usd": 4.43070000000007,
+            "net_pnl_usd": 4.13070000000007,
+            "expectancy_usd": 4.13070000000007,
+            "realized_max_drawdown_usd": 0.0,
+            "trades_per_day": 0.05562207887519796,
+            "net_win_rate_wilson95": [
+              0.20654931437723745,
+              1.0
+            ],
+            "tp_hit_rate_wilson95": [
+              0.0,
+              0.7934506856227626
+            ],
+            "timeout_count": 1,
+            "cost_per_round_trip_usd": 0.30000000000000004
+          },
+          "eligible": false
+        },
+        {
+          "tp_usd": 10.0,
+          "sl_usd": 5.0,
+          "direction": 1,
+          "model": "logistic",
+          "threshold": 0.7,
+          "validation": {
+            "n_trades": 1,
+            "net_wins": 1,
+            "net_win_rate": 1.0,
+            "tp_hits": 0,
+            "tp_hit_rate": 0.0,
+            "gross_pnl_usd": 4.43070000000007,
+            "net_pnl_usd": 4.13070000000007,
+            "expectancy_usd": 4.13070000000007,
+            "realized_max_drawdown_usd": 0.0,
+            "trades_per_day": 0.05562207887519796,
+            "net_win_rate_wilson95": [
+              0.20654931437723745,
+              1.0
+            ],
+            "tp_hit_rate_wilson95": [
+              0.0,
+              0.7934506856227626
+            ],
+            "timeout_count": 1,
+            "cost_per_round_trip_usd": 0.30000000000000004
+          },
+          "eligible": false
+        },
+        {
+          "tp_usd": 10.0,
+          "sl_usd": 5.0,
+          "direction": 1,
+          "model": "hist_gradient_boosting",
+          "threshold": 0.4,
+          "validation": {
+            "n_trades": 0,
+            "net_wins": 0,
+            "net_win_rate": null,
+            "tp_hits": 0,
+            "tp_hit_rate": null,
+            "gross_pnl_usd": 0.0,
+            "net_pnl_usd": 0.0,
+            "expectancy_usd": null,
+            "realized_max_drawdown_usd": 0.0,
+            "trades_per_day": 0.0,
+            "net_win_rate_wilson95": [
+              null,
+              null
+            ],
+            "tp_hit_rate_wilson95": [
+              null,
+              null
+            ],
+            "timeout_count": 0,
+            "cost_per_round_trip_usd": 0.30000000000000004
+          },
+          "eligible": false
+        },
+        {
+          "tp_usd": 10.0,
+          "sl_usd": 5.0,
+          "direction": 1,
+          "model": "hist_gradient_boosting",
+          "threshold": 0.5,
+          "validation": {
+            "n_trades": 0,
+            "net_wins": 0,
+            "net_win_rate": null,
+            "tp_hits": 0,
+            "tp_hit_rate": null,
+            "gross_pnl_usd": 0.0,
+            "net_pnl_usd": 0.0,
+            "expectancy_usd": null,
+            "realized_max_drawdown_usd": 0.0,
+            "trades_per_day": 0.0,
+            "net_win_rate_wilson95": [
+              null,
+              null
+            ],
+            "tp_hit_rate_wilson95": [
+              null,
+              null
+            ],
+            "timeout_count": 0,
+            "cost_per_round_trip_usd": 0.30000000000000004
+          },
+          "eligible": false
+        },
+        {
+          "tp_usd": 10.0,
+          "sl_usd": 5.0,
+          "direction": 1,
+          "model": "hist_gradient_boosting",
+          "threshold": 0.6,
+          "validation": {
+            "n_trades": 0,
+            "net_wins": 0,
+            "net_win_rate": null,
+            "tp_hits": 0,
+            "tp_hit_rate": null,
+            "gross_pnl_usd": 0.0,
+            "net_pnl_usd": 0.0,
+            "expectancy_usd": null,
+            "realized_max_drawdown_usd": 0.0,
+            "trades_per_day": 0.0,
+            "net_win_rate_wilson95": [
+              null,
+              null
+            ],
+            "tp_hit_rate_wilson95": [
+              null,
+              null
+            ],
+            "timeout_count": 0,
+            "cost_per_round_trip_usd": 0.30000000000000004
+          },
+          "eligible": false
+        },
+        {
+          "tp_usd": 10.0,
+          "sl_usd": 5.0,
+          "direction": 1,
+          "model": "hist_gradient_boosting",
+          "threshold": 0.7,
+          "validation": {
+            "n_trades": 0,
+            "net_wins": 0,
+            "net_win_rate": null,
+            "tp_hits": 0,
+            "tp_hit_rate": null,
+            "gross_pnl_usd": 0.0,
+            "net_pnl_usd": 0.0,
+            "expectancy_usd": null,
+            "realized_max_drawdown_usd": 0.0,
+            "trades_per_day": 0.0,
+            "net_win_rate_wilson95": [
+              null,
+              null
+            ],
+            "tp_hit_rate_wilson95": [
+              null,
+              null
+            ],
+            "timeout_count": 0,
+            "cost_per_round_trip_usd": 0.30000000000000004
+          },
+          "eligible": false
+        },
+        {
+          "tp_usd": 10.0,
+          "sl_usd": 5.0,
+          "direction": -1,
+          "model": "logistic",
+          "threshold": 0.4,
+          "validation": {
+            "n_trades": 2,
+            "net_wins": 1,
+            "net_win_rate": 0.5,
+            "tp_hits": 0,
+            "tp_hit_rate": 0.0,
+            "gross_pnl_usd": -3.148399999999965,
+            "net_pnl_usd": -3.7483999999999646,
+            "expectancy_usd": -1.8741999999999823,
+            "realized_max_drawdown_usd": 5.3,
+            "trades_per_day": 0.11124415775039592,
+            "net_win_rate_wilson95": [
+              0.09453120573423074,
+              0.9054687942657693
+            ],
+            "tp_hit_rate_wilson95": [
+              0.0,
+              0.6576197724933469
+            ],
+            "timeout_count": 1,
+            "cost_per_round_trip_usd": 0.30000000000000004
+          },
+          "eligible": false
+        },
+        {
+          "tp_usd": 10.0,
+          "sl_usd": 5.0,
+          "direction": -1,
+          "model": "logistic",
+          "threshold": 0.5,
+          "validation": {
+            "n_trades": 2,
+            "net_wins": 1,
+            "net_win_rate": 0.5,
+            "tp_hits": 0,
+            "tp_hit_rate": 0.0,
+            "gross_pnl_usd": -3.148399999999965,
+            "net_pnl_usd": -3.7483999999999646,
+            "expectancy_usd": -1.8741999999999823,
+            "realized_max_drawdown_usd": 5.3,
+            "trades_per_day": 0.11124415775039592,
+            "net_win_rate_wilson95": [
+              0.09453120573423074,
+              0.9054687942657693
+            ],
+            "tp_hit_rate_wilson95": [
+              0.0,
+              0.6576197724933469
+            ],
+            "timeout_count": 1,
+            "cost_per_round_trip_usd": 0.30000000000000004
+          },
+          "eligible": false
+        },
+        {
+          "tp_usd": 10.0,
+          "sl_usd": 5.0,
+          "direction": -1,
+          "model": "logistic",
+          "threshold": 0.6,
+          "validation": {
+            "n_trades": 1,
+            "net_wins": 1,
+            "net_win_rate": 1.0,
+            "tp_hits": 0,
+            "tp_hit_rate": 0.0,
+            "gross_pnl_usd": 1.851600000000035,
+            "net_pnl_usd": 1.551600000000035,
+            "expectancy_usd": 1.551600000000035,
+            "realized_max_drawdown_usd": 0.0,
+            "trades_per_day": 0.05562207887519796,
+            "net_win_rate_wilson95": [
+              0.20654931437723745,
+              1.0
+            ],
+            "tp_hit_rate_wilson95": [
+              0.0,
+              0.7934506856227626
+            ],
+            "timeout_count": 1,
+            "cost_per_round_trip_usd": 0.30000000000000004
+          },
+          "eligible": false
+        },
+        {
+          "tp_usd": 10.0,
+          "sl_usd": 5.0,
+          "direction": -1,
+          "model": "logistic",
+          "threshold": 0.7,
+          "validation": {
+            "n_trades": 1,
+            "net_wins": 1,
+            "net_win_rate": 1.0,
+            "tp_hits": 0,
+            "tp_hit_rate": 0.0,
+            "gross_pnl_usd": 1.851600000000035,
+            "net_pnl_usd": 1.551600000000035,
+            "expectancy_usd": 1.551600000000035,
+            "realized_max_drawdown_usd": 0.0,
+            "trades_per_day": 0.05562207887519796,
+            "net_win_rate_wilson95": [
+              0.20654931437723745,
+              1.0
+            ],
+            "tp_hit_rate_wilson95": [
+              0.0,
+              0.7934506856227626
+            ],
+            "timeout_count": 1,
+            "cost_per_round_trip_usd": 0.30000000000000004
+          },
+          "eligible": false
+        },
+        {
+          "tp_usd": 10.0,
+          "sl_usd": 5.0,
+          "direction": -1,
+          "model": "hist_gradient_boosting",
+          "threshold": 0.4,
+          "validation": {
+            "n_trades": 0,
+            "net_wins": 0,
+            "net_win_rate": null,
+            "tp_hits": 0,
+            "tp_hit_rate": null,
+            "gross_pnl_usd": 0.0,
+            "net_pnl_usd": 0.0,
+            "expectancy_usd": null,
+            "realized_max_drawdown_usd": 0.0,
+            "trades_per_day": 0.0,
+            "net_win_rate_wilson95": [
+              null,
+              null
+            ],
+            "tp_hit_rate_wilson95": [
+              null,
+              null
+            ],
+            "timeout_count": 0,
+            "cost_per_round_trip_usd": 0.30000000000000004
+          },
+          "eligible": false
+        },
+        {
+          "tp_usd": 10.0,
+          "sl_usd": 5.0,
+          "direction": -1,
+          "model": "hist_gradient_boosting",
+          "threshold": 0.5,
+          "validation": {
+            "n_trades": 0,
+            "net_wins": 0,
+            "net_win_rate": null,
+            "tp_hits": 0,
+            "tp_hit_rate": null,
+            "gross_pnl_usd": 0.0,
+            "net_pnl_usd": 0.0,
+            "expectancy_usd": null,
+            "realized_max_drawdown_usd": 0.0,
+            "trades_per_day": 0.0,
+            "net_win_rate_wilson95": [
+              null,
+              null
+            ],
+            "tp_hit_rate_wilson95": [
+              null,
+              null
+            ],
+            "timeout_count": 0,
+            "cost_per_round_trip_usd": 0.30000000000000004
+          },
+          "eligible": false
+        },
+        {
+          "tp_usd": 10.0,
+          "sl_usd": 5.0,
+          "direction": -1,
+          "model": "hist_gradient_boosting",
+          "threshold": 0.6,
+          "validation": {
+            "n_trades": 0,
+            "net_wins": 0,
+            "net_win_rate": null,
+            "tp_hits": 0,
+            "tp_hit_rate": null,
+            "gross_pnl_usd": 0.0,
+            "net_pnl_usd": 0.0,
+            "expectancy_usd": null,
+            "realized_max_drawdown_usd": 0.0,
+            "trades_per_day": 0.0,
+            "net_win_rate_wilson95": [
+              null,
+              null
+            ],
+            "tp_hit_rate_wilson95": [
+              null,
+              null
+            ],
+            "timeout_count": 0,
+            "cost_per_round_trip_usd": 0.30000000000000004
+          },
+          "eligible": false
+        },
+        {
+          "tp_usd": 10.0,
+          "sl_usd": 5.0,
+          "direction": -1,
+          "model": "hist_gradient_boosting",
+          "threshold": 0.7,
+          "validation": {
+            "n_trades": 0,
+            "net_wins": 0,
+            "net_win_rate": null,
+            "tp_hits": 0,
+            "tp_hit_rate": null,
+            "gross_pnl_usd": 0.0,
+            "net_pnl_usd": 0.0,
+            "expectancy_usd": null,
+            "realized_max_drawdown_usd": 0.0,
+            "trades_per_day": 0.0,
+            "net_win_rate_wilson95": [
+              null,
+              null
+            ],
+            "tp_hit_rate_wilson95": [
+              null,
+              null
+            ],
+            "timeout_count": 0,
+            "cost_per_round_trip_usd": 0.30000000000000004
+          },
+          "eligible": false
+        }
+      ],
+      "status": "no_validation_candidate",
+      "cost_scenarios": [
+        {
+          "name": "illustrative_base",
+          "spread": 0.2,
+          "slippage": 0.1,
+          "commission": 0
+        },
+        {
+          "name": "illustrative_wide",
+          "spread": 0.5,
+          "slippage": 0.1,
+          "commission": 0
+        }
+      ],
+      "split": {
+        "a": 77760,
+        "b": 103680,
+        "purge_bars": 31
+      }
+    },
+    "PAXGUSDT": {
+      "status": "executed_not_approved_for_live",
+      "data": {
+        "path": "cache\\PAXGUSDT_1m_1785974400000_1793750400000.csv",
+        "sha256": "4d731778f6015ec8f74485b9f4d13e9124d073db3b0f9b2a3a0d4761372d7b2d",
+        "rows": 129600,
+        "requests_this_run": 130,
+        "first_utc": "2026-08-06T00:00:00+00:00",
+        "last_utc": "2026-11-03T23:59:00+00:00"
+      },
+      "quantity_assumption": 1.0,
+      "cost_scenarios": [
+        {
+          "name": "observed_spread_assumption",
+          "spread": 0.24,
+          "slippage": 0.02,
+          "commission": 0
+        },
+        {
+          "name": "wider_session_assumption",
+          "spread": 0.4,
+          "slippage": 0.02,
+          "commission": 0
+        }
+      ],
+      "split": {
+        "a": 77760,
+        "b": 103680,
+        "purge_bars": 31
+      },
+      "partitions": {
+        "train": {
+          "signal_rows": 77669,
+          "first_signal_bar_utc": "2026-08-06T01:00:00+00:00",
+          "last_signal_bar_utc": "2026-09-28T23:28:00+00:00",
+          "latest_possible_exit_bar_utc": "2026-09-28T23:58:00+00:00"
+        },
+        "validation": {
+          "signal_rows": 25889,
+          "first_signal_bar_utc": "2026-09-29T00:00:00+00:00",
+          "last_signal_bar_utc": "2026-10-16T23:28:00+00:00",
+          "latest_possible_exit_bar_utc": "2026-10-16T23:58:00+00:00"
+        },
+        "test": {
+          "signal_rows": 25890,
+          "first_signal_bar_utc": "2026-10-17T00:00:00+00:00",
+          "last_signal_bar_utc": "2026-11-03T23:29:00+00:00",
+          "latest_possible_exit_bar_utc": "2026-11-03T23:59:00+00:00"
+        }
+      },
+      "hypotheses": [
+        {
+          "tp_usd": 5.0,
+          "sl_usd": 2.5,
+          "direction": 1,
+          "model": "logistic",
+          "threshold": 0.4,
+          "validation": {
+            "n_trades": 168,
+            "net_wins": 54,
+            "net_win_rate": 0.32142857142857145,
+            "tp_hits": 54,
+            "tp_hit_rate": 0.32142857142857145,
+            "gross_pnl_usd": -18.3100000000004,
+            "net_pnl_usd": -61.99000000000036,
+            "expectancy_usd": -0.3689880952380974,
+            "realized_max_drawdown_usd": 92.93999999999943,
+            "trades_per_day": 9.344509251033257,
+            "net_win_rate_wilson95": [
+              0.25547934264431293,
+              0.39536161033778294
+            ],
+            "tp_hit_rate_wilson95": [
+              0.25547934264431293,
+              0.39536161033778294
+            ],
+            "timeout_count": 0,
+            "cost_per_round_trip_usd": 0.26
+          },
+          "eligible": true
+        },
+        {
+          "tp_usd": 5.0,
+          "sl_usd": 2.5,
+          "direction": 1,
+          "model": "logistic",
+          "threshold": 0.5,
+          "validation": {
+            "n_trades": 95,
+            "net_wins": 25,
+            "net_win_rate": 0.2631578947368421,
+            "tp_hits": 25,
+            "tp_hit_rate": 0.2631578947368421,
+            "gross_pnl_usd": -52.02000000000044,
+            "net_pnl_usd": -76.72000000000044,
+            "expectancy_usd": -0.8075789473684257,
+            "realized_max_drawdown_usd": 86.22000000000041,
+            "trades_per_day": 5.284097493143806,
+            "net_win_rate_wilson95": [
+              0.1850652476987089,
+              0.35966020924104136
+            ],
+            "tp_hit_rate_wilson95": [
+              0.1850652476987089,
+              0.35966020924104136
+            ],
+            "timeout_count": 0,
+            "cost_per_round_trip_usd": 0.26
+          },
+          "eligible": true
+        },
+        {
+          "tp_usd": 5.0,
+          "sl_usd": 2.5,
+          "direction": 1,
+          "model": "logistic",
+          "threshold": 0.6,
+          "validation": {
+            "n_trades": 57,
+            "net_wins": 16,
+            "net_win_rate": 0.2807017543859649,
+            "tp_hits": 16,
+            "tp_hit_rate": 0.2807017543859649,
+            "gross_pnl_usd": -23.25,
+            "net_pnl_usd": -38.069999999999986,
+            "expectancy_usd": -0.667894736842105,
+            "realized_max_drawdown_usd": 46.76999999999994,
+            "trades_per_day": 3.1704584958862836,
+            "net_win_rate_wilson95": [
+              0.18079399343823543,
+              0.4083019867604394
+            ],
+            "tp_hit_rate_wilson95": [
+              0.18079399343823543,
+              0.4083019867604394
+            ],
+            "timeout_count": 0,
+            "cost_per_round_trip_usd": 0.26
+          },
+          "eligible": true
+        },
+        {
+          "tp_usd": 5.0,
+          "sl_usd": 2.5,
+          "direction": 1,
+          "model": "logistic",
+          "threshold": 0.7,
+          "validation": {
+            "n_trades": 27,
+            "net_wins": 8,
+            "net_win_rate": 0.2962962962962963,
+            "tp_hits": 8,
+            "tp_hit_rate": 0.2962962962962963,
+            "gross_pnl_usd": -7.5,
+            "net_pnl_usd": -14.51999999999999,
+            "expectancy_usd": -0.5377777777777775,
+            "realized_max_drawdown_usd": 23.999999999999993,
+            "trades_per_day": 1.5017961296303448,
+            "net_win_rate_wilson95": [
+              0.1585304046977976,
+              0.4848068296414814
+            ],
+            "tp_hit_rate_wilson95": [
+              0.1585304046977976,
+              0.4848068296414814
+            ],
+            "timeout_count": 0,
+            "cost_per_round_trip_usd": 0.26
+          },
+          "eligible": false
+        },
+        {
+          "tp_usd": 5.0,
+          "sl_usd": 2.5,
+          "direction": 1,
+          "model": "hist_gradient_boosting",
+          "threshold": 0.4,
+          "validation": {
+            "n_trades": 0,
+            "net_wins": 0,
+            "net_win_rate": null,
+            "tp_hits": 0,
+            "tp_hit_rate": null,
+            "gross_pnl_usd": 0.0,
+            "net_pnl_usd": 0.0,
+            "expectancy_usd": null,
+            "realized_max_drawdown_usd": 0.0,
+            "trades_per_day": 0.0,
+            "net_win_rate_wilson95": [
+              null,
+              null
+            ],
+            "tp_hit_rate_wilson95": [
+              null,
+              null
+            ],
+            "timeout_count": 0,
+            "cost_per_round_trip_usd": 0.26
+          },
+          "eligible": false
+        },
+        {
+          "tp_usd": 5.0,
+          "sl_usd": 2.5,
+          "direction": 1,
+          "model": "hist_gradient_boosting",
+          "threshold": 0.5,
+          "validation": {
+            "n_trades": 0,
+            "net_wins": 0,
+            "net_win_rate": null,
+            "tp_hits": 0,
+            "tp_hit_rate": null,
+            "gross_pnl_usd": 0.0,
+            "net_pnl_usd": 0.0,
+            "expectancy_usd": null,
+            "realized_max_drawdown_usd": 0.0,
+            "trades_per_day": 0.0,
+            "net_win_rate_wilson95": [
+              null,
+              null
+            ],
+            "tp_hit_rate_wilson95": [
+              null,
+              null
+            ],
+            "timeout_count": 0,
+            "cost_per_round_trip_usd": 0.26
+          },
+          "eligible": false
+        },
+        {
+          "tp_usd": 5.0,
+          "sl_usd": 2.5,
+          "direction": 1,
+          "model": "hist_gradient_boosting",
+          "threshold": 0.6,
+          "validation": {
+            "n_trades": 0,
+            "net_wins": 0,
+            "net_win_rate": null,
+            "tp_hits": 0,
+            "tp_hit_rate": null,
+            "gross_pnl_usd": 0.0,
+            "net_pnl_usd": 0.0,
+            "expectancy_usd": null,
+            "realized_max_drawdown_usd": 0.0,
+            "trades_per_day": 0.0,
+            "net_win_rate_wilson95": [
+              null,
+              null
+            ],
+            "tp_hit_rate_wilson95": [
+              null,
+              null
+            ],
+            "timeout_count": 0,
+            "cost_per_round_trip_usd": 0.26
+          },
+          "eligible": false
+        },
+        {
+          "tp_usd": 5.0,
+          "sl_usd": 2.5,
+          "direction": 1,
+          "model": "hist_gradient_boosting",
+          "threshold": 0.7,
+          "validation": {
+            "n_trades": 0,
+            "net_wins": 0,
+            "net_win_rate": null,
+            "tp_hits": 0,
+            "tp_hit_rate": null,
+            "gross_pnl_usd": 0.0,
+            "net_pnl_usd": 0.0,
+            "expectancy_usd": null,
+            "realized_max_drawdown_usd": 0.0,
+            "trades_per_day": 0.0,
+            "net_win_rate_wilson95": [
+              null,
+              null
+            ],
+            "tp_hit_rate_wilson95": [
+              null,
+              null
+            ],
+            "timeout_count": 0,
+            "cost_per_round_trip_usd": 0.26
+          },
+          "eligible": false
+        },
+        {
+          "tp_usd": 5.0,
+          "sl_usd": 2.5,
+          "direction": -1,
+          "model": "logistic",
+          "threshold": 0.4,
+          "validation": {
+            "n_trades": 179,
+            "net_wins": 68,
+            "net_win_rate": 0.37988826815642457,
+            "tp_hits": 67,
+            "tp_hit_rate": 0.3743016759776536,
+            "gross_pnl_usd": 59.100000000000364,
+            "net_pnl_usd": 12.560000000000407,
+            "expectancy_usd": 0.07016759776536541,
+            "realized_max_drawdown_usd": 38.79999999999934,
+            "trades_per_day": 9.956352118660435,
+            "net_win_rate_wilson95": [
+              0.31201499476879274,
+              0.4528085836616959
+            ],
+            "tp_hit_rate_wilson95": [
+              0.3067466774221154,
+              0.44713846279583774
+            ],
+            "timeout_count": 2,
+            "cost_per_round_trip_usd": 0.26
+          },
+          "eligible": true
+        },
+        {
+          "tp_usd": 5.0,
+          "sl_usd": 2.5,
+          "direction": -1,
+          "model": "logistic",
+          "threshold": 0.5,
+          "validation": {
+            "n_trades": 92,
+            "net_wins": 36,
+            "net_win_rate": 0.391304347826087,
+            "tp_hits": 36,
+            "tp_hit_rate": 0.391304347826087,
+            "gross_pnl_usd": 39.210000000000946,
+            "net_pnl_usd": 15.290000000000964,
+            "expectancy_usd": 0.1661956521739235,
+            "realized_max_drawdown_usd": 29.709999999999113,
+            "trades_per_day": 5.117231256518212,
+            "net_win_rate_wilson95": [
+              0.29785623268996947,
+              0.49346580845907867
+            ],
+            "tp_hit_rate_wilson95": [
+              0.29785623268996947,
+              0.49346580845907867
+            ],
+            "timeout_count": 0,
+            "cost_per_round_trip_usd": 0.26
+          },
+          "eligible": true
+        },
+        {
+          "tp_usd": 5.0,
+          "sl_usd": 2.5,
+          "direction": -1,
+          "model": "logistic",
+          "threshold": 0.6,
+          "validation": {
+            "n_trades": 53,
+            "net_wins": 24,
+            "net_win_rate": 0.4528301886792453,
+            "tp_hits": 24,
+            "tp_hit_rate": 0.4528301886792453,
+            "gross_pnl_usd": 47.030000000000655,
+            "net_pnl_usd": 33.25000000000068,
+            "expectancy_usd": 0.6273584905660506,
+            "realized_max_drawdown_usd": 12.289999999999331,
+            "trades_per_day": 2.9479701803854916,
+            "net_win_rate_wilson95": [
+              0.3265757915292224,
+              0.5854602451289419
+            ],
+            "tp_hit_rate_wilson95": [
+              0.3265757915292224,
+              0.5854602451289419
+            ],
+            "timeout_count": 0,
+            "cost_per_round_trip_usd": 0.26
+          },
+          "eligible": true
+        },
+        {
+          "tp_usd": 5.0,
+          "sl_usd": 2.5,
+          "direction": -1,
+          "model": "logistic",
+          "threshold": 0.7,
+          "validation": {
+            "n_trades": 22,
+            "net_wins": 11,
+            "net_win_rate": 0.5,
+            "tp_hits": 11,
+            "tp_hit_rate": 0.5,
+            "gross_pnl_usd": 27.5,
+            "net_pnl_usd": 21.78000000000001,
+            "expectancy_usd": 0.9900000000000003,
+            "realized_max_drawdown_usd": 9.059999999999999,
+            "trades_per_day": 1.223685735254355,
+            "net_win_rate_wilson95": [
+              0.3072210627372502,
+              0.6927789372627497
+            ],
+            "tp_hit_rate_wilson95": [
+              0.3072210627372502,
+              0.6927789372627497
+            ],
+            "timeout_count": 0,
+            "cost_per_round_trip_usd": 0.26
+          },
+          "eligible": false
+        },
+        {
+          "tp_usd": 5.0,
+          "sl_usd": 2.5,
+          "direction": -1,
+          "model": "hist_gradient_boosting",
+          "threshold": 0.4,
+          "validation": {
+            "n_trades": 0,
+            "net_wins": 0,
+            "net_win_rate": null,
+            "tp_hits": 0,
+            "tp_hit_rate": null,
+            "gross_pnl_usd": 0.0,
+            "net_pnl_usd": 0.0,
+            "expectancy_usd": null,
+            "realized_max_drawdown_usd": 0.0,
+            "trades_per_day": 0.0,
+            "net_win_rate_wilson95": [
+              null,
+              null
+            ],
+            "tp_hit_rate_wilson95": [
+              null,
+              null
+            ],
+            "timeout_count": 0,
+            "cost_per_round_trip_usd": 0.26
+          },
+          "eligible": false
+        },
+        {
+          "tp_usd": 5.0,
+          "sl_usd": 2.5,
+          "direction": -1,
+          "model": "hist_gradient_boosting",
+          "threshold": 0.5,
+          "validation": {
+            "n_trades": 0,
+            "net_wins": 0,
+            "net_win_rate": null,
+            "tp_hits": 0,
+            "tp_hit_rate": null,
+            "gross_pnl_usd": 0.0,
+            "net_pnl_usd": 0.0,
+            "expectancy_usd": null,
+            "realized_max_drawdown_usd": 0.0,
+            "trades_per_day": 0.0,
+            "net_win_rate_wilson95": [
+              null,
+              null
+            ],
+            "tp_hit_rate_wilson95": [
+              null,
+              null
+            ],
+            "timeout_count": 0,
+            "cost_per_round_trip_usd": 0.26
+          },
+          "eligible": false
+        },
+        {
+          "tp_usd": 5.0,
+          "sl_usd": 2.5,
+          "direction": -1,
+          "model": "hist_gradient_boosting",
+          "threshold": 0.6,
+          "validation": {
+            "n_trades": 0,
+            "net_wins": 0,
+            "net_win_rate": null,
+            "tp_hits": 0,
+            "tp_hit_rate": null,
+            "gross_pnl_usd": 0.0,
+            "net_pnl_usd": 0.0,
+            "expectancy_usd": null,
+            "realized_max_drawdown_usd": 0.0,
+            "trades_per_day": 0.0,
+            "net_win_rate_wilson95": [
+              null,
+              null
+            ],
+            "tp_hit_rate_wilson95": [
+              null,
+              null
+            ],
+            "timeout_count": 0,
+            "cost_per_round_trip_usd": 0.26
+          },
+          "eligible": false
+        },
+        {
+          "tp_usd": 5.0,
+          "sl_usd": 2.5,
+          "direction": -1,
+          "model": "hist_gradient_boosting",
+          "threshold": 0.7,
+          "validation": {
+            "n_trades": 0,
+            "net_wins": 0,
+            "net_win_rate": null,
+            "tp_hits": 0,
+            "tp_hit_rate": null,
+            "gross_pnl_usd": 0.0,
+            "net_pnl_usd": 0.0,
+            "expectancy_usd": null,
+            "realized_max_drawdown_usd": 0.0,
+            "trades_per_day": 0.0,
+            "net_win_rate_wilson95": [
+              null,
+              null
+            ],
+            "tp_hit_rate_wilson95": [
+              null,
+              null
+            ],
+            "timeout_count": 0,
+            "cost_per_round_trip_usd": 0.26
+          },
+          "eligible": false
+        },
+        {
+          "tp_usd": 10.0,
+          "sl_usd": 5.0,
+          "direction": 1,
+          "model": "logistic",
+          "threshold": 0.4,
+          "validation": {
+            "n_trades": 39,
+            "net_wins": 11,
+            "net_win_rate": 0.28205128205128205,
+            "tp_hits": 11,
+            "tp_hit_rate": 0.28205128205128205,
+            "gross_pnl_usd": -25.519999999999527,
+            "net_pnl_usd": -35.659999999999506,
+            "expectancy_usd": -0.9143589743589617,
+            "realized_max_drawdown_usd": 64.87999999999951,
+            "trades_per_day": 2.1692610761327202,
+            "net_win_rate_wilson95": [
+              0.16543492088847678,
+              0.43775319483020825
+            ],
+            "tp_hit_rate_wilson95": [
+              0.16543492088847678,
+              0.43775319483020825
+            ],
+            "timeout_count": 1,
+            "cost_per_round_trip_usd": 0.26
+          },
+          "eligible": true
+        },
+        {
+          "tp_usd": 10.0,
+          "sl_usd": 5.0,
+          "direction": 1,
+          "model": "logistic",
+          "threshold": 0.5,
+          "validation": {
+            "n_trades": 31,
+            "net_wins": 8,
+            "net_win_rate": 0.25806451612903225,
+            "tp_hits": 8,
+            "tp_hit_rate": 0.25806451612903225,
+            "gross_pnl_usd": -35.0,
+            "net_pnl_usd": -43.05999999999998,
+            "expectancy_usd": -1.3890322580645156,
+            "realized_max_drawdown_usd": 56.499999999999986,
+            "trades_per_day": 1.7242844451311368,
+            "net_win_rate_wilson95": [
+              0.13701705906393744,
+              0.43246135809433794
+            ],
+            "tp_hit_rate_wilson95": [
+              0.13701705906393744,
+              0.43246135809433794
+            ],
+            "timeout_count": 0,
+            "cost_per_round_trip_usd": 0.26
+          },
+          "eligible": true
+        },
+        {
+          "tp_usd": 10.0,
+          "sl_usd": 5.0,
+          "direction": 1,
+          "model": "logistic",
+          "threshold": 0.6,
+          "validation": {
+            "n_trades": 20,
+            "net_wins": 5,
+            "net_win_rate": 0.25,
+            "tp_hits": 5,
+            "tp_hit_rate": 0.25,
+            "gross_pnl_usd": -25.0,
+            "net_pnl_usd": -30.199999999999996,
+            "expectancy_usd": -1.5099999999999998,
+            "realized_max_drawdown_usd": 54.15999999999999,
+            "trades_per_day": 1.1124415775039591,
+            "net_win_rate_wilson95": [
+              0.11186170140766569,
+              0.468700877618744
+            ],
+            "tp_hit_rate_wilson95": [
+              0.11186170140766569,
+              0.468700877618744
+            ],
+            "timeout_count": 0,
+            "cost_per_round_trip_usd": 0.26
+          },
+          "eligible": false
+        },
+        {
+          "tp_usd": 10.0,
+          "sl_usd": 5.0,
+          "direction": 1,
+          "model": "logistic",
+          "threshold": 0.7,
+          "validation": {
+            "n_trades": 8,
+            "net_wins": 2,
+            "net_win_rate": 0.25,
+            "tp_hits": 2,
+            "tp_hit_rate": 0.25,
+            "gross_pnl_usd": -10.0,
+            "net_pnl_usd": -12.079999999999998,
+            "expectancy_usd": -1.5099999999999998,
+            "realized_max_drawdown_usd": 26.299999999999997,
+            "trades_per_day": 0.4449766310015837,
+            "net_win_rate_wilson95": [
+              0.071479212752109,
+              0.5907245696898311
+            ],
+            "tp_hit_rate_wilson95": [
+              0.071479212752109,
+              0.5907245696898311
+            ],
+            "timeout_count": 0,
+            "cost_per_round_trip_usd": 0.26
+          },
+          "eligible": false
+        },
+        {
+          "tp_usd": 10.0,
+          "sl_usd": 5.0,
+          "direction": 1,
+          "model": "hist_gradient_boosting",
+          "threshold": 0.4,
+          "validation": {
+            "n_trades": 11,
+            "net_wins": 3,
+            "net_win_rate": 0.2727272727272727,
+            "tp_hits": 3,
+            "tp_hit_rate": 0.2727272727272727,
+            "gross_pnl_usd": -10.0,
+            "net_pnl_usd": -12.859999999999998,
+            "expectancy_usd": -1.169090909090909,
+            "realized_max_drawdown_usd": 21.82,
+            "trades_per_day": 0.6118428676271775,
+            "net_win_rate_wilson95": [
+              0.09746059290024889,
+              0.5656453011761291
+            ],
+            "tp_hit_rate_wilson95": [
+              0.09746059290024889,
+              0.5656453011761291
+            ],
+            "timeout_count": 0,
+            "cost_per_round_trip_usd": 0.26
+          },
+          "eligible": false
+        },
+        {
+          "tp_usd": 10.0,
+          "sl_usd": 5.0,
+          "direction": 1,
+          "model": "hist_gradient_boosting",
+          "threshold": 0.5,
+          "validation": {
+            "n_trades": 0,
+            "net_wins": 0,
+            "net_win_rate": null,
+            "tp_hits": 0,
+            "tp_hit_rate": null,
+            "gross_pnl_usd": 0.0,
+            "net_pnl_usd": 0.0,
+            "expectancy_usd": null,
+            "realized_max_drawdown_usd": 0.0,
+            "trades_per_day": 0.0,
+            "net_win_rate_wilson95": [
+              null,
+              null
+            ],
+            "tp_hit_rate_wilson95": [
+              null,
+              null
+            ],
+            "timeout_count": 0,
+            "cost_per_round_trip_usd": 0.26
+          },
+          "eligible": false
+        },
+        {
+          "tp_usd": 10.0,
+          "sl_usd": 5.0,
+          "direction": 1,
+          "model": "hist_gradient_boosting",
+          "threshold": 0.6,
+          "validation": {
+            "n_trades": 0,
+            "net_wins": 0,
+            "net_win_rate": null,
+            "tp_hits": 0,
+            "tp_hit_rate": null,
+            "gross_pnl_usd": 0.0,
+            "net_pnl_usd": 0.0,
+            "expectancy_usd": null,
+            "realized_max_drawdown_usd": 0.0,
+            "trades_per_day": 0.0,
+            "net_win_rate_wilson95": [
+              null,
+              null
+            ],
+            "tp_hit_rate_wilson95": [
+              null,
+              null
+            ],
+            "timeout_count": 0,
+            "cost_per_round_trip_usd": 0.26
+          },
+          "eligible": false
+        },
+        {
+          "tp_usd": 10.0,
+          "sl_usd": 5.0,
+          "direction": 1,
+          "model": "hist_gradient_boosting",
+          "threshold": 0.7,
+          "validation": {
+            "n_trades": 0,
+            "net_wins": 0,
+            "net_win_rate": null,
+            "tp_hits": 0,
+            "tp_hit_rate": null,
+            "gross_pnl_usd": 0.0,
+            "net_pnl_usd": 0.0,
+            "expectancy_usd": null,
+            "realized_max_drawdown_usd": 0.0,
+            "trades_per_day": 0.0,
+            "net_win_rate_wilson95": [
+              null,
+              null
+            ],
+            "tp_hit_rate_wilson95": [
+              null,
+              null
+            ],
+            "timeout_count": 0,
+            "cost_per_round_trip_usd": 0.26
+          },
+          "eligible": false
+        },
+        {
+          "tp_usd": 10.0,
+          "sl_usd": 5.0,
+          "direction": -1,
+          "model": "logistic",
+          "threshold": 0.4,
+          "validation": {
+            "n_trades": 39,
+            "net_wins": 16,
+            "net_win_rate": 0.41025641025641024,
+            "tp_hits": 16,
+            "tp_hit_rate": 0.41025641025641024,
+            "gross_pnl_usd": 46.61000000000058,
+            "net_pnl_usd": 36.4700000000006,
+            "expectancy_usd": 0.9351282051282206,
+            "realized_max_drawdown_usd": 31.559999999999995,
+            "trades_per_day": 2.1692610761327202,
+            "net_win_rate_wilson95": [
+              0.27079310000725176,
+              0.5658137711710304
+            ],
+            "tp_hit_rate_wilson95": [
+              0.27079310000725176,
+              0.5658137711710304
+            ],
+            "timeout_count": 1,
+            "cost_per_round_trip_usd": 0.26
+          },
+          "eligible": true
+        },
+        {
+          "tp_usd": 10.0,
+          "sl_usd": 5.0,
+          "direction": -1,
+          "model": "logistic",
+          "threshold": 0.5,
+          "validation": {
+            "n_trades": 24,
+            "net_wins": 11,
+            "net_win_rate": 0.4583333333333333,
+            "tp_hits": 11,
+            "tp_hit_rate": 0.4583333333333333,
+            "gross_pnl_usd": 44.27000000000044,
+            "net_pnl_usd": 38.03000000000044,
+            "expectancy_usd": 1.5845833333333517,
+            "realized_max_drawdown_usd": 16.49999999999934,
+            "trades_per_day": 1.334929893004751,
+            "net_win_rate_wilson95": [
+              0.2789133373121099,
+              0.6492513464108051
+            ],
+            "tp_hit_rate_wilson95": [
+              0.2789133373121099,
+              0.6492513464108051
+            ],
+            "timeout_count": 0,
+            "cost_per_round_trip_usd": 0.26
+          },
+          "eligible": false
+        },
+        {
+          "tp_usd": 10.0,
+          "sl_usd": 5.0,
+          "direction": -1,
+          "model": "logistic",
+          "threshold": 0.6,
+          "validation": {
+            "n_trades": 17,
+            "net_wins": 8,
+            "net_win_rate": 0.47058823529411764,
+            "tp_hits": 8,
+            "tp_hit_rate": 0.47058823529411764,
+            "gross_pnl_usd": 34.80999999999949,
+            "net_pnl_usd": 30.389999999999496,
+            "expectancy_usd": 1.7876470588234998,
+            "realized_max_drawdown_usd": 15.78,
+            "trades_per_day": 0.9455753408783653,
+            "net_win_rate_wilson95": [
+              0.26165106442409436,
+              0.6903676493999558
+            ],
+            "tp_hit_rate_wilson95": [
+              0.26165106442409436,
+              0.6903676493999558
+            ],
+            "timeout_count": 0,
+            "cost_per_round_trip_usd": 0.26
+          },
+          "eligible": false
+        },
+        {
+          "tp_usd": 10.0,
+          "sl_usd": 5.0,
+          "direction": -1,
+          "model": "logistic",
+          "threshold": 0.7,
+          "validation": {
+            "n_trades": 12,
+            "net_wins": 6,
+            "net_win_rate": 0.5,
+            "tp_hits": 6,
+            "tp_hit_rate": 0.5,
+            "gross_pnl_usd": 29.98999999999978,
+            "net_pnl_usd": 26.869999999999784,
+            "expectancy_usd": 2.2391666666666485,
+            "realized_max_drawdown_usd": 10.52,
+            "trades_per_day": 0.6674649465023755,
+            "net_win_rate_wilson95": [
+              0.2537815976337061,
+              0.7462184023662939
+            ],
+            "tp_hit_rate_wilson95": [
+              0.2537815976337061,
+              0.7462184023662939
+            ],
+            "timeout_count": 0,
+            "cost_per_round_trip_usd": 0.26
+          },
+          "eligible": false
+        },
+        {
+          "tp_usd": 10.0,
+          "sl_usd": 5.0,
+          "direction": -1,
+          "model": "hist_gradient_boosting",
+          "threshold": 0.4,
+          "validation": {
+            "n_trades": 0,
+            "net_wins": 0,
+            "net_win_rate": null,
+            "tp_hits": 0,
+            "tp_hit_rate": null,
+            "gross_pnl_usd": 0.0,
+            "net_pnl_usd": 0.0,
+            "expectancy_usd": null,
+            "realized_max_drawdown_usd": 0.0,
+            "trades_per_day": 0.0,
+            "net_win_rate_wilson95": [
+              null,
+              null
+            ],
+            "tp_hit_rate_wilson95": [
+              null,
+              null
+            ],
+            "timeout_count": 0,
+            "cost_per_round_trip_usd": 0.26
+          },
+          "eligible": false
+        },
+        {
+          "tp_usd": 10.0,
+          "sl_usd": 5.0,
+          "direction": -1,
+          "model": "hist_gradient_boosting",
+          "threshold": 0.5,
+          "validation": {
+            "n_trades": 0,
+            "net_wins": 0,
+            "net_win_rate": null,
+            "tp_hits": 0,
+            "tp_hit_rate": null,
+            "gross_pnl_usd": 0.0,
+            "net_pnl_usd": 0.0,
+            "expectancy_usd": null,
+            "realized_max_drawdown_usd": 0.0,
+            "trades_per_day": 0.0,
+            "net_win_rate_wilson95": [
+              null,
+              null
+            ],
+            "tp_hit_rate_wilson95": [
+              null,
+              null
+            ],
+            "timeout_count": 0,
+            "cost_per_round_trip_usd": 0.26
+          },
+          "eligible": false
+        },
+        {
+          "tp_usd": 10.0,
+          "sl_usd": 5.0,
+          "direction": -1,
+          "model": "hist_gradient_boosting",
+          "threshold": 0.6,
+          "validation": {
+            "n_trades": 0,
+            "net_wins": 0,
+            "net_win_rate": null,
+            "tp_hits": 0,
+            "tp_hit_rate": null,
+            "gross_pnl_usd": 0.0,
+            "net_pnl_usd": 0.0,
+            "expectancy_usd": null,
+            "realized_max_drawdown_usd": 0.0,
+            "trades_per_day": 0.0,
+            "net_win_rate_wilson95": [
+              null,
+              null
+            ],
+            "tp_hit_rate_wilson95": [
+              null,
+              null
+            ],
+            "timeout_count": 0,
+            "cost_per_round_trip_usd": 0.26
+          },
+          "eligible": false
+        },
+        {
+          "tp_usd": 10.0,
+          "sl_usd": 5.0,
+          "direction": -1,
+          "model": "hist_gradient_boosting",
+          "threshold": 0.7,
+          "validation": {
+            "n_trades": 0,
+            "net_wins": 0,
+            "net_win_rate": null,
+            "tp_hits": 0,
+            "tp_hit_rate": null,
+            "gross_pnl_usd": 0.0,
+            "net_pnl_usd": 0.0,
+            "expectancy_usd": null,
+            "realized_max_drawdown_usd": 0.0,
+            "trades_per_day": 0.0,
+            "net_win_rate_wilson95": [
+              null,
+              null
+            ],
+            "tp_hit_rate_wilson95": [
+              null,
+              null
+            ],
+            "timeout_count": 0,
+            "cost_per_round_trip_usd": 0.26
+          },
+          "eligible": false
+        }
+      ],
+      "chosen_validation_hypothesis_index": 24,
+      "chosen": {
+        "tp_usd": 10.0,
+        "sl_usd": 5.0,
+        "direction": -1,
+        "model": "logistic",
+        "threshold": 0.4,
+        "validation": {
+          "n_trades": 39,
+          "net_wins": 16,
+          "net_win_rate": 0.41025641025641024,
+          "tp_hits": 16,
+          "tp_hit_rate": 0.41025641025641024,
+          "gross_pnl_usd": 46.61000000000058,
+          "net_pnl_usd": 36.4700000000006,
+          "expectancy_usd": 0.9351282051282206,
+          "realized_max_drawdown_usd": 31.559999999999995,
+          "trades_per_day": 2.1692610761327202,
+          "net_win_rate_wilson95": [
+            0.27079310000725176,
+            0.5658137711710304
+          ],
+          "tp_hit_rate_wilson95": [
+            0.27079310000725176,
+            0.5658137711710304
+          ],
+          "timeout_count": 1,
+          "cost_per_round_trip_usd": 0.26
+        },
+        "eligible": true
+      },
+      "final_test": [
+        {
+          "scenario": {
+            "name": "observed_spread_assumption",
+            "spread": 0.24,
+            "slippage": 0.02,
+            "commission": 0
+          },
+          "metrics": {
+            "n_trades": 33,
+            "net_wins": 9,
+            "net_win_rate": 0.2727272727272727,
+            "tp_hits": 9,
+            "tp_hit_rate": 0.2727272727272727,
+            "gross_pnl_usd": -30.509999999999764,
+            "net_pnl_usd": -39.089999999999755,
+            "expectancy_usd": -1.184545454545447,
+            "realized_max_drawdown_usd": 64.67999999999998,
+            "trades_per_day": 1.8354577056778678,
+            "net_win_rate_wilson95": [
+              0.1506744088542064,
+              0.44217559002872625
+            ],
+            "tp_hit_rate_wilson95": [
+              0.1506744088542064,
+              0.44217559002872625
+            ],
+            "timeout_count": 0,
+            "cost_per_round_trip_usd": 0.26,
+            "bar_close_mark_to_market_max_drawdown_usd": 67.50999999999968,
+            "mtm_limitation": "Minute-close only, excludes intraminute adverse excursions and margin/liquidation."
+          }
+        },
+        {
+          "scenario": {
+            "name": "wider_session_assumption",
+            "spread": 0.4,
+            "slippage": 0.02,
+            "commission": 0
+          },
+          "metrics": {
+            "n_trades": 33,
+            "net_wins": 9,
+            "net_win_rate": 0.2727272727272727,
+            "tp_hits": 9,
+            "tp_hit_rate": 0.2727272727272727,
+            "gross_pnl_usd": -30.509999999999764,
+            "net_pnl_usd": -44.36999999999976,
+            "expectancy_usd": -1.3445454545454474,
+            "realized_max_drawdown_usd": 67.56000000000002,
+            "trades_per_day": 1.8354577056778678,
+            "net_win_rate_wilson95": [
+              0.1506744088542064,
+              0.44217559002872625
+            ],
+            "tp_hit_rate_wilson95": [
+              0.1506744088542064,
+              0.44217559002872625
+            ],
+            "timeout_count": 0,
+            "cost_per_round_trip_usd": 0.42000000000000004,
+            "bar_close_mark_to_market_max_drawdown_usd": 70.54999999999973,
+            "mtm_limitation": "Minute-close only, excludes intraminute adverse excursions and margin/liquidation."
+          }
+        }
+      ],
+      "final_test_evaluations": 1,
+      "trade_log": "results\\PAXGUSDT_test_trades.csv",
+      "trade_log_sha256": "2e51e713df4bfed314de7496109cb15da1695b83ed42e32cad65aca4d0a7714c",
+      "positive_validation_pnl": true
+    }
+  },
+  "finished_utc": "2026-11-04T16:44:02.499037+00:00",
+  "conclusion": "Research only. No claim of achieving 85% or broker profitability; inspect out-of-sample evidence and collect verified broker ticks/contracts before further evaluation."
+}

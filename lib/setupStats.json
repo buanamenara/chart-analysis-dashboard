@@ -1,0 +1,2559 @@
+{
+ "stats": {
+  "forex:XAUUSD:1h": {
+   "from": "2024-11-15",
+   "to": "2026-11-04",
+   "setups": {
+    "n": 1608,
+    "winRate": 34,
+    "expR": -0.005,
+    "totalR": -8.1,
+    "pf": 0.99
+   },
+   "setupsAligned": {
+    "n": 1280,
+    "winRate": 36,
+    "expR": 0.053,
+    "totalR": 67.8,
+    "pf": 1.08
+   },
+   "signals": {
+    "n": 14466,
+    "hitRate": 52,
+    "avgAtr": 0.387
+   }
+  },
+  "forex:XAUUSD:4h": {
+   "from": "2024-12-16",
+   "to": "2026-11-04",
+   "setups": {
+    "n": 431,
+    "winRate": 39,
+    "expR": 0.092,
+    "totalR": 39.5,
+    "pf": 1.14
+   },
+   "setupsAligned": {
+    "n": 315,
+    "winRate": 38,
+    "expR": 0.076,
+    "totalR": 23.9,
+    "pf": 1.12
+   },
+   "signals": {
+    "n": 3247,
+    "hitRate": 54,
+    "avgAtr": 0.466
+   }
+  },
+  "forex:XAUUSD:1d": {
+   "from": "2022-07-12",
+   "to": "2026-11-04",
+   "setups": {
+    "n": 201,
+    "winRate": 48,
+    "expR": 0.142,
+    "totalR": 28.5,
+    "pf": 1.26
+   },
+   "setupsAligned": {
+    "n": 162,
+    "winRate": 51,
+    "expR": 0.182,
+    "totalR": 29.5,
+    "pf": 1.36
+   },
+   "signals": {
+    "n": 1212,
+    "hitRate": 58,
+    "avgAtr": 0.576
+   }
+  },
+  "forex:XAGUSD:1h": {
+   "from": "2024-11-19",
+   "to": "2026-11-04",
+   "setups": {
+    "n": 1247,
+    "winRate": 34,
+    "expR": -0.043,
+    "totalR": -54,
+    "pf": 0.94
+   },
+   "setupsAligned": {
+    "n": 950,
+    "winRate": 33,
+    "expR": -0.063,
+    "totalR": -59.8,
+    "pf": 0.91
+   },
+   "signals": {
+    "n": 8939,
+    "hitRate": 49,
+    "avgAtr": 0.118
+   }
+  },
+  "forex:XAGUSD:4h": {
+   "from": "2025-01-03",
+   "to": "2026-11-04",
+   "setups": {
+    "n": 336,
+    "winRate": 34,
+    "expR": -0.102,
+    "totalR": -34.4,
+    "pf": 0.85
+   },
+   "setupsAligned": {
+    "n": 258,
+    "winRate": 35,
+    "expR": -0.091,
+    "totalR": -23.4,
+    "pf": 0.87
+   },
+   "signals": {
+    "n": 2275,
+    "hitRate": 50,
+    "avgAtr": 0.246
+   }
+  },
+  "forex:XAGUSD:1d": {
+   "from": "2022-11-02",
+   "to": "2026-11-04",
+   "setups": {
+    "n": 105,
+    "winRate": 31,
+    "expR": -0.196,
+    "totalR": -20.5,
+    "pf": 0.73
+   },
+   "setupsAligned": {
+    "n": 71,
+    "winRate": 32,
+    "expR": -0.191,
+    "totalR": -13.6,
+    "pf": 0.73
+   },
+   "signals": {
+    "n": 726,
+    "hitRate": 49,
+    "avgAtr": 0.262
+   }
+  },
+  "forex:EURUSD:1h": {
+   "from": "2024-11-19",
+   "to": "2026-11-04",
+   "setups": {
+    "n": 1202,
+    "winRate": 33,
+    "expR": -0.01,
+    "totalR": -11.5,
+    "pf": 0.99
+   },
+   "setupsAligned": {
+    "n": 904,
+    "winRate": 32,
+    "expR": -0.012,
+    "totalR": -10.6,
+    "pf": 0.98
+   },
+   "signals": {
+    "n": 9739,
+    "hitRate": 47,
+    "avgAtr": 0.061
+   }
+  },
+  "forex:EURUSD:4h": {
+   "from": "2025-01-02",
+   "to": "2026-11-04",
+   "setups": {
+    "n": 337,
+    "winRate": 29,
+    "expR": -0.193,
+    "totalR": -65,
+    "pf": 0.74
+   },
+   "setupsAligned": {
+    "n": 240,
+    "winRate": 29,
+    "expR": -0.216,
+    "totalR": -51.9,
+    "pf": 0.71
+   },
+   "signals": {
+    "n": 2191,
+    "hitRate": 45,
+    "avgAtr": -0.113
+   }
+  },
+  "forex:EURUSD:1d": {
+   "from": "2022-10-19",
+   "to": "2026-11-04",
+   "setups": {
+    "n": 131,
+    "winRate": 27,
+    "expR": -0.36,
+    "totalR": -47.2,
+    "pf": 0.51
+   },
+   "setupsAligned": {
+    "n": 106,
+    "winRate": 27,
+    "expR": -0.38,
+    "totalR": -40.2,
+    "pf": 0.47
+   },
+   "signals": {
+    "n": 823,
+    "hitRate": 43,
+    "avgAtr": -0.254
+   }
+  },
+  "forex:GBPUSD:1h": {
+   "from": "2024-11-19",
+   "to": "2026-11-04",
+   "setups": {
+    "n": 1175,
+    "winRate": 31,
+    "expR": -0.096,
+    "totalR": -113,
+    "pf": 0.87
+   },
+   "setupsAligned": {
+    "n": 895,
+    "winRate": 32,
+    "expR": -0.053,
+    "totalR": -47.1,
+    "pf": 0.93
+   },
+   "signals": {
+    "n": 9779,
+    "hitRate": 48,
+    "avgAtr": -0.056
+   }
+  },
+  "forex:GBPUSD:4h": {
+   "from": "2025-01-02",
+   "to": "2026-11-04",
+   "setups": {
+    "n": 334,
+    "winRate": 33,
+    "expR": -0.015,
+    "totalR": -5,
+    "pf": 0.98
+   },
+   "setupsAligned": {
+    "n": 238,
+    "winRate": 32,
+    "expR": -0.024,
+    "totalR": -5.6,
+    "pf": 0.97
+   },
+   "signals": {
+    "n": 2236,
+    "hitRate": 45,
+    "avgAtr": -0.113
+   }
+  },
+  "forex:GBPUSD:1d": {
+   "from": "2022-10-19",
+   "to": "2026-11-04",
+   "setups": {
+    "n": 122,
+    "winRate": 24,
+    "expR": -0.48,
+    "totalR": -58.6,
+    "pf": 0.4
+   },
+   "setupsAligned": {
+    "n": 95,
+    "winRate": 21,
+    "expR": -0.529,
+    "totalR": -50.3,
+    "pf": 0.36
+   },
+   "signals": {
+    "n": 840,
+    "hitRate": 41,
+    "avgAtr": -0.252
+   }
+  },
+  "forex:USDJPY:1h": {
+   "from": "2024-11-19",
+   "to": "2026-11-04",
+   "setups": {
+    "n": 1288,
+    "winRate": 31,
+    "expR": -0.113,
+    "totalR": -145.6,
+    "pf": 0.84
+   },
+   "setupsAligned": {
+    "n": 1010,
+    "winRate": 30,
+    "expR": -0.12,
+    "totalR": -121.3,
+    "pf": 0.84
+   },
+   "signals": {
+    "n": 9932,
+    "hitRate": 48,
+    "avgAtr": -0.066
+   }
+  },
+  "forex:USDJPY:4h": {
+   "from": "2025-01-02",
+   "to": "2026-11-04",
+   "setups": {
+    "n": 340,
+    "winRate": 31,
+    "expR": -0.185,
+    "totalR": -62.8,
+    "pf": 0.75
+   },
+   "setupsAligned": {
+    "n": 255,
+    "winRate": 31,
+    "expR": -0.218,
+    "totalR": -55.7,
+    "pf": 0.7
+   },
+   "signals": {
+    "n": 2261,
+    "hitRate": 46,
+    "avgAtr": -0.335
+   }
+  },
+  "forex:USDJPY:1d": {
+   "from": "2022-10-19",
+   "to": "2026-11-04",
+   "setups": {
+    "n": 113,
+    "winRate": 32,
+    "expR": -0.274,
+    "totalR": -30.9,
+    "pf": 0.6
+   },
+   "setupsAligned": {
+    "n": 84,
+    "winRate": 36,
+    "expR": -0.23,
+    "totalR": -19.3,
+    "pf": 0.65
+   },
+   "signals": {
+    "n": 810,
+    "hitRate": 52,
+    "avgAtr": -0.163
+   }
+  },
+  "forex:AUDUSD:1h": {
+   "from": "2024-11-19",
+   "to": "2026-11-04",
+   "setups": {
+    "n": 1256,
+    "winRate": 30,
+    "expR": -0.116,
+    "totalR": -145.5,
+    "pf": 0.84
+   },
+   "setupsAligned": {
+    "n": 987,
+    "winRate": 31,
+    "expR": -0.088,
+    "totalR": -87,
+    "pf": 0.88
+   },
+   "signals": {
+    "n": 9959,
+    "hitRate": 48,
+    "avgAtr": -0.075
+   }
+  },
+  "forex:AUDUSD:4h": {
+   "from": "2025-01-01",
+   "to": "2026-11-04",
+   "setups": {
+    "n": 330,
+    "winRate": 26,
+    "expR": -0.298,
+    "totalR": -98.3,
+    "pf": 0.61
+   },
+   "setupsAligned": {
+    "n": 248,
+    "winRate": 27,
+    "expR": -0.281,
+    "totalR": -69.8,
+    "pf": 0.63
+   },
+   "signals": {
+    "n": 2301,
+    "hitRate": 47,
+    "avgAtr": -0.109
+   }
+  },
+  "forex:AUDUSD:1d": {
+   "from": "2022-10-19",
+   "to": "2026-11-04",
+   "setups": {
+    "n": 110,
+    "winRate": 27,
+    "expR": -0.448,
+    "totalR": -49.3,
+    "pf": 0.41
+   },
+   "setupsAligned": {
+    "n": 77,
+    "winRate": 30,
+    "expR": -0.4,
+    "totalR": -30.8,
+    "pf": 0.46
+   },
+   "signals": {
+    "n": 782,
+    "hitRate": 41,
+    "avgAtr": -0.321
+   }
+  },
+  "forex:USDCAD:1h": {
+   "from": "2024-11-19",
+   "to": "2026-11-04",
+   "setups": {
+    "n": 1361,
+    "winRate": 36,
+    "expR": -0.021,
+    "totalR": -28.7,
+    "pf": 0.97
+   },
+   "setupsAligned": {
+    "n": 1060,
+    "winRate": 36,
+    "expR": -0.022,
+    "totalR": -23,
+    "pf": 0.97
+   },
+   "signals": {
+    "n": 9945,
+    "hitRate": 52,
+    "avgAtr": 0.099
+   }
+  },
+  "forex:USDCAD:4h": {
+   "from": "2025-01-01",
+   "to": "2026-11-04",
+   "setups": {
+    "n": 354,
+    "winRate": 38,
+    "expR": 0.038,
+    "totalR": 13.4,
+    "pf": 1.06
+   },
+   "setupsAligned": {
+    "n": 263,
+    "winRate": 40,
+    "expR": 0.057,
+    "totalR": 15,
+    "pf": 1.09
+   },
+   "signals": {
+    "n": 2302,
+    "hitRate": 50,
+    "avgAtr": 0.082
+   }
+  },
+  "forex:USDCAD:1d": {
+   "from": "2022-10-19",
+   "to": "2026-11-04",
+   "setups": {
+    "n": 122,
+    "winRate": 19,
+    "expR": -0.615,
+    "totalR": -75,
+    "pf": 0.26
+   },
+   "setupsAligned": {
+    "n": 92,
+    "winRate": 18,
+    "expR": -0.64,
+    "totalR": -58.9,
+    "pf": 0.23
+   },
+   "signals": {
+    "n": 816,
+    "hitRate": 37,
+    "avgAtr": -0.521
+   }
+  },
+  "forex:USDCHF:1h": {
+   "from": "2024-11-19",
+   "to": "2026-11-04",
+   "setups": {
+    "n": 1335,
+    "winRate": 32,
+    "expR": -0.119,
+    "totalR": -158.9,
+    "pf": 0.83
+   },
+   "setupsAligned": {
+    "n": 999,
+    "winRate": 33,
+    "expR": -0.093,
+    "totalR": -93.4,
+    "pf": 0.87
+   },
+   "signals": {
+    "n": 9553,
+    "hitRate": 48,
+    "avgAtr": -0.022
+   }
+  },
+  "forex:USDCHF:4h": {
+   "from": "2025-01-02",
+   "to": "2026-11-04",
+   "setups": {
+    "n": 351,
+    "winRate": 34,
+    "expR": -0.108,
+    "totalR": -38,
+    "pf": 0.84
+   },
+   "setupsAligned": {
+    "n": 252,
+    "winRate": 33,
+    "expR": -0.145,
+    "totalR": -36.6,
+    "pf": 0.79
+   },
+   "signals": {
+    "n": 2217,
+    "hitRate": 43,
+    "avgAtr": -0.287
+   }
+  },
+  "forex:USDCHF:1d": {
+   "from": "2022-10-19",
+   "to": "2026-11-04",
+   "setups": {
+    "n": 111,
+    "winRate": 32,
+    "expR": -0.287,
+    "totalR": -31.8,
+    "pf": 0.59
+   },
+   "setupsAligned": {
+    "n": 82,
+    "winRate": 37,
+    "expR": -0.223,
+    "totalR": -18.3,
+    "pf": 0.66
+   },
+   "signals": {
+    "n": 841,
+    "hitRate": 48,
+    "avgAtr": 0.004
+   }
+  },
+  "forex:NZDUSD:1h": {
+   "from": "2024-11-19",
+   "to": "2026-11-04",
+   "setups": {
+    "n": 1175,
+    "winRate": 33,
+    "expR": -0.036,
+    "totalR": -41.9,
+    "pf": 0.95
+   },
+   "setupsAligned": {
+    "n": 901,
+    "winRate": 33,
+    "expR": -0.017,
+    "totalR": -15.5,
+    "pf": 0.98
+   },
+   "signals": {
+    "n": 9889,
+    "hitRate": 49,
+    "avgAtr": 0.032
+   }
+  },
+  "forex:NZDUSD:4h": {
+   "from": "2025-01-01",
+   "to": "2026-11-04",
+   "setups": {
+    "n": 334,
+    "winRate": 32,
+    "expR": -0.127,
+    "totalR": -42.3,
+    "pf": 0.82
+   },
+   "setupsAligned": {
+    "n": 251,
+    "winRate": 30,
+    "expR": -0.184,
+    "totalR": -46.1,
+    "pf": 0.75
+   },
+   "signals": {
+    "n": 2265,
+    "hitRate": 46,
+    "avgAtr": -0.222
+   }
+  },
+  "forex:NZDUSD:1d": {
+   "from": "2022-10-19",
+   "to": "2026-11-04",
+   "setups": {
+    "n": 115,
+    "winRate": 25,
+    "expR": -0.552,
+    "totalR": -63.5,
+    "pf": 0.3
+   },
+   "setupsAligned": {
+    "n": 83,
+    "winRate": 31,
+    "expR": -0.46,
+    "totalR": -38.2,
+    "pf": 0.36
+   },
+   "signals": {
+    "n": 789,
+    "hitRate": 38,
+    "avgAtr": -0.59
+   }
+  },
+  "forex:EURJPY:1h": {
+   "from": "2024-11-19",
+   "to": "2026-11-04",
+   "setups": {
+    "n": 1305,
+    "winRate": 30,
+    "expR": -0.143,
+    "totalR": -186.5,
+    "pf": 0.8
+   },
+   "setupsAligned": {
+    "n": 986,
+    "winRate": 30,
+    "expR": -0.152,
+    "totalR": -150.2,
+    "pf": 0.79
+   },
+   "signals": {
+    "n": 9740,
+    "hitRate": 49,
+    "avgAtr": -0.109
+   }
+  },
+  "forex:EURJPY:4h": {
+   "from": "2025-01-02",
+   "to": "2026-11-04",
+   "setups": {
+    "n": 341,
+    "winRate": 31,
+    "expR": -0.174,
+    "totalR": -59.4,
+    "pf": 0.76
+   },
+   "setupsAligned": {
+    "n": 253,
+    "winRate": 30,
+    "expR": -0.218,
+    "totalR": -55.3,
+    "pf": 0.7
+   },
+   "signals": {
+    "n": 2249,
+    "hitRate": 45,
+    "avgAtr": -0.374
+   }
+  },
+  "forex:EURJPY:1d": {
+   "from": "2022-10-19",
+   "to": "2026-11-04",
+   "setups": {
+    "n": 108,
+    "winRate": 44,
+    "expR": -0.079,
+    "totalR": -8.5,
+    "pf": 0.86
+   },
+   "setupsAligned": {
+    "n": 94,
+    "winRate": 44,
+    "expR": -0.115,
+    "totalR": -10.8,
+    "pf": 0.8
+   },
+   "signals": {
+    "n": 887,
+    "hitRate": 57,
+    "avgAtr": 0.107
+   }
+  },
+  "forex:GBPJPY:1h": {
+   "from": "2024-11-19",
+   "to": "2026-11-04",
+   "setups": {
+    "n": 1318,
+    "winRate": 31,
+    "expR": -0.106,
+    "totalR": -139.5,
+    "pf": 0.85
+   },
+   "setupsAligned": {
+    "n": 965,
+    "winRate": 31,
+    "expR": -0.102,
+    "totalR": -98.7,
+    "pf": 0.86
+   },
+   "signals": {
+    "n": 9525,
+    "hitRate": 47,
+    "avgAtr": -0.161
+   }
+  },
+  "forex:GBPJPY:4h": {
+   "from": "2025-01-02",
+   "to": "2026-11-04",
+   "setups": {
+    "n": 341,
+    "winRate": 29,
+    "expR": -0.24,
+    "totalR": -81.8,
+    "pf": 0.68
+   },
+   "setupsAligned": {
+    "n": 239,
+    "winRate": 28,
+    "expR": -0.287,
+    "totalR": -68.6,
+    "pf": 0.62
+   },
+   "signals": {
+    "n": 2183,
+    "hitRate": 45,
+    "avgAtr": -0.276
+   }
+  },
+  "forex:GBPJPY:1d": {
+   "from": "2022-10-19",
+   "to": "2026-11-04",
+   "setups": {
+    "n": 113,
+    "winRate": 35,
+    "expR": -0.281,
+    "totalR": -31.8,
+    "pf": 0.59
+   },
+   "setupsAligned": {
+    "n": 97,
+    "winRate": 34,
+    "expR": -0.334,
+    "totalR": -32.4,
+    "pf": 0.51
+   },
+   "signals": {
+    "n": 908,
+    "hitRate": 54,
+    "avgAtr": -0.026
+   }
+  },
+  "crypto:BTCUSDT:1h": {
+   "from": "2024-11-15",
+   "to": "2026-11-04",
+   "setups": {
+    "n": 1812,
+    "winRate": 32,
+    "expR": -0.071,
+    "totalR": -128.5,
+    "pf": 0.9
+   },
+   "setupsAligned": {
+    "n": 1455,
+    "winRate": 32,
+    "expR": -0.082,
+    "totalR": -119.1,
+    "pf": 0.88
+   },
+   "signals": {
+    "n": 14429,
+    "hitRate": 48,
+    "avgAtr": 0.046
+   }
+  },
+  "crypto:BTCUSDT:4h": {
+   "from": "2024-12-16",
+   "to": "2026-11-04",
+   "setups": {
+    "n": 462,
+    "winRate": 33,
+    "expR": -0.06,
+    "totalR": -27.7,
+    "pf": 0.91
+   },
+   "setupsAligned": {
+    "n": 344,
+    "winRate": 32,
+    "expR": -0.12,
+    "totalR": -41.2,
+    "pf": 0.83
+   },
+   "signals": {
+    "n": 3292,
+    "hitRate": 49,
+    "avgAtr": 0.179
+   }
+  },
+  "crypto:BTCUSDT:1d": {
+   "from": "2022-07-12",
+   "to": "2026-11-04",
+   "setups": {
+    "n": 185,
+    "winRate": 31,
+    "expR": -0.16,
+    "totalR": -29.7,
+    "pf": 0.78
+   },
+   "setupsAligned": {
+    "n": 137,
+    "winRate": 31,
+    "expR": -0.172,
+    "totalR": -23.6,
+    "pf": 0.76
+   },
+   "signals": {
+    "n": 1204,
+    "hitRate": 49,
+    "avgAtr": 0.061
+   }
+  },
+  "crypto:ETHUSDT:1h": {
+   "from": "2024-11-15",
+   "to": "2026-11-04",
+   "setups": {
+    "n": 1759,
+    "winRate": 32,
+    "expR": -0.079,
+    "totalR": -138.5,
+    "pf": 0.89
+   },
+   "setupsAligned": {
+    "n": 1356,
+    "winRate": 31,
+    "expR": -0.108,
+    "totalR": -147.1,
+    "pf": 0.85
+   },
+   "signals": {
+    "n": 14178,
+    "hitRate": 46,
+    "avgAtr": 0.019
+   }
+  },
+  "crypto:ETHUSDT:4h": {
+   "from": "2024-12-16",
+   "to": "2026-11-04",
+   "setups": {
+    "n": 458,
+    "winRate": 32,
+    "expR": -0.112,
+    "totalR": -51.2,
+    "pf": 0.84
+   },
+   "setupsAligned": {
+    "n": 339,
+    "winRate": 33,
+    "expR": -0.109,
+    "totalR": -37.1,
+    "pf": 0.84
+   },
+   "signals": {
+    "n": 3282,
+    "hitRate": 49,
+    "avgAtr": 0.212
+   }
+  },
+  "crypto:ETHUSDT:1d": {
+   "from": "2022-07-12",
+   "to": "2026-11-04",
+   "setups": {
+    "n": 183,
+    "winRate": 33,
+    "expR": -0.107,
+    "totalR": -19.5,
+    "pf": 0.85
+   },
+   "setupsAligned": {
+    "n": 129,
+    "winRate": 31,
+    "expR": -0.176,
+    "totalR": -22.7,
+    "pf": 0.76
+   },
+   "signals": {
+    "n": 1156,
+    "hitRate": 48,
+    "avgAtr": -0.018
+   }
+  },
+  "crypto:BNBUSDT:1h": {
+   "from": "2024-11-15",
+   "to": "2026-11-04",
+   "setups": {
+    "n": 1758,
+    "winRate": 30,
+    "expR": -0.129,
+    "totalR": -226.8,
+    "pf": 0.82
+   },
+   "setupsAligned": {
+    "n": 1376,
+    "winRate": 31,
+    "expR": -0.1,
+    "totalR": -137.2,
+    "pf": 0.86
+   },
+   "signals": {
+    "n": 14171,
+    "hitRate": 47,
+    "avgAtr": 0.077
+   }
+  },
+  "crypto:BNBUSDT:4h": {
+   "from": "2024-12-16",
+   "to": "2026-11-04",
+   "setups": {
+    "n": 489,
+    "winRate": 32,
+    "expR": -0.119,
+    "totalR": -58,
+    "pf": 0.83
+   },
+   "setupsAligned": {
+    "n": 341,
+    "winRate": 34,
+    "expR": -0.06,
+    "totalR": -20.4,
+    "pf": 0.91
+   },
+   "signals": {
+    "n": 3116,
+    "hitRate": 47,
+    "avgAtr": 0.182
+   }
+  },
+  "crypto:BNBUSDT:1d": {
+   "from": "2022-07-12",
+   "to": "2026-11-04",
+   "setups": {
+    "n": 192,
+    "winRate": 35,
+    "expR": -0.089,
+    "totalR": -17.1,
+    "pf": 0.87
+   },
+   "setupsAligned": {
+    "n": 142,
+    "winRate": 35,
+    "expR": -0.09,
+    "totalR": -12.8,
+    "pf": 0.87
+   },
+   "signals": {
+    "n": 1187,
+    "hitRate": 45,
+    "avgAtr": 0.084
+   }
+  },
+  "crypto:SOLUSDT:1h": {
+   "from": "2024-11-15",
+   "to": "2026-11-04",
+   "setups": {
+    "n": 1744,
+    "winRate": 31,
+    "expR": -0.073,
+    "totalR": -127.9,
+    "pf": 0.9
+   },
+   "setupsAligned": {
+    "n": 1346,
+    "winRate": 32,
+    "expR": -0.067,
+    "totalR": -89.6,
+    "pf": 0.91
+   },
+   "signals": {
+    "n": 14123,
+    "hitRate": 48,
+    "avgAtr": 0.076
+   }
+  },
+  "crypto:SOLUSDT:4h": {
+   "from": "2024-12-16",
+   "to": "2026-11-04",
+   "setups": {
+    "n": 446,
+    "winRate": 32,
+    "expR": -0.117,
+    "totalR": -52.3,
+    "pf": 0.84
+   },
+   "setupsAligned": {
+    "n": 338,
+    "winRate": 33,
+    "expR": -0.104,
+    "totalR": -35.2,
+    "pf": 0.85
+   },
+   "signals": {
+    "n": 3293,
+    "hitRate": 49,
+    "avgAtr": 0.176
+   }
+  },
+  "crypto:SOLUSDT:1d": {
+   "from": "2022-07-12",
+   "to": "2026-11-04",
+   "setups": {
+    "n": 172,
+    "winRate": 31,
+    "expR": -0.17,
+    "totalR": -29.2,
+    "pf": 0.76
+   },
+   "setupsAligned": {
+    "n": 127,
+    "winRate": 29,
+    "expR": -0.244,
+    "totalR": -31,
+    "pf": 0.67
+   },
+   "signals": {
+    "n": 1189,
+    "hitRate": 47,
+    "avgAtr": 0.091
+   }
+  },
+  "crypto:XRPUSDT:1h": {
+   "from": "2024-11-15",
+   "to": "2026-11-04",
+   "setups": {
+    "n": 1687,
+    "winRate": 31,
+    "expR": -0.078,
+    "totalR": -132.1,
+    "pf": 0.89
+   },
+   "setupsAligned": {
+    "n": 1341,
+    "winRate": 31,
+    "expR": -0.076,
+    "totalR": -101.6,
+    "pf": 0.89
+   },
+   "signals": {
+    "n": 14379,
+    "hitRate": 49,
+    "avgAtr": 0.176
+   }
+  },
+  "crypto:XRPUSDT:4h": {
+   "from": "2024-12-16",
+   "to": "2026-11-04",
+   "setups": {
+    "n": 455,
+    "winRate": 35,
+    "expR": -0.027,
+    "totalR": -12.2,
+    "pf": 0.96
+   },
+   "setupsAligned": {
+    "n": 338,
+    "winRate": 33,
+    "expR": -0.065,
+    "totalR": -21.8,
+    "pf": 0.91
+   },
+   "signals": {
+    "n": 3144,
+    "hitRate": 47,
+    "avgAtr": -0.059
+   }
+  },
+  "crypto:XRPUSDT:1d": {
+   "from": "2022-07-12",
+   "to": "2026-11-04",
+   "setups": {
+    "n": 177,
+    "winRate": 33,
+    "expR": -0.098,
+    "totalR": -17.3,
+    "pf": 0.86
+   },
+   "setupsAligned": {
+    "n": 136,
+    "winRate": 33,
+    "expR": -0.112,
+    "totalR": -15.2,
+    "pf": 0.84
+   },
+   "signals": {
+    "n": 1225,
+    "hitRate": 43,
+    "avgAtr": -0.479
+   }
+  },
+  "crypto:ADAUSDT:1h": {
+   "from": "2024-11-15",
+   "to": "2026-11-04",
+   "setups": {
+    "n": 1748,
+    "winRate": 32,
+    "expR": -0.06,
+    "totalR": -104.3,
+    "pf": 0.92
+   },
+   "setupsAligned": {
+    "n": 1401,
+    "winRate": 32,
+    "expR": -0.062,
+    "totalR": -86.9,
+    "pf": 0.91
+   },
+   "signals": {
+    "n": 14454,
+    "hitRate": 49,
+    "avgAtr": 0.095
+   }
+  },
+  "crypto:ADAUSDT:4h": {
+   "from": "2024-12-16",
+   "to": "2026-11-04",
+   "setups": {
+    "n": 441,
+    "winRate": 31,
+    "expR": -0.137,
+    "totalR": -60.3,
+    "pf": 0.81
+   },
+   "setupsAligned": {
+    "n": 319,
+    "winRate": 30,
+    "expR": -0.17,
+    "totalR": -54.3,
+    "pf": 0.77
+   },
+   "signals": {
+    "n": 3198,
+    "hitRate": 48,
+    "avgAtr": -0.03
+   }
+  },
+  "crypto:ADAUSDT:1d": {
+   "from": "2022-07-12",
+   "to": "2026-11-04",
+   "setups": {
+    "n": 180,
+    "winRate": 35,
+    "expR": -0.033,
+    "totalR": -5.9,
+    "pf": 0.95
+   },
+   "setupsAligned": {
+    "n": 136,
+    "winRate": 34,
+    "expR": -0.054,
+    "totalR": -7.4,
+    "pf": 0.92
+   },
+   "signals": {
+    "n": 1208,
+    "hitRate": 51,
+    "avgAtr": -0.025
+   }
+  },
+  "crypto:DOGEUSDT:1h": {
+   "from": "2024-11-15",
+   "to": "2026-11-04",
+   "setups": {
+    "n": 1745,
+    "winRate": 32,
+    "expR": -0.058,
+    "totalR": -100.8,
+    "pf": 0.92
+   },
+   "setupsAligned": {
+    "n": 1385,
+    "winRate": 32,
+    "expR": -0.068,
+    "totalR": -94.8,
+    "pf": 0.9
+   },
+   "signals": {
+    "n": 14314,
+    "hitRate": 47,
+    "avgAtr": 0.072
+   }
+  },
+  "crypto:DOGEUSDT:4h": {
+   "from": "2024-12-16",
+   "to": "2026-11-04",
+   "setups": {
+    "n": 440,
+    "winRate": 32,
+    "expR": -0.115,
+    "totalR": -50.5,
+    "pf": 0.84
+   },
+   "setupsAligned": {
+    "n": 337,
+    "winRate": 32,
+    "expR": -0.126,
+    "totalR": -42.5,
+    "pf": 0.82
+   },
+   "signals": {
+    "n": 3332,
+    "hitRate": 49,
+    "avgAtr": 0.048
+   }
+  },
+  "crypto:DOGEUSDT:1d": {
+   "from": "2022-07-12",
+   "to": "2026-11-04",
+   "setups": {
+    "n": 178,
+    "winRate": 30,
+    "expR": -0.173,
+    "totalR": -30.8,
+    "pf": 0.76
+   },
+   "setupsAligned": {
+    "n": 129,
+    "winRate": 32,
+    "expR": -0.14,
+    "totalR": -18.1,
+    "pf": 0.8
+   },
+   "signals": {
+    "n": 1163,
+    "hitRate": 47,
+    "avgAtr": -0.168
+   }
+  },
+  "crypto:AVAXUSDT:1h": {
+   "from": "2024-11-15",
+   "to": "2026-11-04",
+   "setups": {
+    "n": 1763,
+    "winRate": 29,
+    "expR": -0.139,
+    "totalR": -244.8,
+    "pf": 0.81
+   },
+   "setupsAligned": {
+    "n": 1416,
+    "winRate": 29,
+    "expR": -0.14,
+    "totalR": -198.2,
+    "pf": 0.81
+   },
+   "signals": {
+    "n": 14469,
+    "hitRate": 47,
+    "avgAtr": -0.071
+   }
+  },
+  "crypto:AVAXUSDT:4h": {
+   "from": "2024-12-16",
+   "to": "2026-11-04",
+   "setups": {
+    "n": 456,
+    "winRate": 30,
+    "expR": -0.155,
+    "totalR": -70.7,
+    "pf": 0.79
+   },
+   "setupsAligned": {
+    "n": 333,
+    "winRate": 30,
+    "expR": -0.163,
+    "totalR": -54.3,
+    "pf": 0.78
+   },
+   "signals": {
+    "n": 3237,
+    "hitRate": 49,
+    "avgAtr": 0.05
+   }
+  },
+  "crypto:AVAXUSDT:1d": {
+   "from": "2022-07-12",
+   "to": "2026-11-04",
+   "setups": {
+    "n": 177,
+    "winRate": 36,
+    "expR": -0.05,
+    "totalR": -8.9,
+    "pf": 0.93
+   },
+   "setupsAligned": {
+    "n": 129,
+    "winRate": 39,
+    "expR": 0.037,
+    "totalR": 4.8,
+    "pf": 1.06
+   },
+   "signals": {
+    "n": 1185,
+    "hitRate": 52,
+    "avgAtr": 0.19
+   }
+  },
+  "crypto:DOTUSDT:1h": {
+   "from": "2024-11-15",
+   "to": "2026-11-04",
+   "setups": {
+    "n": 1804,
+    "winRate": 29,
+    "expR": -0.145,
+    "totalR": -261.1,
+    "pf": 0.8
+   },
+   "setupsAligned": {
+    "n": 1450,
+    "winRate": 28,
+    "expR": -0.163,
+    "totalR": -236.9,
+    "pf": 0.78
+   },
+   "signals": {
+    "n": 14473,
+    "hitRate": 49,
+    "avgAtr": 0.005
+   }
+  },
+  "crypto:DOTUSDT:4h": {
+   "from": "2024-12-16",
+   "to": "2026-11-04",
+   "setups": {
+    "n": 459,
+    "winRate": 28,
+    "expR": -0.193,
+    "totalR": -88.8,
+    "pf": 0.74
+   },
+   "setupsAligned": {
+    "n": 346,
+    "winRate": 29,
+    "expR": -0.166,
+    "totalR": -57.6,
+    "pf": 0.78
+   },
+   "signals": {
+    "n": 3266,
+    "hitRate": 48,
+    "avgAtr": -0.116
+   }
+  },
+  "crypto:DOTUSDT:1d": {
+   "from": "2022-07-12",
+   "to": "2026-11-04",
+   "setups": {
+    "n": 183,
+    "winRate": 34,
+    "expR": -0.072,
+    "totalR": -13.1,
+    "pf": 0.9
+   },
+   "setupsAligned": {
+    "n": 141,
+    "winRate": 35,
+    "expR": -0.099,
+    "totalR": -14,
+    "pf": 0.86
+   },
+   "signals": {
+    "n": 1214,
+    "hitRate": 51,
+    "avgAtr": 0.081
+   }
+  },
+  "crypto:LINKUSDT:1h": {
+   "from": "2024-11-15",
+   "to": "2026-11-04",
+   "setups": {
+    "n": 1696,
+    "winRate": 30,
+    "expR": -0.109,
+    "totalR": -185.5,
+    "pf": 0.85
+   },
+   "setupsAligned": {
+    "n": 1354,
+    "winRate": 30,
+    "expR": -0.096,
+    "totalR": -130.1,
+    "pf": 0.87
+   },
+   "signals": {
+    "n": 14419,
+    "hitRate": 48,
+    "avgAtr": -0.056
+   }
+  },
+  "crypto:LINKUSDT:4h": {
+   "from": "2024-12-16",
+   "to": "2026-11-04",
+   "setups": {
+    "n": 465,
+    "winRate": 32,
+    "expR": -0.092,
+    "totalR": -42.7,
+    "pf": 0.87
+   },
+   "setupsAligned": {
+    "n": 336,
+    "winRate": 34,
+    "expR": -0.054,
+    "totalR": -18,
+    "pf": 0.92
+   },
+   "signals": {
+    "n": 3124,
+    "hitRate": 49,
+    "avgAtr": 0.049
+   }
+  },
+  "crypto:LINKUSDT:1d": {
+   "from": "2022-07-12",
+   "to": "2026-11-04",
+   "setups": {
+    "n": 172,
+    "winRate": 34,
+    "expR": -0.057,
+    "totalR": -9.8,
+    "pf": 0.92
+   },
+   "setupsAligned": {
+    "n": 129,
+    "winRate": 35,
+    "expR": -0.039,
+    "totalR": -5,
+    "pf": 0.94
+   },
+   "signals": {
+    "n": 1198,
+    "hitRate": 43,
+    "avgAtr": -0.078
+   }
+  },
+  "stock:^JKSE:1h": {
+   "from": "2024-12-30",
+   "to": "2026-11-04",
+   "setups": {
+    "n": 302,
+    "winRate": 38,
+    "expR": 0.074,
+    "totalR": 22.3,
+    "pf": 1.11
+   },
+   "setupsAligned": {
+    "n": 211,
+    "winRate": 42,
+    "expR": 0.174,
+    "totalR": 36.8,
+    "pf": 1.29
+   },
+   "signals": {
+    "n": 2232,
+    "hitRate": 59,
+    "avgAtr": 0.646
+   }
+  },
+  "stock:^JKSE:4h": {
+   "from": "2025-03-12",
+   "to": "2026-11-04",
+   "setups": {
+    "n": 129,
+    "winRate": 43,
+    "expR": 0.202,
+    "totalR": 26,
+    "pf": 1.34
+   },
+   "setupsAligned": {
+    "n": 89,
+    "winRate": 49,
+    "expR": 0.335,
+    "totalR": 29.8,
+    "pf": 1.64
+   },
+   "signals": {
+    "n": 864,
+    "hitRate": 61,
+    "avgAtr": 0.847
+   }
+  },
+  "stock:^JKSE:1d": {
+   "from": "2022-11-10",
+   "to": "2026-11-04",
+   "setups": {
+    "n": 108,
+    "winRate": 41,
+    "expR": 0.01,
+    "totalR": 1.1,
+    "pf": 1.02
+   },
+   "setupsAligned": {
+    "n": 78,
+    "winRate": 40,
+    "expR": -0.091,
+    "totalR": -7.1,
+    "pf": 0.86
+   },
+   "signals": {
+    "n": 704,
+    "hitRate": 53,
+    "avgAtr": 0.157
+   }
+  },
+  "stock:BBCA.JK:1h": {
+   "from": "2024-12-30",
+   "to": "2026-11-04",
+   "setups": {
+    "n": 335,
+    "winRate": 42,
+    "expR": 0.173,
+    "totalR": 57.8,
+    "pf": 1.28
+   },
+   "setupsAligned": {
+    "n": 249,
+    "winRate": 46,
+    "expR": 0.256,
+    "totalR": 63.6,
+    "pf": 1.45
+   },
+   "signals": {
+    "n": 2285,
+    "hitRate": 50,
+    "avgAtr": 0.291
+   }
+  },
+  "stock:BBCA.JK:4h": {
+   "from": "2025-03-12",
+   "to": "2026-11-04",
+   "setups": {
+    "n": 125,
+    "winRate": 46,
+    "expR": 0.183,
+    "totalR": 22.8,
+    "pf": 1.33
+   },
+   "setupsAligned": {
+    "n": 94,
+    "winRate": 49,
+    "expR": 0.238,
+    "totalR": 22.3,
+    "pf": 1.45
+   },
+   "signals": {
+    "n": 903,
+    "hitRate": 54,
+    "avgAtr": 0.338
+   }
+  },
+  "stock:BBCA.JK:1d": {
+   "from": "2022-11-10",
+   "to": "2026-11-04",
+   "setups": {
+    "n": 114,
+    "winRate": 39,
+    "expR": 0.006,
+    "totalR": 0.7,
+    "pf": 1.01
+   },
+   "setupsAligned": {
+    "n": 75,
+    "winRate": 37,
+    "expR": -0.085,
+    "totalR": -6.4,
+    "pf": 0.87
+   },
+   "signals": {
+    "n": 687,
+    "hitRate": 53,
+    "avgAtr": 0.164
+   }
+  },
+  "stock:BBRI.JK:1h": {
+   "from": "2024-12-30",
+   "to": "2026-11-04",
+   "setups": {
+    "n": 312,
+    "winRate": 33,
+    "expR": -0.141,
+    "totalR": -44,
+    "pf": 0.8
+   },
+   "setupsAligned": {
+    "n": 220,
+    "winRate": 36,
+    "expR": -0.068,
+    "totalR": -15.1,
+    "pf": 0.9
+   },
+   "signals": {
+    "n": 2242,
+    "hitRate": 48,
+    "avgAtr": -0.084
+   }
+  },
+  "stock:BBRI.JK:4h": {
+   "from": "2025-03-12",
+   "to": "2026-11-04",
+   "setups": {
+    "n": 144,
+    "winRate": 28,
+    "expR": -0.243,
+    "totalR": -35,
+    "pf": 0.68
+   },
+   "setupsAligned": {
+    "n": 105,
+    "winRate": 28,
+    "expR": -0.314,
+    "totalR": -32.9,
+    "pf": 0.58
+   },
+   "signals": {
+    "n": 888,
+    "hitRate": 44,
+    "avgAtr": -0.408
+   }
+  },
+  "stock:BBRI.JK:1d": {
+   "from": "2022-11-10",
+   "to": "2026-11-04",
+   "setups": {
+    "n": 114,
+    "winRate": 39,
+    "expR": 0.06,
+    "totalR": 6.8,
+    "pf": 1.09
+   },
+   "setupsAligned": {
+    "n": 85,
+    "winRate": 40,
+    "expR": 0.09,
+    "totalR": 7.6,
+    "pf": 1.14
+   },
+   "signals": {
+    "n": 725,
+    "hitRate": 49,
+    "avgAtr": -0.074
+   }
+  },
+  "stock:BMRI.JK:1h": {
+   "from": "2024-12-30",
+   "to": "2026-11-04",
+   "setups": {
+    "n": 333,
+    "winRate": 33,
+    "expR": -0.075,
+    "totalR": -25,
+    "pf": 0.89
+   },
+   "setupsAligned": {
+    "n": 248,
+    "winRate": 34,
+    "expR": -0.049,
+    "totalR": -12.1,
+    "pf": 0.93
+   },
+   "signals": {
+    "n": 2294,
+    "hitRate": 49,
+    "avgAtr": 0.018
+   }
+  },
+  "stock:BMRI.JK:4h": {
+   "from": "2025-03-12",
+   "to": "2026-11-04",
+   "setups": {
+    "n": 139,
+    "winRate": 31,
+    "expR": -0.175,
+    "totalR": -24.3,
+    "pf": 0.76
+   },
+   "setupsAligned": {
+    "n": 100,
+    "winRate": 31,
+    "expR": -0.191,
+    "totalR": -19.1,
+    "pf": 0.74
+   },
+   "signals": {
+    "n": 873,
+    "hitRate": 47,
+    "avgAtr": -0.119
+   }
+  },
+  "stock:BMRI.JK:1d": {
+   "from": "2022-11-10",
+   "to": "2026-11-04",
+   "setups": {
+    "n": 114,
+    "winRate": 39,
+    "expR": -0.053,
+    "totalR": -6,
+    "pf": 0.92
+   },
+   "setupsAligned": {
+    "n": 86,
+    "winRate": 44,
+    "expR": 0.053,
+    "totalR": 4.6,
+    "pf": 1.09
+   },
+   "signals": {
+    "n": 736,
+    "hitRate": 54,
+    "avgAtr": 0.164
+   }
+  },
+  "stock:TLKM.JK:1h": {
+   "from": "2024-12-30",
+   "to": "2026-11-04",
+   "setups": {
+    "n": 331,
+    "winRate": 29,
+    "expR": -0.209,
+    "totalR": -69.1,
+    "pf": 0.72
+   },
+   "setupsAligned": {
+    "n": 245,
+    "winRate": 31,
+    "expR": -0.193,
+    "totalR": -47.4,
+    "pf": 0.73
+   },
+   "signals": {
+    "n": 2247,
+    "hitRate": 45,
+    "avgAtr": -0.058
+   }
+  },
+  "stock:TLKM.JK:4h": {
+   "from": "2025-03-12",
+   "to": "2026-11-04",
+   "setups": {
+    "n": 142,
+    "winRate": 39,
+    "expR": -0.057,
+    "totalR": -8.1,
+    "pf": 0.91
+   },
+   "setupsAligned": {
+    "n": 107,
+    "winRate": 38,
+    "expR": -0.096,
+    "totalR": -10.3,
+    "pf": 0.85
+   },
+   "signals": {
+    "n": 833,
+    "hitRate": 44,
+    "avgAtr": -0.035
+   }
+  },
+  "stock:TLKM.JK:1d": {
+   "from": "2022-11-10",
+   "to": "2026-11-04",
+   "setups": {
+    "n": 108,
+    "winRate": 40,
+    "expR": -0.021,
+    "totalR": -2.3,
+    "pf": 0.97
+   },
+   "setupsAligned": {
+    "n": 85,
+    "winRate": 39,
+    "expR": -0.087,
+    "totalR": -7.4,
+    "pf": 0.86
+   },
+   "signals": {
+    "n": 758,
+    "hitRate": 50,
+    "avgAtr": 0.236
+   }
+  },
+  "stock:ASII.JK:1h": {
+   "from": "2024-12-30",
+   "to": "2026-11-04",
+   "setups": {
+    "n": 349,
+    "winRate": 33,
+    "expR": -0.089,
+    "totalR": -31.2,
+    "pf": 0.87
+   },
+   "setupsAligned": {
+    "n": 256,
+    "winRate": 33,
+    "expR": -0.106,
+    "totalR": -27.2,
+    "pf": 0.85
+   },
+   "signals": {
+    "n": 2239,
+    "hitRate": 44,
+    "avgAtr": -0.219
+   }
+  },
+  "stock:ASII.JK:4h": {
+   "from": "2025-03-12",
+   "to": "2026-11-04",
+   "setups": {
+    "n": 150,
+    "winRate": 41,
+    "expR": 0.026,
+    "totalR": 3.9,
+    "pf": 1.04
+   },
+   "setupsAligned": {
+    "n": 113,
+    "winRate": 40,
+    "expR": -0.067,
+    "totalR": -7.6,
+    "pf": 0.89
+   },
+   "signals": {
+    "n": 891,
+    "hitRate": 48,
+    "avgAtr": 0.094
+   }
+  },
+  "stock:ASII.JK:1d": {
+   "from": "2022-11-10",
+   "to": "2026-11-04",
+   "setups": {
+    "n": 124,
+    "winRate": 35,
+    "expR": -0.026,
+    "totalR": -3.2,
+    "pf": 0.96
+   },
+   "setupsAligned": {
+    "n": 94,
+    "winRate": 36,
+    "expR": -0.054,
+    "totalR": -5.1,
+    "pf": 0.92
+   },
+   "signals": {
+    "n": 730,
+    "hitRate": 50,
+    "avgAtr": 0.113
+   }
+  },
+  "stock:GOTO.JK:1h": {
+   "from": "2024-12-30",
+   "to": "2026-11-04",
+   "setups": {
+    "n": 367,
+    "winRate": 28,
+    "expR": -0.03,
+    "totalR": -11.1,
+    "pf": 0.94
+   },
+   "setupsAligned": {
+    "n": 305,
+    "winRate": 27,
+    "expR": -0.009,
+    "totalR": -2.9,
+    "pf": 0.98
+   },
+   "signals": {
+    "n": 2118,
+    "hitRate": 32,
+    "avgAtr": 0.042
+   }
+  },
+  "stock:GOTO.JK:4h": {
+   "from": "2025-03-12",
+   "to": "2026-11-04",
+   "setups": {
+    "n": 148,
+    "winRate": 36,
+    "expR": 0.164,
+    "totalR": 24.3,
+    "pf": 1.36
+   },
+   "setupsAligned": {
+    "n": 129,
+    "winRate": 40,
+    "expR": 0.272,
+    "totalR": 35.1,
+    "pf": 1.7
+   },
+   "signals": {
+    "n": 993,
+    "hitRate": 31,
+    "avgAtr": 0.092
+   }
+  },
+  "stock:GOTO.JK:1d": {
+   "from": "2023-04-17",
+   "to": "2026-11-04",
+   "setups": {
+    "n": 99,
+    "winRate": 37,
+    "expR": 0.035,
+    "totalR": 3.5,
+    "pf": 1.06
+   },
+   "setupsAligned": {
+    "n": 85,
+    "winRate": 39,
+    "expR": 0.084,
+    "totalR": 7.2,
+    "pf": 1.15
+   },
+   "signals": {
+    "n": 671,
+    "hitRate": 42,
+    "avgAtr": 96.678
+   }
+  },
+  "stock:AAPL:1h": {
+   "from": "2024-12-26",
+   "to": "2026-11-04",
+   "setups": {
+    "n": 367,
+    "winRate": 30,
+    "expR": -0.181,
+    "totalR": -66.4,
+    "pf": 0.75
+   },
+   "setupsAligned": {
+    "n": 266,
+    "winRate": 29,
+    "expR": -0.255,
+    "totalR": -67.9,
+    "pf": 0.66
+   },
+   "signals": {
+    "n": 2437,
+    "hitRate": 49,
+    "avgAtr": -0.174
+   }
+  },
+  "stock:AAPL:4h": {
+   "from": "2025-03-10",
+   "to": "2026-11-04",
+   "setups": {
+    "n": 108,
+    "winRate": 35,
+    "expR": -0.119,
+    "totalR": -12.8,
+    "pf": 0.83
+   },
+   "setupsAligned": {
+    "n": 77,
+    "winRate": 38,
+    "expR": -0.087,
+    "totalR": -6.7,
+    "pf": 0.87
+   },
+   "signals": {
+    "n": 705,
+    "hitRate": 53,
+    "avgAtr": 0.096
+   }
+  },
+  "stock:AAPL:1d": {
+   "from": "2022-11-02",
+   "to": "2026-11-04",
+   "setups": {
+    "n": 115,
+    "winRate": 38,
+    "expR": -0.108,
+    "totalR": -12.4,
+    "pf": 0.83
+   },
+   "setupsAligned": {
+    "n": 90,
+    "winRate": 42,
+    "expR": -0.025,
+    "totalR": -2.3,
+    "pf": 0.96
+   },
+   "signals": {
+    "n": 780,
+    "hitRate": 57,
+    "avgAtr": 0.23
+   }
+  },
+  "stock:MSFT:1h": {
+   "from": "2024-12-26",
+   "to": "2026-11-04",
+   "setups": {
+    "n": 368,
+    "winRate": 35,
+    "expR": -0.025,
+    "totalR": -9.2,
+    "pf": 0.96
+   },
+   "setupsAligned": {
+    "n": 261,
+    "winRate": 35,
+    "expR": -0.031,
+    "totalR": -8,
+    "pf": 0.95
+   },
+   "signals": {
+    "n": 2470,
+    "hitRate": 53,
+    "avgAtr": 0.121
+   }
+  },
+  "stock:MSFT:4h": {
+   "from": "2025-03-10",
+   "to": "2026-11-04",
+   "setups": {
+    "n": 106,
+    "winRate": 47,
+    "expR": 0.251,
+    "totalR": 26.6,
+    "pf": 1.45
+   },
+   "setupsAligned": {
+    "n": 76,
+    "winRate": 50,
+    "expR": 0.303,
+    "totalR": 23,
+    "pf": 1.58
+   },
+   "signals": {
+    "n": 727,
+    "hitRate": 53,
+    "avgAtr": 0.139
+   }
+  },
+  "stock:MSFT:1d": {
+   "from": "2022-11-02",
+   "to": "2026-11-04",
+   "setups": {
+    "n": 123,
+    "winRate": 41,
+    "expR": -0.002,
+    "totalR": -0.3,
+    "pf": 1
+   },
+   "setupsAligned": {
+    "n": 89,
+    "winRate": 46,
+    "expR": 0.095,
+    "totalR": 8.5,
+    "pf": 1.17
+   },
+   "signals": {
+    "n": 758,
+    "hitRate": 56,
+    "avgAtr": 0.096
+   }
+  },
+  "stock:GOOGL:1h": {
+   "from": "2024-12-26",
+   "to": "2026-11-04",
+   "setups": {
+    "n": 348,
+    "winRate": 34,
+    "expR": -0.067,
+    "totalR": -23.4,
+    "pf": 0.9
+   },
+   "setupsAligned": {
+    "n": 248,
+    "winRate": 37,
+    "expR": -0.038,
+    "totalR": -9.4,
+    "pf": 0.94
+   },
+   "signals": {
+    "n": 2529,
+    "hitRate": 53,
+    "avgAtr": 0.255
+   }
+  },
+  "stock:GOOGL:4h": {
+   "from": "2025-03-10",
+   "to": "2026-11-04",
+   "setups": {
+    "n": 104,
+    "winRate": 37,
+    "expR": -0.084,
+    "totalR": -8.7,
+    "pf": 0.87
+   },
+   "setupsAligned": {
+    "n": 74,
+    "winRate": 45,
+    "expR": 0.12,
+    "totalR": 8.9,
+    "pf": 1.21
+   },
+   "signals": {
+    "n": 692,
+    "hitRate": 56,
+    "avgAtr": 0.641
+   }
+  },
+  "stock:GOOGL:1d": {
+   "from": "2022-11-02",
+   "to": "2026-11-04",
+   "setups": {
+    "n": 113,
+    "winRate": 30,
+    "expR": -0.221,
+    "totalR": -24.9,
+    "pf": 0.7
+   },
+   "setupsAligned": {
+    "n": 86,
+    "winRate": 31,
+    "expR": -0.234,
+    "totalR": -20.1,
+    "pf": 0.68
+   },
+   "signals": {
+    "n": 741,
+    "hitRate": 55,
+    "avgAtr": 0.367
+   }
+  },
+  "stock:TSLA:1h": {
+   "from": "2024-12-26",
+   "to": "2026-11-04",
+   "setups": {
+    "n": 362,
+    "winRate": 30,
+    "expR": -0.155,
+    "totalR": -56.1,
+    "pf": 0.79
+   },
+   "setupsAligned": {
+    "n": 267,
+    "winRate": 30,
+    "expR": -0.186,
+    "totalR": -49.7,
+    "pf": 0.75
+   },
+   "signals": {
+    "n": 2466,
+    "hitRate": 48,
+    "avgAtr": 0
+   }
+  },
+  "stock:TSLA:4h": {
+   "from": "2025-03-10",
+   "to": "2026-11-04",
+   "setups": {
+    "n": 104,
+    "winRate": 29,
+    "expR": -0.208,
+    "totalR": -21.6,
+    "pf": 0.72
+   },
+   "setupsAligned": {
+    "n": 72,
+    "winRate": 29,
+    "expR": -0.19,
+    "totalR": -13.7,
+    "pf": 0.74
+   },
+   "signals": {
+    "n": 654,
+    "hitRate": 46,
+    "avgAtr": -0.098
+   }
+  },
+  "stock:TSLA:1d": {
+   "from": "2022-11-02",
+   "to": "2026-11-04",
+   "setups": {
+    "n": 110,
+    "winRate": 27,
+    "expR": -0.312,
+    "totalR": -34.3,
+    "pf": 0.59
+   },
+   "setupsAligned": {
+    "n": 76,
+    "winRate": 30,
+    "expR": -0.242,
+    "totalR": -18.4,
+    "pf": 0.67
+   },
+   "signals": {
+    "n": 703,
+    "hitRate": 42,
+    "avgAtr": -0.205
+   }
+  },
+  "stock:NVDA:1h": {
+   "from": "2024-12-26",
+   "to": "2026-11-04",
+   "setups": {
+    "n": 346,
+    "winRate": 33,
+    "expR": -0.094,
+    "totalR": -32.4,
+    "pf": 0.87
+   },
+   "setupsAligned": {
+    "n": 256,
+    "winRate": 32,
+    "expR": -0.125,
+    "totalR": -32,
+    "pf": 0.82
+   },
+   "signals": {
+    "n": 2515,
+    "hitRate": 49,
+    "avgAtr": -0.16
+   }
+  },
+  "stock:NVDA:4h": {
+   "from": "2025-03-10",
+   "to": "2026-11-04",
+   "setups": {
+    "n": 108,
+    "winRate": 26,
+    "expR": -0.377,
+    "totalR": -40.8,
+    "pf": 0.51
+   },
+   "setupsAligned": {
+    "n": 82,
+    "winRate": 27,
+    "expR": -0.366,
+    "totalR": -30,
+    "pf": 0.52
+   },
+   "signals": {
+    "n": 706,
+    "hitRate": 49,
+    "avgAtr": -0.15
+   }
+  },
+  "stock:NVDA:1d": {
+   "from": "2022-11-02",
+   "to": "2026-11-04",
+   "setups": {
+    "n": 105,
+    "winRate": 27,
+    "expR": -0.332,
+    "totalR": -34.9,
+    "pf": 0.57
+   },
+   "setupsAligned": {
+    "n": 75,
+    "winRate": 27,
+    "expR": -0.361,
+    "totalR": -27.1,
+    "pf": 0.53
+   },
+   "signals": {
+    "n": 774,
+    "hitRate": 56,
+    "avgAtr": 0.734
+   }
+  },
+  "stock:AMZN:1h": {
+   "from": "2024-12-26",
+   "to": "2026-11-04",
+   "setups": {
+    "n": 369,
+    "winRate": 30,
+    "expR": -0.192,
+    "totalR": -71,
+    "pf": 0.74
+   },
+   "setupsAligned": {
+    "n": 259,
+    "winRate": 29,
+    "expR": -0.216,
+    "totalR": -56,
+    "pf": 0.71
+   },
+   "signals": {
+    "n": 2400,
+    "hitRate": 47,
+    "avgAtr": -0.309
+   }
+  },
+  "stock:AMZN:4h": {
+   "from": "2025-03-10",
+   "to": "2026-11-04",
+   "setups": {
+    "n": 109,
+    "winRate": 25,
+    "expR": -0.39,
+    "totalR": -42.6,
+    "pf": 0.51
+   },
+   "setupsAligned": {
+    "n": 81,
+    "winRate": 22,
+    "expR": -0.474,
+    "totalR": -38.4,
+    "pf": 0.42
+   },
+   "signals": {
+    "n": 655,
+    "hitRate": 40,
+    "avgAtr": -0.731
+   }
+  },
+  "stock:AMZN:1d": {
+   "from": "2022-11-02",
+   "to": "2026-11-04",
+   "setups": {
+    "n": 119,
+    "winRate": 38,
+    "expR": -0.079,
+    "totalR": -9.4,
+    "pf": 0.88
+   },
+   "setupsAligned": {
+    "n": 91,
+    "winRate": 37,
+    "expR": -0.153,
+    "totalR": -14,
+    "pf": 0.77
+   },
+   "signals": {
+    "n": 736,
+    "hitRate": 50,
+    "avgAtr": -0.141
+   }
+  },
+  "stock:^GSPC:1h": {
+   "from": "2024-12-26",
+   "to": "2026-11-04",
+   "setups": {
+    "n": 363,
+    "winRate": 34,
+    "expR": -0.042,
+    "totalR": -15.4,
+    "pf": 0.94
+   },
+   "setupsAligned": {
+    "n": 268,
+    "winRate": 35,
+    "expR": -0.048,
+    "totalR": -12.8,
+    "pf": 0.93
+   },
+   "signals": {
+    "n": 2553,
+    "hitRate": 51,
+    "avgAtr": -0.133
+   }
+  },
+  "stock:^GSPC:4h": {
+   "from": "2025-03-10",
+   "to": "2026-11-04",
+   "setups": {
+    "n": 110,
+    "winRate": 35,
+    "expR": -0.273,
+    "totalR": -30,
+    "pf": 0.6
+   },
+   "setupsAligned": {
+    "n": 90,
+    "winRate": 36,
+    "expR": -0.272,
+    "totalR": -24.5,
+    "pf": 0.6
+   },
+   "signals": {
+    "n": 721,
+    "hitRate": 55,
+    "avgAtr": 0.19
+   }
+  },
+  "stock:^GSPC:1d": {
+   "from": "2022-11-02",
+   "to": "2026-11-04",
+   "setups": {
+    "n": 113,
+    "winRate": 42,
+    "expR": -0.12,
+    "totalR": -13.5,
+    "pf": 0.8
+   },
+   "setupsAligned": {
+    "n": 91,
+    "winRate": 43,
+    "expR": -0.146,
+    "totalR": -13.3,
+    "pf": 0.76
+   },
+   "signals": {
+    "n": 797,
+    "hitRate": 60,
+    "avgAtr": 0.325
+   }
+  },
+  "stock:^DJI:1h": {
+   "from": "2024-12-26",
+   "to": "2026-11-04",
+   "setups": {
+    "n": 356,
+    "winRate": 32,
+    "expR": -0.143,
+    "totalR": -51,
+    "pf": 0.8
+   },
+   "setupsAligned": {
+    "n": 255,
+    "winRate": 31,
+    "expR": -0.184,
+    "totalR": -47,
+    "pf": 0.75
+   },
+   "signals": {
+    "n": 2511,
+    "hitRate": 49,
+    "avgAtr": -0.061
+   }
+  },
+  "stock:^DJI:4h": {
+   "from": "2025-03-10",
+   "to": "2026-11-04",
+   "setups": {
+    "n": 113,
+    "winRate": 40,
+    "expR": -0.076,
+    "totalR": -8.6,
+    "pf": 0.88
+   },
+   "setupsAligned": {
+    "n": 81,
+    "winRate": 43,
+    "expR": -0.021,
+    "totalR": -1.7,
+    "pf": 0.96
+   },
+   "signals": {
+    "n": 716,
+    "hitRate": 53,
+    "avgAtr": 0.258
+   }
+  },
+  "stock:^DJI:1d": {
+   "from": "2022-11-02",
+   "to": "2026-11-04",
+   "setups": {
+    "n": 124,
+    "winRate": 49,
+    "expR": 0.156,
+    "totalR": 19.3,
+    "pf": 1.29
+   },
+   "setupsAligned": {
+    "n": 92,
+    "winRate": 49,
+    "expR": 0.088,
+    "totalR": 8.1,
+    "pf": 1.16
+   },
+   "signals": {
+    "n": 792,
+    "hitRate": 54,
+    "avgAtr": 0.066
+   }
+  },
+  "stock:^IXIC:1h": {
+   "from": "2024-12-26",
+   "to": "2026-11-04",
+   "setups": {
+    "n": 348,
+    "winRate": 36,
+    "expR": 0.033,
+    "totalR": 11.6,
+    "pf": 1.05
+   },
+   "setupsAligned": {
+    "n": 260,
+    "winRate": 37,
+    "expR": 0.029,
+    "totalR": 7.5,
+    "pf": 1.04
+   },
+   "signals": {
+    "n": 2559,
+    "hitRate": 53,
+    "avgAtr": 0.015
+   }
+  },
+  "stock:^IXIC:4h": {
+   "from": "2025-03-10",
+   "to": "2026-11-04",
+   "setups": {
+    "n": 104,
+    "winRate": 38,
+    "expR": -0.115,
+    "totalR": -12,
+    "pf": 0.82
+   },
+   "setupsAligned": {
+    "n": 83,
+    "winRate": 37,
+    "expR": -0.185,
+    "totalR": -15.3,
+    "pf": 0.72
+   },
+   "signals": {
+    "n": 713,
+    "hitRate": 56,
+    "avgAtr": 0.142
+   }
+  },
+  "stock:^IXIC:1d": {
+   "from": "2022-11-02",
+   "to": "2026-11-04",
+   "setups": {
+    "n": 104,
+    "winRate": 38,
+    "expR": -0.07,
+    "totalR": -7.3,
+    "pf": 0.89
+   },
+   "setupsAligned": {
+    "n": 84,
+    "winRate": 37,
+    "expR": -0.13,
+    "totalR": -10.9,
+    "pf": 0.8
+   },
+   "signals": {
+    "n": 784,
+    "hitRate": 59,
+    "avgAtr": 0.293
+   }
+  }
+ },
+ "generatedAt": "2026-11-04T16:03:48.466Z",
+ "method": "Walk-forward: tiap candle hanya melihat data sampai candle itu (250 candle terakhir). Setup = limit order di Entry, kedaluwarsa 6 candle, ditutup paksa setelah 40 candle, biaya 0.05R per trade. Sinyal: arah benar bila harga 12 candle kemudian searah sinyal."
+}

@@ -53,6 +53,7 @@
     <button class="quicknav-btn" data-view="snr">Analisa SNR</button>
     <button class="quicknav-btn" data-view="news">Kalender &amp; Berita</button>
     <button class="quicknav-btn" data-view="backtest">Backtest</button>
+    <button class="quicknav-btn" data-view="scalp">Scalping RR 1:2</button>
   </nav>
 
   <main>
@@ -311,6 +312,66 @@
       <div id="btEquityContainer"></div>
       <div id="btOptResult"></div>
     </section>
+    </div>
+
+    <!-- Scalping RR 1:2 -->
+    <div class="view" id="view-scalp" hidden>
+      <section class="card">
+        <h3>Scalping RR 1:2 — XAUUSD & BTCUSD</h3>
+        <p class="muted">Riset backtest machine learning (90 hari Binance, RR 1:2) + Expert Advisor MT5.</p>
+        
+        <h4>Status Riset</h4>
+        <div id="scalpResearchStatus">
+          <p><b>Riset selesai — tidak ada metode 85% yang tervalidasi.</b> Pengujian ML memakai split temporal 60/20/20, data 1 menit 90 hari, TP/SL gross RR 1:2, entry candle berikutnya, aturan SL-first yang konservatif, dan tanpa overlap posisi.</p>
+          <table class="snr-tpsl-table"><thead><tr><th>Proxy</th><th>Biaya</th><th>Trade OOS</th><th>Win rate</th><th>Net P/L</th><th>Expectancy</th></tr></thead><tbody>
+            <tr><td>PAXGUSDT (proxy emas)</td><td>$0.26</td><td>33</td><td>27.3%</td><td style="color:var(--red)">-$39.09</td><td style="color:var(--red)">-$1.19/trade</td></tr>
+            <tr><td>PAXGUSDT (spread lebih lebar)</td><td>$0.42</td><td>33</td><td>27.3%</td><td style="color:var(--red)">-$44.37</td><td style="color:var(--red)">-$1.35/trade</td></tr>
+            <tr><td>BTCUSDT</td><td>-</td><td>—</td><td>—</td><td>—</td><td>Tidak ada kandidat valid ≥30 trade</td></tr>
+          </tbody></table>
+          <p class="muted">PAXGUSDT bukan XAUUSDm Exness dan BTCUSDT bukan BTCUSD broker. Data broker/tick, kontrak, spread Ask/Bid, slippage, margin, dan likuidasi belum tervalidasi. Detail lengkap: <code>research/results/evidence.md</code>.</p>
+        </div>
+        
+        <h4>Expert Advisor MT5</h4>
+        <p>EA <b>ScalpRR2</b> siap digunakan untuk <b>XAUUSDm</b> (Exness) dan <b>BTCUSD</b> (Vantage):</p>
+        <ul style="line-height:1.8">
+          <li><b>Default: sinyal saja.</b> EA mengirim notifikasi ke MT5 di HP dan menggambar level Entry/SL/TP di chart. Tidak ada order otomatis kecuali <code>InpAutoTrade=true</code>.</li>
+          <li><b>TP & SL dalam dolar</b> (bukan pip), RR 1:2 ($10 target / $5 risiko default).</li>
+          <li>2 setup: <b>Trend pullback</b> (EMA + RSI) atau <b>Liquidity sweep</b> (SMC).</li>
+          <li>Rem harian: batas rugi, entry maksimum, kalah beruntun.</li>
+          <li>Filter sesi London + New York (UTC 07:00–17:00).</li>
+        </ul>
+        
+        <h4>File & Panduan</h4>
+        <ul style="line-height:1.8">
+          <li><b>Source code:</b> <code>mt5/ScalpRR2.mq5</code></li>
+          <li><b>Instalasi:</b> <code>mt5/INSTALL.md</code> — cara kompilasi & setup notifikasi HP</li>
+          <li><b>Dokumentasi:</b> <code>mt5/README.md</code> — parameter, setup, backtest, troubleshooting</li>
+          <li><b>Hasil riset ML:</b> <code>research/README.md</code> (akan tersedia setelah riset selesai)</li>
+        </ul>
+        
+        <h4>Spread Exness (XAUUSDm Standard)</h4>
+        <p>Dari screenshot user (4 Nov 2026, sesi New York): bid 4048.435, ask 4048.675 → spread ~$0.24 pada 0.01 lot.</p>
+        <p>EA otomatis lewati sinyal bila spread > <code>InpMaxSpreadUSD</code> ($0.50 default).</p>
+        
+        <h4>Catatan Penting</h4>
+        <p><b>Win rate 85% pada RR 1:2 tidak realistis</b> berdasarkan penelitian trading sistematis. Target yang layak adalah win rate 38%+ (break-even 33% untuk RR 1:2) yang bertahan di data uji.</p>
+        <p><b>Uji di akun DEMO minimal 1 minggu</b> sebelum memakai uang sungguhan. Strategy Tester MT5 memakai data broker (bisa berbeda dari Binance).</p>
+        
+        <details style="margin-top:1rem">
+          <summary style="cursor:pointer;font-weight:600">Cara Cepat: Kompilasi EA</summary>
+          <ol style="line-height:1.8;margin-top:0.5rem">
+            <li>Buka MT5 desktop → tekan <b>F4</b> (MetaEditor).</li>
+            <li>Klik <b>File → New → Expert Advisor (template)</b>.</li>
+            <li>Wizard: nama <b>ScalpRR2</b>, klik Next sampai Finish.</li>
+            <li><b>Hapus semua kode</b> template, lalu <b>copy-paste</b> isi <code>mt5/ScalpRR2.mq5</code>.</li>
+            <li>Klik <b>Compile</b> (F7) → harus 0 error.</li>
+            <li>Restart MT5 atau Refresh Navigator → EA muncul di Expert Advisors.</li>
+            <li>Drag EA ke chart XAUUSD/BTCUSD → atur parameter → OK.</li>
+            <li>Pastikan <b>Algo Trading</b> aktif (ikon hijau di toolbar).</li>
+          </ol>
+          <p class="muted">Panduan lengkap ada di <code>mt5/INSTALL.md</code>.</p>
+        </details>
+      </section>
     </div>
   </main>
 

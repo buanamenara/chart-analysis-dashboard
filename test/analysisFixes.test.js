@@ -134,15 +134,28 @@ test("C: kalau tak ada level ber-R:R cukup, pakai R:R terbaik yang tersedia", ()
   assert.equal(r.rr, 0.75);
 });
 
-function snrCase(signal) {
-  // Support jelas di 104 (swing low), semua level lain jauh di atas (~108-111).
+// Candle harian yang membuat PDL (kemarin) tepat di 104 -> konfluensi swing + daily.
+const DAILY_104 = [
+  { time: Date.UTC(2026, 0, 3), open: 110, high: 111, low: 108, close: 110 },
+  { time: Date.UTC(2026, 0, 4), open: 110, high: 111, low: 104, close: 110 },
+  { time: Date.UTC(2026, 0, 5), open: 110, high: 111, low: 109, close: 110 }
+];
+
+function snrCase(signal, dailyBars = DAILY_104) {
+  // Support jelas di 104 (swing low + PDL), semua level lain jauh di atas (~108-111).
   const bars = Array.from({ length: 60 }, (_, i) => ({
     time: Date.UTC(2026, 0, 5, 0) + i * 3600e3,
     open: 110, high: 111, low: i % 10 === 5 ? 104 : 109, close: 110, volume: 1
   }));
   const indicators = { lastClose: 104.6, atr14: 0.8, bollinger: {} };
-  return computeSnrZones({ indicators, dailyBars: [], bars, signal: { signal } });
+  return computeSnrZones({ indicators, dailyBars, bars, signal: { signal } });
 }
+
+test("C: zona lemah (hanya 1 kategori level) tidak ditawarkan sebagai setup", () => {
+  const weak = snrCase("BUY", []);
+  assert.equal(weak.potential, null);
+  assert.match(weak.skippedSetup, /LEMAH/);
+});
 
 test("C: setup Buy di support ditolak bila sinyal SELL (dan diberi penjelasan)", () => {
   const sell = snrCase("SELL");

@@ -20,7 +20,13 @@ test("teks setup SNR forex tidak dibulatkan ke 2 desimal (Entry/SL/TP terbedakan
     time: Date.UTC(2026, 0, 5) + i * 3600e3,
     open: 1.1262, high: 1.1270, low: i % 10 === 5 ? 1.1240 : 1.1255, close: 1.1262, volume: 0
   }));
-  const r = computeSnrZones({ indicators: { lastClose: 1.1245, atr14: 0.0008, bollinger: {} }, dailyBars: [], bars, signal: { signal: "BUY" } });
+  // PDL kemarin 1.1240 = konfluensi dengan swing low (zona tidak lemah).
+  const dailyBars = [
+    { time: Date.UTC(2026, 0, 3), open: 1.1262, high: 1.1275, low: 1.1250, close: 1.1262 },
+    { time: Date.UTC(2026, 0, 4), open: 1.1262, high: 1.1275, low: 1.1240, close: 1.1262 },
+    { time: Date.UTC(2026, 0, 5), open: 1.1262, high: 1.1270, low: 1.1255, close: 1.1262 }
+  ];
+  const r = computeSnrZones({ indicators: { lastClose: 1.1245, atr14: 0.0008, bollinger: {} }, dailyBars, bars, signal: { signal: "BUY" } });
   const p = r.potential;
   assert.equal(p?.type, "BUY_ZONE");
   assert.match(p.reason, /Entry \(limit\) ~1\.12\d{3} /);
