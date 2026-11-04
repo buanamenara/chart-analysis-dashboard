@@ -1,6 +1,11 @@
 node_modules/
 .env
 
+# Riset lokal/cache besar
+research/cache/
+research/__pycache__/
+
+
 # Tool MCP lokal untuk sesi Claude Code - bukan bagian dari dashboard web ini
 tradingview-mcp/
 .mcp.json
