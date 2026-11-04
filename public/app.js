@@ -218,11 +218,11 @@ async function loadSignal() {
 window.retryLoad.signal = loadSignal;
 
 async function loadNews() {
-  const { type } = currentInstrument();
+  const { type, symbol } = currentInstrument();
   const body = el("newsBody");
   body.innerHTML = `<div class="muted">Memuat berita...</div>`;
   try {
-    const res = await fetch(`/api/news?assetType=${type}`);
+    const res = await fetch(`/api/news?assetType=${type}&symbol=${encodeURIComponent(symbol)}`);
     let data;
     try { data = await res.json(); } catch(e) { throw new Error("Format data salah."); }
     if (!res.ok) {
@@ -230,10 +230,16 @@ async function loadNews() {
       error.hint = data.hint;
       throw error;
     }
-    if (!data.items?.length) { body.innerHTML = `<div class="muted">Tidak ada berita.</div>`; return; }
-    body.innerHTML = data.items
-      .map(n => `<div class="news-item"><a href="${esc(n.link)}" target="_blank" rel="noopener">${esc(n.title)}</a><div class="news-source">${esc(n.source)}${n.pubDate ? " · " + new Date(n.pubDate).toLocaleString("id-ID") : ""}</div></div>`)
-      .join("");
+    const newsRow = n => `<div class="news-item">${n.link ? `<a href="${esc(n.link)}" target="_blank" rel="noopener">${esc(n.title)}</a>` : `<span>${esc(n.title)}</span>`}<div class="news-source">${(n.tags || []).map(t => `<span class="news-tag">${esc(t)}</span>`).join("")}${esc(n.source)}${n.pubDate ? " · " + new Date(n.pubDate).toLocaleString("id-ID") : ""}</div></div>`;
+    let html = "";
+    const sn = data.symbolNews;
+    if (sn) {
+      html += `<div class="news-head">Khusus ${esc(sn.asset)} (${esc(symbol)})</div>`;
+      html += sn.items.length ? sn.items.map(newsRow).join("") : `<div class="muted">Belum ada berita relevan dalam 72 jam terakhir.</div>`;
+      html += `<div class="news-head">Berita umum</div>`;
+    }
+    html += data.items?.length ? data.items.map(newsRow).join("") : `<div class="muted">Tidak ada berita.</div>`;
+    body.innerHTML = html;
   } catch (err) {
     body.innerHTML = renderErrorHtml(err, 'news');
   }

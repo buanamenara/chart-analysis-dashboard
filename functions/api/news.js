@@ -1,16 +1,15 @@
-import { fetchRssMulti } from "../../lib/rss.js";
-import { NEWS_SOURCES } from "../../lib/newsSources.js";
+import { buildNewsReport } from "../../lib/newsReport.js";
 
 export async function onRequestGet(context) {
   const { request } = context;
   const url = new URL(request.url);
   const assetType = url.searchParams.get("assetType") || "forex";
+  const symbol = (url.searchParams.get("symbol") || "").slice(0, 20);
 
   try {
-    const sources = NEWS_SOURCES[assetType] || NEWS_SOURCES.forex;
-    const items = await fetchRssMulti(sources, 6);
+    const data = await buildNewsReport(assetType, symbol);
 
-    return new Response(JSON.stringify({ items }), {
+    return new Response(JSON.stringify(data), {
       headers: {
         "Content-Type": "application/json",
         "Cache-Control": "max-age=180"

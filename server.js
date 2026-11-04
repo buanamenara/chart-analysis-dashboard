@@ -8,8 +8,9 @@ import { computeIndicators, summarizeTrend } from "./lib/indicators.js";
 import { runBacktest, optimizeBacktest } from "./lib/backtest.js";
 import { runScout } from "./lib/scout.js";
 import { buildSignalReport, buildSnrReport } from "./lib/analysisPipeline.js";
-import { fetchRss, fetchRssMulti } from "./lib/rss.js";
-import { NEWS_SOURCES, ECONOMIC_NEWS_SOURCE } from "./lib/newsSources.js";
+import { buildNewsReport } from "./lib/newsReport.js";
+import { fetchRss } from "./lib/rss.js";
+import { ECONOMIC_NEWS_SOURCE } from "./lib/newsSources.js";
 import { getEconomicCalendar, filterCalendarBySymbol, pairBiasFromCurrencyBias } from "./lib/calendar.js";
 import { annotateHighImpactEvents } from "./lib/newsAnalysis.js";
 import { getFearGreedIndex, getCryptoGlobalStats } from "./lib/sentiment.js";
@@ -247,15 +248,12 @@ app.get("/api/snr", async (req, res) => {
 
 app.get("/api/news", async (req, res) => {
   try {
-    const { assetType = "forex" } = req.query;
+    const { assetType = "forex", symbol = "" } = req.query;
+    const sym = String(symbol).slice(0, 20);
 
-    const compute = async () => {
-      const sources = NEWS_SOURCES[assetType] || NEWS_SOURCES.forex;
-      const items = await fetchRssMulti(sources, 6);
-      return { items };
-    };
+    const compute = () => buildNewsReport(assetType, sym);
 
-    const key = `news:${assetType}`;
+    const key = `news:${assetType}:${sym}`;
     const data = shouldBypassCache(req) ? await compute() : await cached(key, 180_000, compute);
     res.json(data);
   } catch (err) {
