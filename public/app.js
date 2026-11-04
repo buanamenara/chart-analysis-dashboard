@@ -597,7 +597,11 @@ function renderSnrChart(data) {
     },
     autoSize: true
   });
+  // Presisi sumbu harga mengikuti instrumen (default Lightweight Charts = 2 desimal,
+  // membuat pair forex seperti EURUSD tampil 1.13 dan level saling menumpuk).
+  const dp = priceDigits(currentInstrument().type, data.currentPrice);
   snrSeries = snrChart.addCandlestickSeries({
+    priceFormat: { type: "price", precision: dp, minMove: Math.pow(10, -dp) },
     upColor: "#3fb950", downColor: "#f85149", borderVisible: false,
     wickUpColor: "#3fb950", wickDownColor: "#f85149"
   });
@@ -624,8 +628,8 @@ function renderSnrChart(data) {
     if (price == null) return;
     snrSeries.createPriceLine({ price, color, lineWidth: 1, lineStyle: style, axisLabelVisible: false, title });
   };
-  if (data.nearestSupport) refLine(data.nearestSupport.mid, "#3fb950", LightweightCharts.LineStyle.Dashed, `S ${data.nearestSupport.mid.toFixed(2)}`);
-  if (data.nearestResistance) refLine(data.nearestResistance.mid, "#f85149", LightweightCharts.LineStyle.Dashed, `R ${data.nearestResistance.mid.toFixed(2)}`);
+  if (data.nearestSupport) refLine(data.nearestSupport.mid, "#3fb950", LightweightCharts.LineStyle.Dashed, `S ${data.nearestSupport.mid.toFixed(dp)}`);
+  if (data.nearestResistance) refLine(data.nearestResistance.mid, "#f85149", LightweightCharts.LineStyle.Dashed, `R ${data.nearestResistance.mid.toFixed(dp)}`);
   refLine(data.vwap?.vwap, "#58a6ff", LightweightCharts.LineStyle.Dashed, "VWAP");
   refLine(data.volumeProfile?.poc, "#a371f7", LightweightCharts.LineStyle.Dotted, "POC");
 
@@ -653,6 +657,7 @@ function renderSnrChart(data) {
 }
 
 function renderSnrBody(data) {
+  const fp = n => fmt(n, priceDigits(currentInstrument().type, data.currentPrice));
   const body = el("snrBody");
   let html = "";
 
@@ -673,16 +678,16 @@ function renderSnrBody(data) {
         <div class="an-item"><span class="an-k">Volatilitas</span><span class="an-v">${a.volatility}</span></div>
         ${a.divergence ? `<div class="an-item"><span class="an-k">Divergence</span><span class="an-v" style="color:${a.divergence === 'bullish' ? 'var(--green)' : 'var(--red)'}">RSI ${a.divergence.toUpperCase()} (sinyal pembalikan)</span></div>` : ""}
         ${a.hiddenDivergence ? `<div class="an-item"><span class="an-k">Hidden Divergence</span><span class="an-v" style="color:${a.hiddenDivergence === 'bullish' ? 'var(--green)' : 'var(--red)'}">${a.hiddenDivergence.toUpperCase()} (penerusan tren)</span></div>` : ""}
-        ${a.vwap ? `<div class="an-item"><span class="an-k">VWAP</span><span class="an-v">${fmt(a.vwap.vwap)} — harga ${a.vwap.bias === 'bullish' ? 'di ATAS (bias naik)' : a.vwap.bias === 'bearish' ? 'di BAWAH (bias turun)' : 'di VWAP (netral)'}</span></div>` : ""}
-        ${a.volumeProfile ? `<div class="an-item"><span class="an-k">Volume Profile</span><span class="an-v">POC <b>${fmt(a.volumeProfile.poc)}</b> · Value Area ${fmt(a.volumeProfile.val)}–${fmt(a.volumeProfile.vah)}${a.volumeProfile.usedVolume ? "" : " (proxy rentang)"}</span></div>` : ""}
-        ${a.structure?.bos ? `<div class="an-item"><span class="an-k">Struktur (ICT)</span><span class="an-v" style="color:${a.structure.bos === 'bullish' ? 'var(--green)' : 'var(--red)'}">BOS ${a.structure.bos.toUpperCase()}${a.structure.orderBlock ? ` · OB ${fmt(a.structure.orderBlock.low)}–${fmt(a.structure.orderBlock.high)}` : ""}</span></div>` : ""}
-        ${a.orb ? `<div class="an-item"><span class="an-k">ORB (${a.orb.session})</span><span class="an-v" style="color:${a.orb.bias === 'bullish' ? 'var(--green)' : a.orb.bias === 'bearish' ? 'var(--red)' : 'var(--text)'}">${fmt(a.orb.low)}–${fmt(a.orb.high)} · ${a.orb.state}${a.orb.bias !== 'netral' ? ` → target ${fmt(a.orb.target)}` : ""}</span></div>` : ""}
+        ${a.vwap ? `<div class="an-item"><span class="an-k">VWAP</span><span class="an-v">${fp(a.vwap.vwap)} — harga ${a.vwap.bias === 'bullish' ? 'di ATAS (bias naik)' : a.vwap.bias === 'bearish' ? 'di BAWAH (bias turun)' : 'di VWAP (netral)'}</span></div>` : ""}
+        ${a.volumeProfile ? `<div class="an-item"><span class="an-k">Volume Profile</span><span class="an-v">POC <b>${fp(a.volumeProfile.poc)}</b> · Value Area ${fp(a.volumeProfile.val)}–${fp(a.volumeProfile.vah)}${a.volumeProfile.usedVolume ? "" : " (proxy rentang)"}</span></div>` : ""}
+        ${a.structure?.bos ? `<div class="an-item"><span class="an-k">Struktur (ICT)</span><span class="an-v" style="color:${a.structure.bos === 'bullish' ? 'var(--green)' : 'var(--red)'}">BOS ${a.structure.bos.toUpperCase()}${a.structure.orderBlock ? ` · OB ${fp(a.structure.orderBlock.low)}–${fp(a.structure.orderBlock.high)}` : ""}</span></div>` : ""}
+        ${a.orb ? `<div class="an-item"><span class="an-k">ORB (${a.orb.session})</span><span class="an-v" style="color:${a.orb.bias === 'bullish' ? 'var(--green)' : a.orb.bias === 'bearish' ? 'var(--red)' : 'var(--text)'}">${fp(a.orb.low)}–${fp(a.orb.high)} · ${a.orb.state}${a.orb.bias !== 'netral' ? ` → target ${fp(a.orb.target)}` : ""}</span></div>` : ""}
         ${a.volume ? `<div class="an-item"><span class="an-k">Volume</span><span class="an-v">${a.volume.ratio}× rata-rata ${a.volume.aboveAvg ? "— di atas normal (konfirmasi)" : a.volume.thin ? "— tipis (lemah)" : "— normal"}</span></div>` : ""}
-        ${a.fib ? `<div class="an-item"><span class="an-k">Fibonacci</span><span class="an-v">Retrace ${a.fib.direction}; terdekat ${a.fib.nearest ? (a.fib.nearest.ratio * 100).toFixed(1) + '% @ ' + fmt(a.fib.nearest.price) : '-'}${a.fib.atGoldenZone ? ' <b style="color:var(--accent)">(golden zone)</b>' : ''}</span></div>` : ""}
+        ${a.fib ? `<div class="an-item"><span class="an-k">Fibonacci</span><span class="an-v">Retrace ${a.fib.direction}; terdekat ${a.fib.nearest ? (a.fib.nearest.ratio * 100).toFixed(1) + '% @ ' + fp(a.fib.nearest.price) : '-'}${a.fib.atGoldenZone ? ' <b style="color:var(--accent)">(golden zone)</b>' : ''}</span></div>` : ""}
         <div class="an-item"><span class="an-k">Pola Candle</span><span class="an-v">${a.candle}</span></div>
         <div class="an-item"><span class="an-k">Sesi Pasar</span><span class="an-v">${a.sessions}</span></div>
         ${a.keyLevel ? `<div class="an-item"><span class="an-k">Key Level</span><span class="an-v">${a.keyLevel}</span></div>` : ""}
-        <div class="an-item"><span class="an-k">Support / Resistance</span><span class="an-v">${a.support ? fmt(a.support) : "-"} / ${a.resistance ? fmt(a.resistance) : "-"}</span></div>
+        <div class="an-item"><span class="an-k">Support / Resistance</span><span class="an-v">${a.support ? fp(a.support) : "-"} / ${a.resistance ? fp(a.resistance) : "-"}</span></div>
       </div>
       <div class="an-conclusion">${mdBoldToHtml(a.conclusion)}</div>
     </div>`;
@@ -699,9 +704,9 @@ function renderSnrBody(data) {
     if (a?.fundamental?.align === "aligned") html += `<div class="fund-note aligned">✔ ${a.fundamental.kind === "crypto" ? "Fundamental" : "Makro"} SEARAH dengan setup ini — konfluensi lebih kuat.</div>`;
     else if (a?.fundamental?.align === "conflict") html += `<div class="fund-note conflict">⚠ ${a.fundamental.kind === "crypto" ? "Fundamental" : "Makro"} BERLAWANAN dengan setup ini — pertimbangkan kurangi ukuran / tunggu konfirmasi.</div>`;
     html += `<table class="snr-tpsl-table"><tbody>
-      <tr class="row-entry"><td>Entry</td><td>${fmt(p.entry)}</td></tr>
-      <tr class="row-sl"><td>Stop Loss</td><td>${fmt(p.stopLoss)}</td></tr>
-      ${(p.takeProfit || []).map((tp, i) => `<tr class="row-tp"><td>Take Profit ${i + 1}${p.tpProjected ? ` <span class="muted">(proyeksi 1:2)</span>` : ""}</td><td>${fmt(tp)}</td></tr>`).join("")}
+      <tr class="row-entry"><td>Entry</td><td>${fp(p.entry)}</td></tr>
+      <tr class="row-sl"><td>Stop Loss</td><td>${fp(p.stopLoss)}</td></tr>
+      ${(p.takeProfit || []).map((tp, i) => `<tr class="row-tp"><td>Take Profit ${i + 1}${p.tpProjected ? ` <span class="muted">(proyeksi 1:2)</span>` : ""}</td><td>${fp(tp)}</td></tr>`).join("")}
       ${p.riskRewardRatio ? `<tr><td>Risk:Reward</td><td style="color:${p.rrQuality === 'buruk' ? 'var(--red)' : p.rrQuality === 'baik' ? 'var(--green)' : 'var(--text)'}">1:${p.riskRewardRatio}${p.rrQuality ? ` (${p.rrQuality})` : ""}</td></tr>` : ""}
     </tbody></table>`;
   } else if (data.skippedSetup) {
@@ -710,7 +715,7 @@ function renderSnrBody(data) {
     html += `<div class="snr-potential none">Harga saat ini belum tepat berada di zona support/resistance kuat — belum ada area Buy/Sell spesifik di timeframe ini. Lihat level-level di bawah sebagai referensi.</div>`;
   }
 
-  html += `<div class="snr-zone-list">${data.zones.map(z => `<div class="zone-row ${z.type}"><span>${z.type === "resistance" ? "Resistance" : "Support"} (${z.sources.join(", ")})</span><span>${fmt(z.low)} - ${fmt(z.high)}</span></div>`).join("")}</div>`;
+  html += `<div class="snr-zone-list">${data.zones.map(z => `<div class="zone-row ${z.type}"><span>${z.type === "resistance" ? "Resistance" : "Support"} (${z.sources.join(", ")})</span><span>${fp(z.low)} - ${fp(z.high)}</span></div>`).join("")}</div>`;
   html += `<ul class="signal-reasons" style="margin-top:12px">${(data.signalReasons || []).map(r => `<li>${mdBoldToHtml(r)}</li>`).join("")}</ul>`;
   html += `<p class="muted">${data.disclaimer || ""}</p>`;
 
@@ -752,11 +757,11 @@ function calcPosition() {
   const reward = tp1 != null ? Math.abs(tp1 - entry) : null;
   const profitAmt = reward != null ? units * reward : null;
   const rr = reward != null ? reward / slDist : null;
-  const dp = slDist < 1 ? 5 : 2;
+  const dp = priceDigits(type, entry);
   res.innerHTML = `
     <table class="pc-table"><tbody>
       <tr><td>Risiko ($)</td><td>$${riskAmt.toFixed(2)} <span class="muted">(${riskPct}% dari $${bal})</span></td></tr>
-      <tr><td>Jarak SL</td><td>${slDist.toFixed(dp)} <span class="muted">(${fmt(entry)} → ${fmt(sl)})</span></td></tr>
+      <tr><td>Jarak SL</td><td>${slDist.toFixed(dp)} <span class="muted">(${fmt(entry, priceDigits(type, entry))} → ${fmt(sl, priceDigits(type, entry))})</span></td></tr>
       <tr class="pc-hi"><td>Ukuran posisi</td><td>${sizeStr}</td></tr>
       ${profitAmt != null ? `<tr><td>Potensi profit TP1</td><td style="color:var(--green)">+$${profitAmt.toFixed(2)}${rr ? ` <span class="muted">(R:R 1:${rr.toFixed(2)})</span>` : ""}</td></tr>` : ""}
     </tbody></table>
